@@ -22,9 +22,9 @@ Other names may be trademarks of their respective owners.
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- *
+ * 
  * Contributor(s):
- *
+ * 
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -36,14 +36,25 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+package jsf2.demo.scrum.domain.sprint;
 
-package jsf2.demo.scrum.model.entities;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-/**
- *
- * @author Dr. Spock (spock at dev.java.net)
- */
-public enum TaskStatus {
+@Documented
+@Constraint(validatedBy = SprintNameUniquenessConstraintValidator.class)
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SprintNameUniquenessConstraint {
 
-    TODO, DONE, WORKING
+    String message() default "{sprint.form.label.name.unique}";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 }

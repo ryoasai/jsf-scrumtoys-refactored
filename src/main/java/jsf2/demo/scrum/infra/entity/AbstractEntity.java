@@ -37,17 +37,45 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.web.event;
+package jsf2.demo.scrum.infra.entity;
 
-import javax.faces.event.SystemEvent;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-public class CurrentStoryChangeEvent extends SystemEvent {
+@MappedSuperclass
+public abstract class AbstractEntity implements PersistentEntity<Long> {
 
-    public CurrentStoryChangeEvent(Object source) {
-        super(source);
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Override
+    public Long getId() {
+        return this.id;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean isNew() {
+        return (this.id == null);
+    }
+
+    @Override
+    public abstract boolean equals(Object object);
+
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract String toString();
+    
 }

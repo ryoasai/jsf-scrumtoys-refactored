@@ -38,7 +38,8 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.model.entities.Project;
+import jsf2.demo.scrum.infra.manager.AbstractManager;
+import jsf2.demo.scrum.domain.project.Project;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -58,155 +59,40 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.inject.Named;
+import jsf2.demo.scrum.domain.project.ProjectRepository;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @SessionScoped
-@Stateful
 public class ProjectManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    // TODO スレッドセーフ化
+    
     private Project currentProject;
     private DataModel<Project> projects;
-    private List<SelectItem> projectItems;
     private List<Project> projectList;
+
+    @Inject
+    private ProjectRepository projectRepository;
 
     @PostConstruct
     public void construct() {
-        Project project = new Project();
-        setCurrentProject(project);
-        init();
-    }
+        setCurrentProject(new Project());
 
-    @PreDestroy
-    public void destroy() {
-        projects = null;
-        if (null != projectItems) {
-            projectItems.clear();
-            projectItems = null;
-        }
-        if (null != projectList) {
-            projectList.clear();
-            projectList = null;
-        }
-        currentProject = null;
+        init();
     }
 
     public void init() {
-        Query query = em.createNamedQuery("project.getAll");
-        setProjectList((List<Project>) query.getResultList());
+        setProjectList(projectRepository.findByNamedQuery("project.getAll"));
 
-        projectItems = new LinkedList<SelectItem>();
-        projectItems.add(new SelectItem(new Project(), "-- Select one project --"));
-        if (getProjectList() != null) {
-            projects = new ListDataModel<Project>(getProjectList());
-            for (Project p : getProjectList()) {
-                projectItems.add(new SelectItem(p, p.getName()));
-            }
-        }
-    }
-
-    public String create() {
-        Project project = new Project();
-        setCurrentProject(project);
-        return "create";
-    }
-
-    public String save() {
-        if (getCurrentProject() != null) {
-            try {
-                Project merged;
-
-                if (getCurrentProject().isNew()) {
-                    em.persist(getCurrentProject());
-                } else if (!em.contains(currentProject)) {
-                    merged = em.merge(getCurrentProject());
-                }
-
-                merged = getCurrentProject();
-
-                if (!currentProject.equals(merged)) {
-                    setCurrentProject(merged);
-                    int idx = getProjectList().indexOf(getCurrentProject());
-                    if (idx != -1) {
-                        getProjectList().set(idx, merged);
-                    }
-                }
-                if (!projectList.contains(merged)) {
-                    getProjectList().add(merged);
-                }
-
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to save Project: " + getCurrentProject(), e);
-                addMessage("Error on try to save Project", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-
-        init();
-
-        return "show";
-    }
-
-    public String edit() {
-        setCurrentProject(projects.getRowData());
-        // Using implicity navigation, this request come from /projects/show.xhtml and directs to /project/edit.xhtml
-        return "edit";
-    }
-
-    public String remove() {
-        final Project project = projects.getRowData();
-        if (project != null) {
-            try {
-                if (em.contains(project)) {
-                    em.remove(project);
-                } else {
-                    em.remove(em.merge(project));
-                }
-
-                getProjectList().remove(project);
-
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to remove Project: " + getCurrentProject(), e);
-                addMessage("Error on try to remove Project", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-
-        init();
-        // Using implicity navigation, this request come from /projects/show.xhtml and directs to /project/show.xhtml
-        // could be null instead
-        return "show";
-    }
-
-    public void checkUniqueProjectName(FacesContext context, UIComponent component, Object newValue) {
-        final String newName = (String) newValue;
-        
-        Query query = em.createNamedQuery((getCurrentProject().isNew()) ? "project.new.countByName" : "project.countByName");
-        query.setParameter("name", newName);
-        if (!currentProject.isNew()) {
-            query.setParameter("currentProject", getCurrentProject());
-        }
-
-        Long count = (Long) query.getSingleResult();
-
-        if (count != null && count > 0) {
-            throw new ValidatorException(getFacesMessageForKey("project.form.label.name.unique"));
-        }
-    }
-
-    public String cancelEdit() {
-        // Implicity navigation, this request come from /projects/edit.xhtml and directs to /project/show.xhtml
-        return "show";
-    }
-
-    public String showSprints() {
-        setCurrentProject(projects.getRowData());
-        // Implicity navigation, this request come from /projects/show.xhtml and directs to /project/showSprints.xhtml
-        return "showSprints";
+        projects = new ListDataModel<Project>(getProjectList());
     }
 
     public Project getCurrentProject() {
@@ -225,26 +111,69 @@ public class ProjectManager extends AbstractManager implements Serializable {
         this.projects = projects;
     }
 
-    public List<SelectItem> getProjectItems() {
-        return projectItems;
-    }
-
-    public void setProjectItems(List<SelectItem> projectItems) {
-        this.projectItems = projectItems;
-    }
-
-    /**
-     * @return the projectList
-     */
     public List<Project> getProjectList() {
         return projectList;
     }
 
-    /**
-     * @param projectList the projectList to set
-     */
     public void setProjectList(List<Project> projectList) {
         this.projectList = projectList;
+    }
+
+    public String create() {
+        setCurrentProject(new Project());
+
+        return "create";
+    }
+
+    public String edit() {
+        setCurrentProject(projects.getRowData());
+
+        // Using implicity navigation, this request come from /projects/show.xhtml and directs to /project/edit.xhtml
+        return "edit";
+    }
+
+    public String save() {
+        if (getCurrentProject() != null) {
+            projectRepository.save(currentProject);
+        }
+
+        init();
+
+        return "show";
+    }
+
+    public String remove() {
+        Project project = projects.getRowData();
+        if (project != null) {
+            projectRepository.remove(project);
+        }
+
+        init();
+
+        // Using implicity navigation, this request come from /projects/show.xhtml and directs to /project/show.xhtml
+        // could be null instead
+        return "show";
+    }
+
+    public void checkUniqueProjectName(FacesContext context, UIComponent component, Object newValue) {
+        final String newName = (String) newValue;
+
+        long count = projectRepository.countOtherProjectsWithName(getCurrentProject(), newName);
+
+        if (count > 0) {
+            throw new ValidatorException(getFacesMessageForKey("project.form.label.name.unique"));
+        }
+    }
+
+    public String cancelEdit() {
+        // Implicity navigation, this request come from /projects/edit.xhtml and directs to /project/show.xhtml
+        return "show";
+    }
+
+    public String showSprints() {
+        setCurrentProject(projects.getRowData());
+        // Implicity navigation, this request come from /projects/show.xhtml and directs to /project/showSprints.xhtml
+        return "showSprints";
     }
 
     public String viewSprints() {

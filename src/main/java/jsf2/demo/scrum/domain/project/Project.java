@@ -37,77 +37,64 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.model.entities;
+package jsf2.demo.scrum.domain.project;
 
-import javax.persistence.*;
+import jsf2.demo.scrum.infra.entity.AbstractEntity;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import jsf2.demo.scrum.domain.sprint.Sprint;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Entity
-@Table(name = "tasks", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "story_id"}))
-@NamedQueries({@NamedQuery(name = "task.countByNameAndStory", query = "select count(t) from Task as t where t.name = :name and t.story = :story and not(t = :currentTask)"),
-        @NamedQuery(name = "task.new.countByNameAndStory", query = "select count(t) from Task as t where t.name = :name and t.story = :story")})
-public class Task extends AbstractEntity implements Serializable {
+@Table(name = "projects")
+@NamedQueries({@NamedQuery(name = "project.getAll", query = "select p from Project as p"),
+        @NamedQuery(name = "project.getAllOpen", query = "select p from Project as p where p.endDate is null"),
+        @NamedQuery(name = "project.countByName", query = "select count(p) from Project as p where p.name = :name and not(p = :currentProject)"),
+        @NamedQuery(name = "project.new.countByName", query = "select count(p) from Project as p where p.name = :name")})
+public class Project extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private Date startDate;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
     private Date endDate;
 
-    @Enumerated(EnumType.ORDINAL)
-    private TaskStatus status;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Sprint> sprints;
 
-    @ManyToOne
-    @JoinColumn(name = "story_id")
-    private Story story;
-
-    public Task() {
-        this.status = TaskStatus.TODO;
+    public Project() {
+        this.startDate = new Date();
     }
 
-    public Task(String name) {
+    public Project(String name) {
         this();
         this.name = name;
     }
 
-    public Task(String name, Story story) {
+    public Project(String name, Date startDate) {
         this(name);
-        if (story != null) {
-            story.addTask(this);
-        }
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-        changeTaskStatus(this.startDate, endDate);
-
-    }
-
-    protected void changeTaskStatus(Date startDate, Date endDate) {
-        if (endDate != null) {
-            this.setStatus(status.DONE);
-        }
-        if (endDate == null && this.startDate != null) {
-            this.setStatus(status.WORKING);
-        }
-        if (endDate == null && this.startDate == null) {
-            this.setStatus(status.TODO);
-        }
+        this.startDate = startDate;
     }
 
     public String getName() {
@@ -124,27 +111,38 @@ public class Task extends AbstractEntity implements Serializable {
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
-        changeTaskStatus(startDate, this.endDate);
     }
 
-    public TaskStatus getStatus() {
-        return status;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setStatus(TaskStatus status) {
-        this.status = status;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
-    public Story getStory() {
-        return story;
+    public List<Sprint> getSprints() {
+        return (sprints != null) ? Collections.unmodifiableList(sprints) : Collections.EMPTY_LIST;
     }
 
-    public void setStory(Story story) {
-        this.story = story;
+    public boolean addSprint(Sprint sprint) {
+        if (sprints == null) {
+            sprints = new LinkedList<Sprint>();
+        }
+        if (sprint != null && !sprints.contains(sprint)) {
+            sprints.add(sprint);
+            sprint.setProject(this);
+            return true;
+        }
+        return false;
     }
 
-    public String getStatusKeyI18n() {
-        return "task.show.table.header.status."+status;
+    public boolean removeSpring(Sprint sprint) {
+        if (sprints != null && !sprints.isEmpty()) {
+            return sprints.remove(sprint);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -155,11 +153,8 @@ public class Task extends AbstractEntity implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Task other = (Task) obj;
+        final Project other = (Project) obj;
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        if (this.story != other.story && (this.story == null || !this.story.equals(other.story))) {
             return false;
         }
         return true;
@@ -168,13 +163,12 @@ public class Task extends AbstractEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 83 * hash + (this.story != null ? this.story.hashCode() : 0);
+        hash = 79 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
 
     @Override
     public String toString() {
-        return "Task[name=" + name + ",startDate=" + startDate + ",story=" + story + "]";
+        return "Project[name=" + name + ",startDate=" + startDate + ",endDate=" + endDate + "]";
     }
 }

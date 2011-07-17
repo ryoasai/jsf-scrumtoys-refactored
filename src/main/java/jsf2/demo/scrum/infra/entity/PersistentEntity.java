@@ -37,17 +37,18 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.web.event;
+package jsf2.demo.scrum.infra.entity;
 
-import javax.faces.event.SystemEvent;
+import java.io.Serializable;
 
 /**
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-public class CurrentSprintChangeEvent extends SystemEvent {
+public interface PersistentEntity<K extends Serializable> extends Serializable {
 
-    public CurrentSprintChangeEvent(Object source) {
-        super(source);
-    }
+    K getId();
+
+    boolean isNew();
+    
 }

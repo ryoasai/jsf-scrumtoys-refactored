@@ -37,66 +37,88 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.model.entities;
+package jsf2.demo.scrum.domain.sprint;
 
+import jsf2.demo.scrum.domain.project.Project;
+import jsf2.demo.scrum.infra.entity.AbstractEntity;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import jsf2.demo.scrum.domain.story.Story;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Entity
-@Table(name = "projects")
-@NamedQueries({@NamedQuery(name = "project.getAll", query = "select p from Project as p"),
-        @NamedQuery(name = "project.getAllOpen", query = "select p from Project as p where p.endDate is null"),
-        @NamedQuery(name = "project.countByName", query = "select count(p) from Project as p where p.name = :name and not(p = :currentProject)"),
-        @NamedQuery(name = "project.new.countByName", query = "select count(p) from Project as p where p.name = :name")})
-public class Project extends AbstractEntity implements Serializable {
+@Table(name = "sprints", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "project_id"}))
+@NamedQueries({@NamedQuery(name = "sprint.countByNameAndProject", query = "select count(s) from Sprint as s where s.name = :name and s.project = :project and not(s = :currentSprint)"),
+        @NamedQuery(name = "sprint.new.countByNameAndProject", query = "select count(s) from Sprint as s where s.name = :name and s.project = :project")})
+public class Sprint extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Column(nullable = false, unique = true)
+    
+    @Column(nullable = false)
     private String name;
+
+    private String goals;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date", nullable = false)
     private Date startDate;
+    
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
     private Date endDate;
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Sprint> sprints;
 
-    public Project() {
+    @Column(name = "iteration_scope")
+    private int iterationScope;
+    
+    @Column(name = "gained_story_points")
+    private int gainedStoryPoints;
+    
+    @Temporal(TemporalType.TIME)
+    @Column(name = "daily_meeting_time")
+    private Date dailyMeetingTime;
+    
+    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL)
+    private List<Story> stories;
+    
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    public Sprint() {
         this.startDate = new Date();
     }
 
-    public Project(String name) {
+    public Sprint(String name) {
         this();
         this.name = name;
     }
 
-    public Project(String name, Date startDate) {
+    public Sprint(String name, Project project) {
         this(name);
-        this.startDate = startDate;
+        this.project = project;
     }
 
+    @SprintNameUniquenessConstraint
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getGoals() {
+        return goals;
+    }
+
+    public void setGoals(String goals) {
+        this.goals = goals;
     }
 
     public Date getStartDate() {
@@ -115,28 +137,60 @@ public class Project extends AbstractEntity implements Serializable {
         this.endDate = endDate;
     }
 
-    public List<Sprint> getSprints() {
-        return (sprints != null) ? Collections.unmodifiableList(sprints) : Collections.EMPTY_LIST;
+    public int getIterationScope() {
+        return iterationScope;
     }
 
-    public boolean addSprint(Sprint sprint) {
-        if (sprints == null) {
-            sprints = new LinkedList<Sprint>();
+    public void setIterationScope(int iterationScope) {
+        this.iterationScope = iterationScope;
+    }
+
+    public int getGainedStoryPoints() {
+        return gainedStoryPoints;
+    }
+
+    public void setGainedStoryPoints(int gainedStoryPoints) {
+        this.gainedStoryPoints = gainedStoryPoints;
+    }
+
+    public Date getDailyMeetingTime() {
+        return dailyMeetingTime;
+    }
+
+    public void setDailyMeetingTime(Date dailyMeetingTime) {
+        this.dailyMeetingTime = dailyMeetingTime;
+    }
+
+    public List<Story> getStories() {
+        return (stories != null) ? Collections.unmodifiableList(stories) : Collections.EMPTY_LIST;
+    }
+
+    public boolean addStory(Story story) {
+        if (stories == null) {
+            stories = new LinkedList<Story>();
         }
-        if (sprint != null && !sprints.contains(sprint)) {
-            sprints.add(sprint);
-            sprint.setProject(this);
+        if (story != null && !stories.contains(story)) {
+            stories.add(story);
+            story.setSprint(this);
             return true;
         }
         return false;
     }
 
-    public boolean removeSpring(Sprint sprint) {
-        if (sprints != null && !sprints.isEmpty()) {
-            return sprints.remove(sprint);
+    public boolean removeStory(Story story) {
+        if (stories != null && !stories.isEmpty()) {
+            return stories.remove(story);
         } else {
             return false;
         }
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override
@@ -147,8 +201,11 @@ public class Project extends AbstractEntity implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Project other = (Project) obj;
+        final Sprint other = (Sprint) obj;
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        if (this.project != other.project && (this.project == null || !this.project.equals(other.project))) {
             return false;
         }
         return true;
@@ -157,12 +214,13 @@ public class Project extends AbstractEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 97 * hash + (this.project != null ? this.project.hashCode() : 0);
         return hash;
     }
 
     @Override
     public String toString() {
-        return "Project[name=" + name + ",startDate=" + startDate + ",endDate=" + endDate + "]";
+        return "Sprint[name=" + name + ",startDate=" + startDate + ",project=" + project + "]";
     }
 }

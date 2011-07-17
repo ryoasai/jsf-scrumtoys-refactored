@@ -39,6 +39,7 @@ Other names may be trademarks of their respective owners.
 
 package jsf2.demo.scrum.web.controller;
 
+import jsf2.demo.scrum.infra.manager.AbstractManager;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;

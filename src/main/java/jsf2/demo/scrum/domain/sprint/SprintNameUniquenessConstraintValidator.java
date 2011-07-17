@@ -22,9 +22,9 @@ Other names may be trademarks of their respective owners.
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- *
+ * 
  * Contributor(s):
- *
+ * 
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -37,17 +37,36 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.web.event;
+package jsf2.demo.scrum.domain.sprint;
 
-import javax.faces.event.SystemEvent;
+import javax.faces.context.FacesContext;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import jsf2.demo.scrum.web.controller.SprintManager;
 
-/**
- *
- * @author Dr. Spock (spock at dev.java.net)
- */
-public class CurrentProjectChangeEvent extends SystemEvent {
+public class SprintNameUniquenessConstraintValidator implements ConstraintValidator<SprintNameUniquenessConstraint, String> {
 
-    public CurrentProjectChangeEvent(Object source) {
-        super(source);
+    public boolean isValid(String value, ConstraintValidatorContext ctx) {
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        SprintManager sprintManager = (SprintManager)
+                context.getApplication().evaluateExpressionGet(context, 
+                "#{sprintManager}", SprintManager.class);
+        boolean result = true;
+        String message = sprintManager.
+                checkUniqueSprintNameApplicationValidatorMethod(value);
+        if (null != message) {
+            result = false;
+	    ConstraintValidatorContext.ConstraintViolationBuilder builder =
+		ctx.buildConstraintViolationWithTemplate(message);
+	    builder.addConstraintViolation();
+        }
+
+        
+        return result;
     }
+
+    public void initialize(SprintNameUniquenessConstraint arg0) {
+    }
+    
 }

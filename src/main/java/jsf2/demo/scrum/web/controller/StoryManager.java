@@ -38,8 +38,9 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.model.entities.Sprint;
-import jsf2.demo.scrum.model.entities.Story;
+import jsf2.demo.scrum.infra.manager.AbstractManager;
+import jsf2.demo.scrum.domain.sprint.Sprint;
+import jsf2.demo.scrum.domain.story.Story;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -58,38 +59,45 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateful;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import jsf2.demo.scrum.domain.story.StoryRepository;
 
 @Named
-@SessionScoped
-@Stateful
+@ConversationScoped
 public class StoryManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Inject
     private SprintManager sprintManager;
+   
+    @Inject
+    private StoryRepository storyRepository;
+    
+    @Inject
+    private Conversation conversation;
+    
     private Story currentStory;
+    
     private DataModel<Story> stories;
     private List<Story> storyList;
 
     @PostConstruct
     public void construct() {
+        getLogger(getClass()).log(Level.INFO, "new intance of storyManager in conversation");
+
         init();
     }
 
     @PreDestroy
     public void destroy() {
-        sprintManager = null;
-        currentStory = null;
-        stories = null;
-        if (null != storyList) {
-            storyList.clear();
-            storyList = null;
-        }
+        getLogger(getClass()).log(Level.INFO, "destroy intance of storyManager in conversation");
     }
-
+    
     public void init() {
 
         Sprint currentSprint = sprintManager.getCurrentSprint();
@@ -102,99 +110,8 @@ public class StoryManager extends AbstractManager implements Serializable {
         } else {
             setStoryList(new ArrayList<Story>());
         }
+        
         stories = new ListDataModel<Story>(getStoryList());
-    }
-
-    public String create() {
-        Story story = new Story();
-        story.setSprint(sprintManager.getCurrentSprint());
-        setCurrentStory(story);
-        return "create";
-    }
-
-    public String save() {
-        if (currentStory != null) {
-            try {
-                Story merged;
-
-                if (currentStory.isNew()) {
-                    em.persist(currentStory);
-                } else if (!em.contains(currentStory)) {
-                    merged = em.merge(currentStory);
-                }
-                merged = currentStory;
-
-
-                if (!currentStory.equals(merged)) {
-                    setCurrentStory(merged);
-                    int idx = getStoryList().indexOf(currentStory);
-                    if (idx != -1) {
-                        getStoryList().set(idx, merged);
-                    }
-                }
-                sprintManager.getCurrentSprint().addStory(merged);
-                if (!storyList.contains(merged)) {
-                    getStoryList().add(merged);
-                }
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to save Story: " + currentStory, e);
-                addMessage("Error on try to save Story", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-        return "show";
-    }
-
-    public String edit() {
-        setCurrentStory(stories.getRowData());
-        return "edit";
-    }
-
-    public String remove() {
-        final Story story = stories.getRowData();
-        if (story != null) {
-            try {
-
-                if (em.contains(story)) {
-                    em.remove(story);
-                } else {
-                    em.remove(em.merge(story));
-                }
-
-                sprintManager.getCurrentSprint().removeStory(story);
-                getStoryList().remove(story);
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to remove Story: " + currentStory, e);
-                addMessage("Error on try to remove Story", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-        return "show";
-    }
-
-    public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
-        final String newName = (String) newValue;
-        Query query = em.createNamedQuery((currentStory.isNew()) ? "story.new.countByNameAndSprint" : "story.countByNameAndSprint");
-        query.setParameter("name", newName);
-        query.setParameter("sprint", sprintManager.getCurrentSprint());
-        if (!currentStory.isNew()) {
-            query.setParameter("currentStory", currentStory);
-        }
-
-        Long count = (Long) query.getSingleResult();
-
-        if (count != null && count > 0) {
-            throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
-        }
-    }
-
-    public String cancelEdit() {
-        return "show";
-    }
-
-    public String showTasks() {
-        setCurrentStory(stories.getRowData());
-        return "showTasks";
     }
 
     public Story getCurrentStory() {
@@ -255,5 +172,66 @@ public class StoryManager extends AbstractManager implements Serializable {
      */
     public void setSprintManager(SprintManager sprintManager) {
         this.sprintManager = sprintManager;
+    }
+
+    public String create() {
+        conversation.begin();
+                
+        Story story = new Story();
+        story.setSprint(sprintManager.getCurrentSprint());
+        setCurrentStory(story);
+        
+        return "create";
+    }
+
+    public String save() {
+        if (currentStory != null) {
+            Story merged = storyRepository.save(currentStory);
+
+            sprintManager.getCurrentSprint().addStory(merged);
+        }
+        
+        conversation.end();
+
+        return "show";
+    }
+
+    public String edit() {
+        conversation.begin();
+
+        setCurrentStory(stories.getRowData());
+        
+        return "edit";
+    }
+
+    public String remove() {
+        Story story = stories.getRowData();
+        if (story != null) {
+            storyRepository.remove(story);
+
+            sprintManager.getCurrentSprint().removeStory(story);
+        }
+
+        return "show";
+    }
+
+    public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
+        final String newName = (String) newValue;
+
+        long count = storyRepository.countOtherStoriesWithName(sprintManager.getCurrentSprint(), currentStory, newName);
+        if (count > 0) {
+            throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
+        }
+    }
+
+    public String cancelEdit() {
+        conversation.end();        
+        
+        return "show";
+    }
+
+    public String showTasks() {
+        setCurrentStory(stories.getRowData());
+        return "showTasks";
     }
 }

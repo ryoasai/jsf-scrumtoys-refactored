@@ -39,9 +39,10 @@ Other names may be trademarks of their respective owners.
 
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.model.entities.Sprint;
-import jsf2.demo.scrum.model.entities.Story;
-import jsf2.demo.scrum.model.entities.Task;
+import jsf2.demo.scrum.infra.manager.AbstractManager;
+import jsf2.demo.scrum.domain.sprint.Sprint;
+import jsf2.demo.scrum.domain.story.Story;
+import jsf2.demo.scrum.domain.task.Task;
 
 import javax.annotation.PreDestroy;
 import javax.faces.model.DataModel;
@@ -54,7 +55,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 
-@Named("dashboardManager")
+@Named
 //@ViewScoped
 @SessionScoped
 public class DashboardManager extends AbstractManager implements Serializable {

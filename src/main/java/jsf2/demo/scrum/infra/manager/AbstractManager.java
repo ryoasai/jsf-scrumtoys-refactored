@@ -36,8 +36,7 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.infra.manager;
 
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -48,6 +47,7 @@ import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import jsf2.demo.scrum.infra.entity.AbstractEntity;
 
 /**
  *
@@ -55,8 +55,27 @@ import javax.persistence.PersistenceContext;
  */
 public abstract class AbstractManager {
 
-    @PersistenceContext
-    protected EntityManager em;
+//    @PersistenceContext
+//    protected EntityManager em;
+//
+//    protected void doRemove(E entity) {
+//        if (em.contains(entity)) {
+//            em.remove(entity);
+//        } else {
+//            em.remove(em.merge(entity));
+//        }
+//    }
+//
+//    protected E doSave(E entity) {
+//        if (entity.isNew()) {
+//            em.persist(entity);
+//            return entity;
+//        } else if (!em.contains(entity)) {
+//            return em.merge(entity);
+//        } else {
+//            return entity;
+//        }
+//    }
 
     protected void addMessage(String message) {
         addMessage(null, message, FacesMessage.SEVERITY_INFO);

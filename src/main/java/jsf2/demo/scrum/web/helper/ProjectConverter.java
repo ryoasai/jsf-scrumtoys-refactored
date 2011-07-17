@@ -39,7 +39,7 @@ Other names may be trademarks of their respective owners.
  
 package jsf2.demo.scrum.web.helper;
 
-import jsf2.demo.scrum.model.entities.Project;
+import jsf2.demo.scrum.domain.project.Project;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -57,6 +57,7 @@ public class ProjectConverter implements Converter {
 
     private static Map<Long, Project> cache = new HashMap<Long, Project>();
 
+    @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         if (value == null && value.equals("0")) {
             return null;
@@ -68,6 +69,7 @@ public class ProjectConverter implements Converter {
         }
     }
 
+    @Override
     public String getAsString(FacesContext context, UIComponent component, Object object) {
         Project project = (Project) object;
         Long id = project.getId();

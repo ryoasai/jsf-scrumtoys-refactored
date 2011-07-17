@@ -37,65 +37,57 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.model.entities;
+package jsf2.demo.scrum.domain.task;
 
+import jsf2.demo.scrum.infra.entity.AbstractEntity;
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import jsf2.demo.scrum.domain.story.Story;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Entity
-@Table(name = "stories", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "sprint_id"}))
-@NamedQueries({@NamedQuery(name = "story.countByNameAndSprint", query = "select count(s) from Story as s where s.name = :name and s.sprint = :sprint and not(s = :currentStory)"),
-        @NamedQuery(name = "story.new.countByNameAndSprint", query = "select count(s) from Story as s where s.name = :name and s.sprint = :sprint")})
-public class Story extends AbstractEntity implements Serializable {
+@Table(name = "tasks", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "story_id"}))
+@NamedQueries({@NamedQuery(name = "task.countByNameAndStory", query = "select count(t) from Task as t where t.name = :name and t.story = :story and not(t = :currentTask)"),
+        @NamedQuery(name = "task.new.countByNameAndStory", query = "select count(t) from Task as t where t.name = :name and t.story = :story")})
+public class Task extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Column(nullable = false)
     private String name;
-    private int priority;
+
     @Temporal(TemporalType.DATE)
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date")
     private Date startDate;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
     private Date endDate;
-    private String acceptance;
-    private int estimation;
-    @ManyToOne
-    @JoinColumn(name = "sprint_id")
-    private Sprint sprint;
-    @OneToMany(mappedBy = "story", cascade = CascadeType.ALL)
-    private List<Task> tasks;
 
-    public Story() {
-        this.startDate = new Date();
+    @Enumerated(EnumType.ORDINAL)
+    private TaskStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "story_id")
+    private Story story;
+
+    public Task() {
+        this.status = TaskStatus.TODO;
     }
 
-    public Story(String name) {
+    public Task(String name) {
         this();
         this.name = name;
     }
 
-    public Story(String name, Sprint sprint) {
+    public Task(String name, Story story) {
         this(name);
-        this.name = name;
-        if (sprint != null) {
-            sprint.addStory(this);
+        if (story != null) {
+            story.addTask(this);
         }
-    }
-
-    public String getAcceptance() {
-        return acceptance;
-    }
-
-    public void setAcceptance(String acceptance) {
-        this.acceptance = acceptance;
     }
 
     public Date getEndDate() {
@@ -104,14 +96,20 @@ public class Story extends AbstractEntity implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+        changeTaskStatus(this.startDate, endDate);
+
     }
 
-    public int getEstimation() {
-        return estimation;
-    }
-
-    public void setEstimation(int estimation) {
-        this.estimation = estimation;
+    protected void changeTaskStatus(Date startDate, Date endDate) {
+        if (endDate != null) {
+            this.setStatus(status.DONE);
+        }
+        if (endDate == null && this.startDate != null) {
+            this.setStatus(status.WORKING);
+        }
+        if (endDate == null && this.startDate == null) {
+            this.setStatus(status.TODO);
+        }
     }
 
     public String getName() {
@@ -122,76 +120,33 @@ public class Story extends AbstractEntity implements Serializable {
         this.name = name;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public Sprint getSprint() {
-        return sprint;
-    }
-
-    public void setSprint(Sprint sprint) {
-        this.sprint = sprint;
-    }
-
     public Date getStartDate() {
         return startDate;
     }
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+        changeTaskStatus(startDate, this.endDate);
     }
 
-    public List<Task> getTasks() {
-        return (tasks != null) ? Collections.unmodifiableList(tasks) : Collections.EMPTY_LIST;
+    public TaskStatus getStatus() {
+        return status;
     }
 
-    public List<Task> getDoneTasks() {
-        return Collections.unmodifiableList(getTasks(TaskStatus.DONE));
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
-    public List<Task> getWorkingTasks() {
-        return Collections.unmodifiableList(getTasks(TaskStatus.WORKING));
+    public Story getStory() {
+        return story;
     }
 
-    public List<Task> getTodoTasks() {
-        return Collections.unmodifiableList(getTasks(TaskStatus.TODO));
+    public void setStory(Story story) {
+        this.story = story;
     }
 
-    private List<Task> getTasks(TaskStatus status) {
-        List<Task> result = new LinkedList<Task>();
-        if (tasks != null && !tasks.isEmpty()) {
-            for (Task task : tasks) {
-                if (task != null && status.equals(task.getStatus())) {
-                    result.add(task);
-                }
-            }
-        }
-        return result;
-    }
-
-    public boolean addTask(Task task) {
-        if (tasks == null) {
-            tasks = new LinkedList<Task>();
-        }
-        if (task != null && !tasks.contains(task)) {
-            tasks.add(task);
-            task.setStory(this);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean removeTask(Task task) {
-        if (tasks != null && !tasks.isEmpty()) {
-            return tasks.remove(task);
-        } else {
-            return false;
-        }
+    public String getStatusKeyI18n() {
+        return "task.show.table.header.status."+status;
     }
 
     @Override
@@ -202,11 +157,11 @@ public class Story extends AbstractEntity implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Story other = (Story) obj;
+        final Task other = (Task) obj;
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-        if (this.sprint != other.sprint && (this.sprint == null || !this.sprint.equals(other.sprint))) {
+        if (this.story != other.story && (this.story == null || !this.story.equals(other.story))) {
             return false;
         }
         return true;
@@ -215,13 +170,13 @@ public class Story extends AbstractEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 23 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 23 * hash + (this.sprint != null ? this.sprint.hashCode() : 0);
+        hash = 83 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 83 * hash + (this.story != null ? this.story.hashCode() : 0);
         return hash;
     }
 
     @Override
     public String toString() {
-        return "Story[name=" + name + ",startDate=" + startDate + ",sprint=" + sprint + "]";
+        return "Task[name=" + name + ",startDate=" + startDate + ",story=" + story + "]";
     }
 }

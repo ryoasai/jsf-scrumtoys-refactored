@@ -37,43 +37,21 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.model.entities;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+package jsf2.demo.scrum.infra.manager;
 
 /**
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-@MappedSuperclass
-public abstract class AbstractEntity implements PersistentEntity<Long> {
+public class ManagerException extends Exception {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    public Long getId() {
-        return this.id;
+    private static final long serialVersionUID = 1L;
+
+    public ManagerException(Throwable cause) {
+        super(cause);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public ManagerException(String message, Throwable cause) {
+        super(message, cause);
     }
-
-    public boolean isNew() {
-        return (this.id == null);
-    }
-
-    @Override
-    public abstract boolean equals(Object object);
-
-    @Override
-    public abstract int hashCode();
-
-    @Override
-    public abstract String toString();
-    
 }

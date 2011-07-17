@@ -38,198 +38,75 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.model.entities.Project;
-import jsf2.demo.scrum.model.entities.Sprint;
+import jsf2.demo.scrum.infra.manager.AbstractManager;
+import jsf2.demo.scrum.domain.project.Project;
+import jsf2.demo.scrum.domain.sprint.Sprint;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.validator.ValidatorException;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import jsf2.demo.scrum.domain.sprint.SprintRepository;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
-@SessionScoped
-@Stateful
+@ConversationScoped
 public class SprintManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private Sprint currentSprint;
     private DataModel<Sprint> sprints;
     private List<Sprint> sprintList;
+    
     @Inject
     private ProjectManager projectManager;
-    private Project currentProject;
+    
+    @Inject
+    private SprintRepository sprintRepository;
 
+    @Inject
+    private Conversation conversation;
+        
     @PostConstruct
     public void construct() {
+        getLogger(getClass()).log(Level.INFO, "new intance of sprintManager in conversation");
+
         init();
     }
 
     @PreDestroy
     public void destroy() {
-        sprints = null;
-        if (null != sprintList) {
-            sprintList.clear();
-            sprintList = null;
-        }
-        projectManager = null;
-        currentProject = null;
+        getLogger(getClass()).log(Level.INFO, "destroy intance of sprintManager in conversation");
     }
-
+    
     public void init() {
         Sprint sprint = new Sprint();
-        Project pmCurrentProject = getProjectManager().getCurrentProject();
-        sprint.setProject(pmCurrentProject);
+        Project currentProject = getProjectManager().getCurrentProject();
+        sprint.setProject(currentProject);
         setCurrentSprint(sprint);
-        if (pmCurrentProject != null) {
-            sprintList = new LinkedList<Sprint>(pmCurrentProject.getSprints());
+
+        if (currentProject != null) {
+            sprintList = new LinkedList<Sprint>(currentProject.getSprints());
         } else {
             sprintList = Collections.emptyList();
         }
+
         sprints = new ListDataModel<Sprint>(sprintList);
-    }
-
-    public String create() {
-        Sprint sprint = new Sprint();
-        sprint.setProject(getProjectManager().getCurrentProject());
-        setCurrentSprint(sprint);
-        return "create";
-    }
-
-    public String save() {
-        if (currentSprint != null) {
-            try {
-                Sprint merged;
-
-                if (currentSprint.isNew()) {
-                    em.persist(currentSprint);
-                } else if (!em.contains(currentSprint)) {
-                    merged = em.merge(currentSprint);
-                }
-
-                merged = currentSprint;
-
-                if (!currentSprint.equals(merged)) {
-                    setCurrentSprint(merged);
-                    int idx = sprintList.indexOf(currentSprint);
-                    if (idx != -1) {
-                        sprintList.set(idx, merged);
-                    }
-                }
-                getProjectManager().getCurrentProject().addSprint(merged);
-                if (!sprintList.contains(merged)) {
-                    sprintList.add(merged);
-                }
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to save Sprint: " + currentSprint, e);
-                addMessage("Error on try to save Sprint", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-        return "show";
-    }
-
-    public String edit() {
-        setCurrentSprint(sprints.getRowData());
-        return "edit";
-    }
-
-    public String remove() {
-        final Sprint sprint = sprints.getRowData();
-        if (sprint != null) {
-            try {
-                if (em.contains(sprint)) {
-                    em.remove(sprint);
-                } else {
-                    em.remove(em.merge(sprint));
-                }
-
-                getProjectManager().getCurrentProject().removeSpring(sprint);
-                sprintList.remove(sprint);
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to remove Sprint: " + currentSprint, e);
-                addMessage("Error on try to remove Sprint", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-        return "show";
-    }
-
-    /*
-     * This method can be pointed to by a validator methodExpression, such as:
-     *
-     * <h:inputText id="itName" value="#{sprintManager.currentSprint.name}" required="true"
-     *   requiredMessage="#{i18n['sprint.form.label.name.required']}" maxLength="30" size="30"
-     *   validator="#{sprintManager.checkUniqueSprintName}" />
-     */
-    public void checkUniqueSprintNameFacesValidatorMethod(FacesContext context, UIComponent component, Object newValue) {
-
-        final String newName = (String) newValue;
-        String message = checkUniqueSprintNameApplicationValidatorMethod(newName);
-        if (null != message) {
-            throw new ValidatorException(getFacesMessageForKey("sprint.form.label.name.unique"));
-        }
-    }
-
-
-    /*
-     * This method is called by the JSR-303 SprintNameUniquenessConstraintValidator.
-     * If it returns non-null, the result must be interpreted as the localized
-     * validation message.
-     *
-     */
-    public String checkUniqueSprintNameApplicationValidatorMethod(String newValue) {
-        String message = null;
-
-        final String newName = (String) newValue;
-
-        Query query = em.createNamedQuery((currentSprint.isNew()) ? "sprint.new.countByNameAndProject" : "sprint.countByNameAndProject");
-        query.setParameter("name", newName);
-        query.setParameter("project", getProjectManager().getCurrentProject());
-        if (!currentSprint.isNew()) {
-            query.setParameter("currentSprint", currentSprint);
-        }
-
-        Long count = (Long) query.getSingleResult();
-
-        if (count != null && count > 0) {
-            message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
-        }
-
-        return message;
-    }
-
-    public String cancelEdit() {
-        return "show";
-    }
-
-    public String showStories() {
-        setCurrentSprint(sprints.getRowData());
-        return "showStories";
-    }
-
-    public String showDashboard() {
-        setCurrentSprint(sprints.getRowData());
-        return "showDashboard";
     }
 
     public Sprint getCurrentSprint() {
@@ -258,19 +135,105 @@ public class SprintManager extends AbstractManager implements Serializable {
     }
 
     public Project getProject() {
-        Project pmCurrentProject = projectManager.getCurrentProject();
-        // Verify if the currentProject is out of date
-        // If there is a new CurrentProject we need to update sprintList and set currentSprint to null and tell user he/she needs to select a Sprint
-        if (pmCurrentProject != currentProject) {
-            this.setCurrentSprint(null);
-            this.sprintList = pmCurrentProject.getSprints();
-            this.sprints = new ListDataModel<Sprint>(sprintList);
-            this.currentProject = pmCurrentProject;
-        }
-        return currentProject;
-    }
-
+        return projectManager.getCurrentProject();
+    }   
+    
     public void setProject(Project project) {
         projectManager.setCurrentProject(project);
     }
+    
+    public String create() {
+        conversation.begin();
+        
+        Sprint sprint = new Sprint();
+        sprint.setProject(getProjectManager().getCurrentProject());
+        setCurrentSprint(sprint);
+
+        return "create";
+    }
+
+    public String edit() {
+        conversation.begin();
+        
+        setCurrentSprint(sprints.getRowData());
+
+        return "edit";
+    }
+        
+    public String save() {
+        
+        if (currentSprint != null) {
+            Sprint merged = sprintRepository.save(currentSprint);
+
+            getProjectManager().getCurrentProject().addSprint(merged);
+        }
+        
+        conversation.end();
+
+        return "show";
+    }
+
+    public String remove() {
+        Sprint sprint = sprints.getRowData();
+        if (sprint != null) {
+            sprintRepository.remove(sprint);
+            getProjectManager().getCurrentProject().removeSpring(sprint);
+        }
+
+        return "show";
+    }
+
+    public String cancelEdit() {
+        conversation.end();
+        
+        return "show";
+    }
+        
+    /*
+     * This method can be pointed to by a validator methodExpression, such as:
+     *
+     * <h:inputText id="itName" value="#{sprintManager.currentSprint.name}" required="true"
+     *   requiredMessage="#{i18n['sprint.form.label.name.required']}" maxLength="30" size="30"
+     *   validator="#{sprintManager.checkUniqueSprintName}" />
+     */
+    public void checkUniqueSprintNameFacesValidatorMethod(FacesContext context, UIComponent component, Object newValue) {
+
+        final String newName = (String) newValue;
+        String message = checkUniqueSprintNameApplicationValidatorMethod(newName);
+        if (null != message) {
+            throw new ValidatorException(getFacesMessageForKey("sprint.form.label.name.unique"));
+        }
+    }
+
+
+    /*
+     * This method is called by the JSR-303 SprintNameUniquenessConstraintValidator.
+     * If it returns non-null, the result must be interpreted as the localized
+     * validation message.
+     *
+     */
+    public String checkUniqueSprintNameApplicationValidatorMethod(String newValue) {
+        String message = null;
+
+        final String newName = (String) newValue;
+
+        long count = sprintRepository.countOtherSprintsWithName(getProjectManager().getCurrentProject(), currentSprint, newName);
+
+        if (count > 0) {
+            message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
+        }
+
+        return message;
+    }
+
+    public String showStories() {
+        setCurrentSprint(sprints.getRowData());
+        return "showStories";
+    }
+
+    public String showDashboard() {
+        setCurrentSprint(sprints.getRowData());
+        return "showDashboard";
+    }
+
 }

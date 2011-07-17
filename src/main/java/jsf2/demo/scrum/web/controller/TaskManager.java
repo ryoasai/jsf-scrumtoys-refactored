@@ -38,8 +38,9 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.model.entities.Story;
-import jsf2.demo.scrum.model.entities.Task;
+import jsf2.demo.scrum.infra.manager.AbstractManager;
+import jsf2.demo.scrum.domain.story.Story;
+import jsf2.demo.scrum.domain.task.Task;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -60,21 +61,27 @@ import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import jsf2.demo.scrum.domain.task.TaskRepository;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @ConversationScoped
-@Stateful
 public class TaskManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private Task currentTask;
     private DataModel<Task> tasks;
     private List<Task> taskList;
+
     @Inject
-    Conversation conversation;
+    private TaskRepository taskRepository;
+    
+    @Inject
+    private Conversation conversation;
+    
     @Inject
     private StoryManager storyManager;
 
@@ -84,11 +91,17 @@ public class TaskManager extends AbstractManager implements Serializable {
         init();
     }
 
+    @PreDestroy
+    public void destroy() {
+        getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in conversation");
+    }
+       
     public void init() {
         Task task = new Task();
         Story currentStory = storyManager.getCurrentStory();
         task.setStory(currentStory);
         setCurrentTask(task);
+        
         if (currentStory != null) {
             taskList = new LinkedList<Task>(currentStory.getTasks());
         } else {
@@ -97,100 +110,7 @@ public class TaskManager extends AbstractManager implements Serializable {
 
         tasks = new ListDataModel<Task>(taskList);
     }
-
-    public String create() {
-        conversation.begin();
-
-        Task task = new Task();
-        task.setStory(storyManager.getCurrentStory());
-        setCurrentTask(task);
-        return "create";
-    }
-
-    public String save() {
-        if (currentTask != null) {
-            try {
-                Task merged;
-
-                if (currentTask.isNew()) {
-                    em.persist(currentTask);
-                } else if (!em.contains(currentTask)) {
-                    merged = em.merge(currentTask);
-                }
-                merged = currentTask;
-
-                if (!currentTask.equals(merged)) {
-                    setCurrentTask(merged);
-                    int idx = taskList.indexOf(currentTask);
-                    if (idx != -1) {
-                        taskList.set(idx, merged);
-                    }
-                }
-                storyManager.getCurrentStory().addTask(merged);
-                if (!taskList.contains(merged)) {
-                    taskList.add(merged);
-                }
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to save Task: " + currentTask, e);
-                addMessage("Error on try to save Task", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-        conversation.end();
-
-        return "show";
-    }
-
-    public String edit() {
-        conversation.begin();
-
-        setCurrentTask(tasks.getRowData());
-        return "edit";
-    }
-
-    public String remove() {
-        final Task task = tasks.getRowData();
-        if (task != null) {
-            try {
-
-                if (em.contains(task)) {
-                    em.remove(task);
-                } else {
-                    em.remove(em.merge(task));
-                }
-                storyManager.getCurrentStory().removeTask(task);
-                taskList.remove(task);
-
-            } catch (Exception e) {
-                getLogger(getClass()).log(Level.SEVERE, "Error on try to remove Task: " + currentTask, e);
-                addMessage("Error on try to remove Task", FacesMessage.SEVERITY_ERROR);
-                return null;
-            }
-        }
-
-        return "show";
-    }
-
-    public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
-        final String newName = (String) newValue;
-
-        Query query = em.createNamedQuery((currentTask.isNew()) ? "task.new.countByNameAndStory" : "task.countByNameAndStory");
-        query.setParameter("name", newName);
-        query.setParameter("story", storyManager.getCurrentStory());
-        if (!currentTask.isNew()) {
-            query.setParameter("currentTask", (!currentTask.isNew()) ? currentTask : null);
-        }
-
-        Long count = (Long) query.getSingleResult();
-        if (count != null && count > 0) {
-            throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
-        }
-    }
-
-    public String cancelEdit() {
-        return "show";
-    }
-
+    
     public Task getCurrentTask() {
         return currentTask;
     }
@@ -222,21 +142,65 @@ public class TaskManager extends AbstractManager implements Serializable {
 
     public void setStoryManager(StoryManager storyManager) {
         this.storyManager = storyManager;
+    }    
+
+    public String create() {
+        conversation.begin();
+
+        Task task = new Task();
+        task.setStory(storyManager.getCurrentStory());
+        setCurrentTask(task);
+        
+        return "create";
+    }
+
+    public String save() {
+        if (currentTask != null) {
+            Task merged = taskRepository.save(currentTask);
+
+            storyManager.getCurrentStory().addTask(merged);
+        }
+
+        conversation.end();
+
+        return "show";
+    }
+
+    public String edit() {
+        conversation.begin();
+
+        setCurrentTask(tasks.getRowData());
+        return "edit";
+    }
+
+    public String remove() {
+        Task task = tasks.getRowData();
+        if (task != null) {
+            taskRepository.remove(task);
+
+            storyManager.getCurrentStory().removeTask(task);
+        }
+
+        return "show";
+    }
+
+    public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
+        final String newName = (String) newValue;
+
+        long count = taskRepository.countOtherTasksWithName(storyManager.getCurrentStory(), currentTask, newName);
+        if (count > 0) {
+            throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
+        }
+    }
+
+    public String cancelEdit() {
+        conversation.end();
+        
+        return "show";
     }
 
     public String showStories() {
         return "/story/show";
     }
-
-    @PreDestroy
-    public void destroy() {
-        getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in taskScope");
-        currentTask = null;
-        tasks = null;
-        if (null != taskList) {
-            taskList.clear();
-            taskList = null;
-        }
-        storyManager = null;
-    }
+ 
 }

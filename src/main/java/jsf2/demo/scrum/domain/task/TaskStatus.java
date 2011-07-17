@@ -37,21 +37,13 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.domain.task;
 
 /**
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-public class ManagerException extends Exception {
+public enum TaskStatus {
 
-    private static final long serialVersionUID = 1L;
-
-    public ManagerException(Throwable cause) {
-        super(cause);
-    }
-
-    public ManagerException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    TODO, DONE, WORKING
 }
