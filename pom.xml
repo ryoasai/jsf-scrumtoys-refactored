@@ -38,9 +38,9 @@ Other names may be trademarks of their respective owners. The contents of
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.faces</groupId>
-    <artifactId>jsf-scrumtoys</artifactId>
+    <artifactId>jsf-scrumtoys-refactored</artifactId>
     <packaging>war</packaging>
-    <name>jsf-scrumtoys</name>
+    <name>jsf-scrumtoys-refactored</name>
     <url>https://mojarra.dev.java.net/</url>
     <description>ScrumToys sample app</description>
     <version>0.1</version>
@@ -88,11 +88,12 @@ Other names may be trademarks of their respective owners. The contents of
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
-            <version>6.0-RC2</version>
+            <version>6.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
     </properties>
 </project>
