@@ -45,13 +45,12 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.task.TaskRepository;
+import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 /**
@@ -66,21 +65,22 @@ public class TaskManager extends BaseCrudManager<Task> implements Serializable {
     @Inject
     private TaskRepository taskRepository;
     
-    @Inject
-    private StoryManager storyManager;
+    @Inject @Current
+    private Story currentStory;
 
+    @Produces @Current @Named
     public Task getCurrentTask() {
         return getCurrentEntity();
     }
 
     public Story getStory() {
-        return storyManager.getCurrentStory();
+        return currentStory;
     }
 
     @Override
     protected Task doCreate() {
         Task task = new Task();
-        task.setStory(storyManager.getCurrentStory());
+        task.setStory(currentStory);
         
         return task;
     }
@@ -88,19 +88,19 @@ public class TaskManager extends BaseCrudManager<Task> implements Serializable {
     @Override
     protected void doSave(Task task) {
         Task merged = taskRepository.save(task);
-        storyManager.getCurrentStory().addTask(merged);
+        currentStory.addTask(merged);
     }
 
     @Override
     protected void doRemove(Task task) {
         taskRepository.remove(task);
-        storyManager.getCurrentStory().removeTask(task);
+        currentStory.removeTask(task);
     }
 
     public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = taskRepository.countOtherTasksWithName(storyManager.getCurrentStory(), getCurrentEntity(), newName);
+        long count = taskRepository.countOtherTasksWithName(currentStory, getCurrentEntity(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
         }

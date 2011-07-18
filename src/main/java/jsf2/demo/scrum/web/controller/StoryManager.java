@@ -49,9 +49,11 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.story.StoryRepository;
+import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 @Named
@@ -60,43 +62,44 @@ public class StoryManager extends BaseCrudManager<Story> implements Serializable
 
     private static final long serialVersionUID = 1L;
     
-    @Inject
-    private SprintManager sprintManager;
+    @Inject @Current
+    private Sprint currentSprint;
    
-    @Inject
+    @Inject 
     private StoryRepository storyRepository;
 
+    @Produces @Current @Named
     public Story getCurrentStory() {
         return getCurrentEntity();
     }
 
     public Sprint getSprint() {
-        return sprintManager.getCurrentSprint();
+        return currentSprint;
     }
 
     @Override
     protected Story doCreate() {
         Story story = new Story();
-        story.setSprint(sprintManager.getCurrentSprint());
+        story.setSprint(currentSprint);
         return story;
     }
 
     @Override
     protected void doSave(Story story) {
         Story merged = storyRepository.save(story);
-        sprintManager.getCurrentSprint().addStory(merged);
+        currentSprint.addStory(merged);
     }
 
     @Override
     protected void doRemove(Story story) {
          storyRepository.remove(story);
-         sprintManager.getCurrentSprint().removeStory(story);
+         currentSprint.removeStory(story);
     }
     
     public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = storyRepository.countOtherStoriesWithName(sprintManager.getCurrentSprint(), getCurrentEntity(), newName);
+        long count = storyRepository.countOtherStoriesWithName(currentSprint, getCurrentEntity(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
         }

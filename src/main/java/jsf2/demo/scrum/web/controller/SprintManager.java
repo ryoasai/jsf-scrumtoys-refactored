@@ -49,9 +49,11 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.sprint.SprintRepository;
+import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 /**
@@ -63,38 +65,42 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
 
     private static final long serialVersionUID = 1L;
     
-    @Inject
-    private ProjectManager projectManager;
+//    @Inject
+//    private ProjectManager projectManager;
+    
+    @Inject @Current
+    Project currentProject;
     
     @Inject
     private SprintRepository sprintRepository;
 
+    @Produces @Current @Named
     public Sprint getCurrentSprint() {
         return getCurrentEntity();
     }
 
     public Project getProject() {
-        return projectManager.getCurrentProject();
+        return currentProject;
     }   
     
     @Override
     public Sprint doCreate() {
         Sprint sprint = new Sprint();
-        sprint.setProject(projectManager.getCurrentProject());
+        sprint.setProject(currentProject);
         
         return sprint;
     }
 
     @Override
     protected void doSave(Sprint sprint) {
-            Sprint merged = sprintRepository.save(sprint);
-            projectManager.getCurrentProject().addSprint(merged);
+        Sprint merged = sprintRepository.save(sprint);
+        currentProject.addSprint(merged);
     }
 
     @Override
     protected void doRemove(Sprint sprint) {
         sprintRepository.remove(sprint);
-        projectManager.getCurrentProject().removeSpring(sprint);
+        currentProject.removeSpring(sprint);
     }
 
     /*
@@ -125,7 +131,7 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
 
         final String newName = (String) newValue;
 
-        long count = sprintRepository.countOtherSprintsWithName(projectManager.getCurrentProject(), getCurrentEntity(), newName);
+        long count = sprintRepository.countOtherSprintsWithName(currentProject, getCurrentEntity(), newName);
 
         if (count > 0) {
             message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();

@@ -45,9 +45,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.project.ProjectRepository;
+import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 /**
@@ -62,6 +64,7 @@ public class ProjectManager extends BaseCrudManager<Project> implements Serializ
     @Inject
     private ProjectRepository projectRepository;
 
+    @Produces @Current @Named
     public Project getCurrentProject() {
         return getCurrentEntity();
     }
