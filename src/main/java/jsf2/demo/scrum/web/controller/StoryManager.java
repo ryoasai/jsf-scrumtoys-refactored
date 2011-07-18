@@ -38,27 +38,24 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.infra.manager.AbstractManager;
 import jsf2.demo.scrum.domain.sprint.Sprint;
 import jsf2.demo.scrum.domain.story.Story;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.story.StoryRepository;
+import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 @Named
 @SessionScoped
-public class StoryManager extends AbstractManager implements Serializable {
+public class StoryManager extends BaseCrudManager<Story> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -67,110 +64,65 @@ public class StoryManager extends AbstractManager implements Serializable {
    
     @Inject
     private StoryRepository storyRepository;
-    
-    private Story currentStory;
-    
-    private List<Story> stories;
 
-    @PostConstruct
-    public void construct() {
-        getLogger(getClass()).log(Level.INFO, "new intance of storyManager in conversation");
-
-        init();
-    }
-
-    @PreDestroy
-    public void destroy() {
-        getLogger(getClass()).log(Level.INFO, "destroy intance of storyManager in conversation");
-    }
-    
+    @Override
     public void init() {
         Sprint currentSprint = sprintManager.getCurrentSprint();
 
         if (currentSprint != null) {
             Story story = new Story();
             story.setSprint(currentSprint);
-            setCurrentStory(story);
+            setCurrentEntity(story);
             
-            stories = currentSprint.getStories();
+            setEntities(currentSprint.getStories());
         } else {
-            stories = Collections.emptyList();
+            List<Story> stories = Collections.emptyList();
+            setEntities(stories);
         }
     }
 
     public Story getCurrentStory() {
-        return currentStory;
-    }
-
-    public void setCurrentStory(Story currentStory) {
-        this.currentStory = currentStory;
+        return getCurrentEntity();
     }
 
     public List<Story> getStories() {
-        return stories;
+        return getEntities();
     }
 
     public Sprint getSprint() {
         return sprintManager.getCurrentSprint();
     }
 
-    public void setSprint(Sprint sprint) {
-        sprintManager.setCurrentSprint(sprint);
-    }
-
-    public String create() {
+    @Override
+    protected Story doCreate() {
         Story story = new Story();
         story.setSprint(sprintManager.getCurrentSprint());
-        setCurrentStory(story);
-        
-        return "create";
+        return story;
     }
 
-    public String edit(Story story) {
-        setCurrentStory(story);
-        
-        return "edit";
-    }
-        
-    public String save() {
-        if (currentStory != null) {
-            Story merged = storyRepository.save(currentStory);
-
-            sprintManager.getCurrentSprint().addStory(merged);
-        }
-        
-        init(); // TODO. better to user update event.
-
-        return "show";
+    @Override
+    protected void doSave(Story story) {
+        Story merged = storyRepository.save(story);
+        sprintManager.getCurrentSprint().addStory(merged);
     }
 
-    public String remove(Story story) {
-        if (story != null) {
-            storyRepository.remove(story);
-
-            sprintManager.getCurrentSprint().removeStory(story);
-        }
-
-        init(); // TODO. better to user update event.
-        
-        return "show";
+    @Override
+    protected void doRemove(Story story) {
+         storyRepository.remove(story);
+         sprintManager.getCurrentSprint().removeStory(story);
     }
-
+    
     public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = storyRepository.countOtherStoriesWithName(sprintManager.getCurrentSprint(), currentStory, newName);
+        long count = storyRepository.countOtherStoriesWithName(sprintManager.getCurrentSprint(), getCurrentEntity(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
         }
     }
 
-    public String cancelEdit() {
-        return "show";
-    }
-
     public String showTasks(Story story) {
-        setCurrentStory(story);
+        setCurrentEntity(story);
         return "showTasks";
     }
 }

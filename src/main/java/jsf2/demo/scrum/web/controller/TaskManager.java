@@ -38,44 +38,29 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.infra.manager.AbstractManager;
 import jsf2.demo.scrum.domain.story.Story;
 import jsf2.demo.scrum.domain.task.Task;
 
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.validator.ValidatorException;
-import javax.persistence.Query;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import javax.annotation.PreDestroy;
-import javax.ejb.Stateful;
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.task.TaskRepository;
+import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @SessionScoped
-public class TaskManager extends AbstractManager implements Serializable {
+public class TaskManager extends BaseCrudManager<Task> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private Task currentTask;
-    private List<Task> tasks;
 
     @Inject
     private TaskRepository taskRepository;
@@ -83,95 +68,60 @@ public class TaskManager extends AbstractManager implements Serializable {
     @Inject
     private StoryManager storyManager;
 
-    @PostConstruct
-    public void construct() {
-        getLogger(getClass()).log(Level.INFO, "new intance of taskManager in conversation");
-        init();
-    }
-
-    @PreDestroy
-    public void destroy() {
-        getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in conversation");
-    }
-       
+    @Override
     public void init() {
         Task task = new Task();
         Story currentStory = storyManager.getCurrentStory();
         task.setStory(currentStory);
-        setCurrentTask(task);
+        setCurrentEntity(task);
         
         if (currentStory != null) {
-            tasks = currentStory.getTasks();
+            setEntities(currentStory.getTasks());
         } else {
-            tasks = Collections.emptyList();
+            List<Task> tasks = Collections.emptyList();
+            setEntities(tasks);
         }
     }
     
-    public Task getCurrentTask() {
-        return currentTask;
-    }
-
-    public void setCurrentTask(Task currentTask) {
-        this.currentTask = currentTask;
-    }
-
     public List<Task> getTasks() {
-        return tasks;
+        return getEntities();
+    }
+    
+    public Task getCurrentTask() {
+        return getCurrentEntity();
     }
 
     public Story getStory() {
         return storyManager.getCurrentStory();
     }
 
-    public String create() {
+    @Override
+    protected Task doCreate() {
         Task task = new Task();
         task.setStory(storyManager.getCurrentStory());
-        setCurrentTask(task);
         
-        return "create";
+        return task;
     }
 
-    public String edit(Task task) {
-        setCurrentTask(task);
-        return "edit";
-    }
-        
-    public String save() {
-        if (currentTask != null) {
-            Task merged = taskRepository.save(currentTask);
-
-            storyManager.getCurrentStory().addTask(merged);
-        }
-        
-        init(); // TODO. better to user update event.
-        
-        return "show";
+    @Override
+    protected void doSave(Task task) {
+        Task merged = taskRepository.save(task);
+        storyManager.getCurrentStory().addTask(merged);
     }
 
-
-    public String remove(Task task) {
-        if (task != null) {
-            taskRepository.remove(task);
-
-            storyManager.getCurrentStory().removeTask(task);
-        }
-
-        init(); // TODO. better to user update event.
-        
-        return "show";
+    @Override
+    protected void doRemove(Task task) {
+        taskRepository.remove(task);
+        storyManager.getCurrentStory().removeTask(task);
     }
 
     public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = taskRepository.countOtherTasksWithName(storyManager.getCurrentStory(), currentTask, newName);
+        long count = taskRepository.countOtherTasksWithName(storyManager.getCurrentStory(), getCurrentEntity(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
         }
-    }
-
-    public String cancelEdit() {
-        return "show";
     }
 
     public String showStories() {

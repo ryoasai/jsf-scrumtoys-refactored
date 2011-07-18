@@ -36,82 +36,99 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.infra.manager;
 
-import jsf2.demo.scrum.domain.project.Project;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.List;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import java.util.logging.Level;
+import javax.annotation.PreDestroy;
 import javax.inject.Named;
-import jsf2.demo.scrum.domain.project.ProjectRepository;
-import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 /**
- * @author Dr. Spock (spock at dev.java.net)
+ * @author Ryo Asai.
  */
 @Named
-@SessionScoped
-public class ProjectManager extends BaseCrudManager<Project> implements Serializable {
+public abstract class BaseCrudManager<E> extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // TODO スレッドセーフ化
+    private E currentEntity;
+    private List<E> entities;
 
-    @Inject
-    private ProjectRepository projectRepository;
-
-
-    @Override
-    public void init() {
-        setEntities(projectRepository.findByNamedQuery("project.getAll"));
+    @PostConstruct
+    public void construct() {
+        getLogger(getClass()).log(Level.INFO, "new intance of taskManager in conversation");
+        init();
     }
 
-    public Project getCurrentProject() {
-        return getCurrentEntity();
+    @PreDestroy
+    public void destroy() {
+        getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in conversation");
+    }
+       
+    public abstract void init();
+    
+    
+    public E getCurrentEntity() {
+        return currentEntity;
     }
 
-    public List<Project> getProjects() {
-        return getEntities();
+    public void setCurrentEntity(E currentEntity) {
+        this.currentEntity = currentEntity;
     }
 
-    @Override
-    protected Project doCreate() {
-        return new Project();
+    public void setEntities(List<E> entities) {
+        this.entities = entities;
+    }
+    
+    public List<E> getEntities() {
+        return entities;
     }
 
-    @Override
-    protected void doSave(Project project) {
-        projectRepository.save(project);
-    }
+    public String create() {
+        E entity = doCreate();
 
-    @Override
-    protected void doRemove(Project project) {
-        projectRepository.remove(project);
-    }
-
-    public void checkUniqueProjectName(FacesContext context, UIComponent component, Object newValue) {
-        final String newName = (String) newValue;
-
-        long count = projectRepository.countOtherProjectsWithName(getCurrentProject(), newName);
-
-        if (count > 0) {
-            throw new ValidatorException(getFacesMessageForKey("project.form.label.name.unique"));
-        }
-    }
-
-    public String showSprints(Project project) {
-        setCurrentEntity(project);
+        setCurrentEntity(entity);
         
-        // Implicity navigation, this request come from /projects/show.xhtml and directs to /project/showSprints.xhtml
-        return "showSprints";
+        return "create";
+    }
+    
+    protected abstract E doCreate();
+    
+
+    public String edit(E entity) {
+        setCurrentEntity(entity);
+        return "edit";
+    }
+        
+    public String save() {
+        if (currentEntity != null) {
+            doSave(currentEntity);
+        }
+        
+        init(); // TODO. better to user update event.
+        
+        return "show";
+    }
+    
+    protected abstract void doSave(E enetity);
+
+    public String remove(E entity) {
+        if (entity != null) {
+            doRemove(entity);
+        }
+
+        init(); // TODO. better to user update event.
+        
+        return "show";
     }
 
-    public String viewSprints() {
-        return "/sprint/show";
+    protected abstract void doRemove(E entity);
+    
+    public String cancelEdit() {
+        return "show";
     }
+ 
 }

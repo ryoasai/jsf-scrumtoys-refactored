@@ -38,38 +38,29 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.infra.manager.AbstractManager;
 import jsf2.demo.scrum.domain.project.Project;
 import jsf2.demo.scrum.domain.sprint.Sprint;
 
-import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.sprint.SprintRepository;
+import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @SessionScoped
-public class SprintManager extends AbstractManager implements Serializable {
+public class SprintManager extends BaseCrudManager<Sprint> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private Sprint currentSprint;
-    private List<Sprint> sprints;
     
     @Inject
     private ProjectManager projectManager;
@@ -77,91 +68,57 @@ public class SprintManager extends AbstractManager implements Serializable {
     @Inject
     private SprintRepository sprintRepository;
 
-    @PostConstruct
-    public void construct() {
-        getLogger(getClass()).log(Level.INFO, "new intance of sprintManager in conversation");
-
-        init();
-    }
-
-    @PreDestroy
-    public void destroy() {
-        getLogger(getClass()).log(Level.INFO, "destroy intance of sprintManager in conversation");
-    }
-    
+    @Override
     public void init() {
         Sprint sprint = new Sprint();
         Project currentProject = projectManager.getCurrentProject();
         sprint.setProject(currentProject);
-        setCurrentSprint(sprint);
+        setCurrentEntity(sprint);
 
         if (currentProject != null) {
-            sprints = currentProject.getSprints();
+            setEntities(currentProject.getSprints());
         } else {
-            sprints = Collections.emptyList();
+            List<Sprint> sprints = Collections.emptyList();
+            setEntities(sprints);
         }
     }
 
     public Sprint getCurrentSprint() {
-        return currentSprint;
-    }
-
-    public void setCurrentSprint(Sprint currentSprint) {
-        this.currentSprint = currentSprint;
+        return getCurrentEntity();
     }
 
     public List<Sprint> getSprints() {
-        return this.sprints;
+        return getEntities();
     }
 
     public Project getProject() {
         return projectManager.getCurrentProject();
     }   
     
-    public void setProject(Project project) {
-        projectManager.setCurrentProject(project);
-    }
+//    public void setProject(Project project) {
+//        projectManager.setCurrentProject(project);
+//    }
     
-    public String create() {
+    @Override
+    public Sprint doCreate() {
         Sprint sprint = new Sprint();
         sprint.setProject(projectManager.getCurrentProject());
-        setCurrentSprint(sprint);
-
-        return "create";
-    }
-
-    public String edit(Sprint sprint) {
-        setCurrentSprint(sprint);
-
-        return "edit";
-    }
         
-    public String save() {
-        if (currentSprint != null) {
-            Sprint merged = sprintRepository.save(currentSprint);
+        return sprint;
+    }
+
+    @Override
+    protected void doSave(Sprint sprint) {
+            Sprint merged = sprintRepository.save(sprint);
             projectManager.getCurrentProject().addSprint(merged);
-        }
-        
-        init(); // TODO. better to user update event.
-                
-        return "show";
     }
 
-    public String remove(Sprint sprint) {
-        if (sprint != null) {
-            sprintRepository.remove(sprint);
-            projectManager.getCurrentProject().removeSpring(sprint);
-        }
-
-        init(); // TODO. better to user update event.
-                
-        return "show";
+    @Override
+    protected void doRemove(Sprint sprint) {
+        sprintRepository.remove(sprint);
+        projectManager.getCurrentProject().removeSpring(sprint);
     }
 
-    public String cancelEdit() {
-        return "show";
-    }
-        
     /*
      * This method can be pointed to by a validator methodExpression, such as:
      *
@@ -190,7 +147,7 @@ public class SprintManager extends AbstractManager implements Serializable {
 
         final String newName = (String) newValue;
 
-        long count = sprintRepository.countOtherSprintsWithName(projectManager.getCurrentProject(), currentSprint, newName);
+        long count = sprintRepository.countOtherSprintsWithName(projectManager.getCurrentProject(), getCurrentEntity(), newName);
 
         if (count > 0) {
             message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
@@ -200,12 +157,12 @@ public class SprintManager extends AbstractManager implements Serializable {
     }
 
     public String showStories(Sprint sprint) {
-        setCurrentSprint(sprint);
+        setCurrentEntity(sprint);
         return "showStories";
     }
 
     public String showDashboard(Sprint sprint) {
-        setCurrentSprint(sprint);
+        setCurrentEntity(sprint);
         return "showDashboard";
     }
 

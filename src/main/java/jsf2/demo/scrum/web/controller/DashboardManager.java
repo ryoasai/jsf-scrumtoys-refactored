@@ -45,7 +45,6 @@ import jsf2.demo.scrum.domain.story.Story;
 import jsf2.demo.scrum.domain.task.Task;
 
 import javax.annotation.PreDestroy;
-import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -83,10 +82,6 @@ public class DashboardManager extends AbstractManager implements Serializable {
 
     public Sprint getSprint() {
         return getSprintManager().getCurrentSprint();
-    }
-
-    public void setSprint(Sprint sprint) {
-        this.getSprintManager().setCurrentSprint(sprint);
     }
 
     public List<Story> getStories() {
@@ -133,10 +128,10 @@ public class DashboardManager extends AbstractManager implements Serializable {
         if (currentTask == null)
             return "";
 
-        taskManager.setCurrentTask(currentTask);
+        taskManager.setCurrentEntity(currentTask);
         Story currentStory = storyManager.getCurrentStory();
         if (currentStory != currentTask.getStory()) {
-            storyManager.setCurrentStory(currentTask.getStory());
+            storyManager.setCurrentEntity(currentTask.getStory());
         }
         return "/task/edit";
     }
