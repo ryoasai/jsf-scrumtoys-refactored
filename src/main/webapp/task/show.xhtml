@@ -69,9 +69,9 @@ Other names may be trademarks of their respective owners.
             <h:form id="frmListTasks">
                 <h:panelGrid columns="3" headerClass="tituloForm" footerClass="footerForm">
                     <h:outputText value="#{i18n['task.show.table.label.empty']}"
-                                  rendered="#{taskManager.tasks.rowCount eq 0}" />
+                                  rendered="#{empty taskManager.tasks}" />
                     <h:dataTable value="#{taskManager.tasks}" var="task"
-                                 rendered="#{taskManager.tasks.rowCount > 0}"
+                                 rendered="#{not empty taskManager.tasks}"
                                  title="#{i18n['task.show.table.title']}"
                                  summary="#{i18n['task.show.table.title']}"
                                  border="0"
@@ -81,12 +81,7 @@ Other names may be trademarks of their respective owners.
                                  styleClass="datatable"
                                  id="dtTasks">
 
-                        <h:column>
-                            <f:facet name="header">
-                                <h:outputText value="#" />
-                            </f:facet>
-                            <h:outputText value="#{taskManager.tasks.rowIndex + 1}" />
-                        </h:column>
+
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{i18n['task.show.table.header.name']}" />
@@ -119,13 +114,13 @@ Other names may be trademarks of their respective owners.
                             <f:facet name="header">
                                 <h:outputText value="#{i18n['task.show.table.header.actions']}"/>
                             </f:facet>
-                            <h:commandButton styleClass="botaoPostIt" action="#{taskManager.edit}" value="#{i18n['task.show.button.edit']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{taskManager.edit(task)}" value="#{i18n['task.show.button.edit']}"  />
 
-                            <h:commandButton id="btnDeleteTask" styleClass="botaoPostIt" action="#{taskManager.remove}" value="#{i18n['task.show.button.delete']} AJAX"
+                            <h:commandButton id="btnDeleteTask" styleClass="botaoPostIt" action="#{taskManager.remove(task)}" value="#{i18n['task.show.button.delete']} AJAX"
                                              onclick="jsf.ajax.request(this, event, {execute: 'frmListTasks',
                                                  render: 'frmListTasks'}); return false;" />
 
-                            <h:commandButton styleClass="botaoPostIt" action="#{taskManager.remove}" value="#{i18n['task.show.button.delete']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{taskManager.remove(task)}" value="#{i18n['task.show.button.delete']}"  />
                         </h:column>
 
                     </h:dataTable>

@@ -76,8 +76,8 @@ public class ProjectManager extends AbstractManager implements Serializable {
     // TODO スレッドセーフ化
     
     private Project currentProject;
-    private DataModel<Project> projects;
-    private List<Project> projectList;
+
+    private List<Project> projects;
 
     @Inject
     private ProjectRepository projectRepository;
@@ -90,9 +90,7 @@ public class ProjectManager extends AbstractManager implements Serializable {
     }
 
     public void init() {
-        setProjectList(projectRepository.findByNamedQuery("project.getAll"));
-
-        projects = new ListDataModel<Project>(getProjectList());
+        projects = projectRepository.findByNamedQuery("project.getAll");
     }
 
     public Project getCurrentProject() {
@@ -103,20 +101,8 @@ public class ProjectManager extends AbstractManager implements Serializable {
         this.currentProject = currentProject;
     }
 
-    public DataModel<Project> getProjects() {
+    public List<Project> getProjects() {
         return projects;
-    }
-
-    public void setProjects(DataModel<Project> projects) {
-        this.projects = projects;
-    }
-
-    public List<Project> getProjectList() {
-        return projectList;
-    }
-
-    public void setProjectList(List<Project> projectList) {
-        this.projectList = projectList;
     }
 
     public String create() {
@@ -125,8 +111,8 @@ public class ProjectManager extends AbstractManager implements Serializable {
         return "create";
     }
 
-    public String edit() {
-        setCurrentProject(projects.getRowData());
+    public String edit(Project project) {
+        setCurrentProject(project);
 
         // Using implicity navigation, this request come from /projects/show.xhtml and directs to /project/edit.xhtml
         return "edit";
@@ -142,8 +128,7 @@ public class ProjectManager extends AbstractManager implements Serializable {
         return "show";
     }
 
-    public String remove() {
-        Project project = projects.getRowData();
+    public String remove(Project project) {
         if (project != null) {
             projectRepository.remove(project);
         }
@@ -170,8 +155,9 @@ public class ProjectManager extends AbstractManager implements Serializable {
         return "show";
     }
 
-    public String showSprints() {
-        setCurrentProject(projects.getRowData());
+    public String showSprints(Project project) {
+        setCurrentProject(project);
+        
         // Implicity navigation, this request come from /projects/show.xhtml and directs to /project/showSprints.xhtml
         return "showSprints";
     }

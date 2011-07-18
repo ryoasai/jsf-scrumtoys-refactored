@@ -69,8 +69,7 @@ public class SprintManager extends AbstractManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Sprint currentSprint;
-    private DataModel<Sprint> sprints;
-    private List<Sprint> sprintList;
+    private List<Sprint> sprints;
     
     @Inject
     private ProjectManager projectManager;
@@ -92,17 +91,15 @@ public class SprintManager extends AbstractManager implements Serializable {
     
     public void init() {
         Sprint sprint = new Sprint();
-        Project currentProject = getProjectManager().getCurrentProject();
+        Project currentProject = projectManager.getCurrentProject();
         sprint.setProject(currentProject);
         setCurrentSprint(sprint);
 
         if (currentProject != null) {
-            sprintList = new LinkedList<Sprint>(currentProject.getSprints());
+            sprints = currentProject.getSprints();
         } else {
-            sprintList = Collections.emptyList();
+            sprints = Collections.emptyList();
         }
-
-        sprints = new ListDataModel<Sprint>(sprintList);
     }
 
     public Sprint getCurrentSprint() {
@@ -113,21 +110,8 @@ public class SprintManager extends AbstractManager implements Serializable {
         this.currentSprint = currentSprint;
     }
 
-    public DataModel<Sprint> getSprints() {
-        this.sprints = new ListDataModel(projectManager.getCurrentProject().getSprints());
+    public List<Sprint> getSprints() {
         return this.sprints;
-    }
-
-    public void setSprints(DataModel<Sprint> sprints) {
-        this.sprints = sprints;
-    }
-
-    public ProjectManager getProjectManager() {
-        return projectManager;
-    }
-
-    public void setProjectManager(ProjectManager projectManager) {
-        this.projectManager = projectManager;
     }
 
     public Project getProject() {
@@ -140,14 +124,14 @@ public class SprintManager extends AbstractManager implements Serializable {
     
     public String create() {
         Sprint sprint = new Sprint();
-        sprint.setProject(getProjectManager().getCurrentProject());
+        sprint.setProject(projectManager.getCurrentProject());
         setCurrentSprint(sprint);
 
         return "create";
     }
 
-    public String edit() {
-        setCurrentSprint(sprints.getRowData());
+    public String edit(Sprint sprint) {
+        setCurrentSprint(sprint);
 
         return "edit";
     }
@@ -155,20 +139,22 @@ public class SprintManager extends AbstractManager implements Serializable {
     public String save() {
         if (currentSprint != null) {
             Sprint merged = sprintRepository.save(currentSprint);
-
-            getProjectManager().getCurrentProject().addSprint(merged);
+            projectManager.getCurrentProject().addSprint(merged);
         }
         
+        init(); // TODO. better to user update event.
+                
         return "show";
     }
 
-    public String remove() {
-        Sprint sprint = sprints.getRowData();
+    public String remove(Sprint sprint) {
         if (sprint != null) {
             sprintRepository.remove(sprint);
-            getProjectManager().getCurrentProject().removeSpring(sprint);
+            projectManager.getCurrentProject().removeSpring(sprint);
         }
 
+        init(); // TODO. better to user update event.
+                
         return "show";
     }
 
@@ -204,7 +190,7 @@ public class SprintManager extends AbstractManager implements Serializable {
 
         final String newName = (String) newValue;
 
-        long count = sprintRepository.countOtherSprintsWithName(getProjectManager().getCurrentProject(), currentSprint, newName);
+        long count = sprintRepository.countOtherSprintsWithName(projectManager.getCurrentProject(), currentSprint, newName);
 
         if (count > 0) {
             message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
@@ -213,13 +199,13 @@ public class SprintManager extends AbstractManager implements Serializable {
         return message;
     }
 
-    public String showStories() {
-        setCurrentSprint(sprints.getRowData());
+    public String showStories(Sprint sprint) {
+        setCurrentSprint(sprint);
         return "showStories";
     }
 
-    public String showDashboard() {
-        setCurrentSprint(sprints.getRowData());
+    public String showDashboard(Sprint sprint) {
+        setCurrentSprint(sprint);
         return "showDashboard";
     }
 

@@ -52,6 +52,7 @@ import javax.faces.validator.ValidatorException;
 import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -74,8 +75,7 @@ public class TaskManager extends AbstractManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Task currentTask;
-    private DataModel<Task> tasks;
-    private List<Task> taskList;
+    private List<Task> tasks;
 
     @Inject
     private TaskRepository taskRepository;
@@ -101,12 +101,10 @@ public class TaskManager extends AbstractManager implements Serializable {
         setCurrentTask(task);
         
         if (currentStory != null) {
-            taskList = new LinkedList<Task>(currentStory.getTasks());
+            tasks = currentStory.getTasks();
         } else {
-            taskList = new ArrayList<Task>();
+            tasks = Collections.emptyList();
         }
-
-        tasks = new ListDataModel<Task>(taskList);
     }
     
     public Task getCurrentTask() {
@@ -117,30 +115,13 @@ public class TaskManager extends AbstractManager implements Serializable {
         this.currentTask = currentTask;
     }
 
-    public DataModel<Task> getTasks() {
-        this.tasks = new ListDataModel(storyManager.getCurrentStory().getTasks());
+    public List<Task> getTasks() {
         return tasks;
-    }
-
-    public void setTasks(DataModel<Task> tasks) {
-        this.tasks = tasks;
     }
 
     public Story getStory() {
         return storyManager.getCurrentStory();
     }
-
-    public void setStory(Story story) {
-        storyManager.setCurrentStory(story);
-    }
-
-    public StoryManager getStoryManager() {
-        return storyManager;
-    }
-
-    public void setStoryManager(StoryManager storyManager) {
-        this.storyManager = storyManager;
-    }    
 
     public String create() {
         Task task = new Task();
@@ -150,29 +131,33 @@ public class TaskManager extends AbstractManager implements Serializable {
         return "create";
     }
 
+    public String edit(Task task) {
+        setCurrentTask(task);
+        return "edit";
+    }
+        
     public String save() {
         if (currentTask != null) {
             Task merged = taskRepository.save(currentTask);
 
             storyManager.getCurrentStory().addTask(merged);
         }
-
+        
+        init(); // TODO. better to user update event.
+        
         return "show";
     }
 
-    public String edit() {
-        setCurrentTask(tasks.getRowData());
-        return "edit";
-    }
 
-    public String remove() {
-        Task task = tasks.getRowData();
+    public String remove(Task task) {
         if (task != null) {
             taskRepository.remove(task);
 
             storyManager.getCurrentStory().removeTask(task);
         }
 
+        init(); // TODO. better to user update event.
+        
         return "show";
     }
 

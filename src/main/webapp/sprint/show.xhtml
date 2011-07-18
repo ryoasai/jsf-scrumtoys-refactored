@@ -63,9 +63,10 @@ Other names may be trademarks of their respective owners.
                 <h:panelGrid columns="2" headerClass="tituloForm" footerClass="footerForm">
 
                     <h:outputText value="#{i18n['sprint.show.table.label.empty']}"
-                                  rendered="#{sprintManager.sprints.rowCount eq 0}" />
+                                  rendered="#{empty sprintManager.sprints}" />
+
                     <h:dataTable value="#{sprintManager.sprints}" var="sprint"
-                                 rendered="#{sprintManager.sprints.rowCount > 0}"
+                                 rendered="#{not empty sprintManager.sprints}"
                                  title="#{i18n['sprint.show.table.title']}"
                                  summary="#{i18n['sprint.show.table.title']}"
                                  border="0"
@@ -75,12 +76,6 @@ Other names may be trademarks of their respective owners.
                                  styleClass="datatable"
                                  id="dtSprints">
 
-                        <h:column>
-                            <f:facet name="header">
-                                <h:outputText value="#" />
-                            </f:facet>
-                            <h:outputText value="#{sprintManager.sprints.rowIndex + 1}" />
-                        </h:column>
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{i18n['sprint.show.table.header.name']}" />
@@ -113,15 +108,15 @@ Other names may be trademarks of their respective owners.
                             <f:facet name="header">
                                 <h:outputText value="#{i18n['sprint.show.table.header.actions']}"/>
                             </f:facet>
-                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.edit}" value="#{i18n['sprint.show.button.edit']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.edit(sprint)}" value="#{i18n['sprint.show.button.edit']}"  />
 
-                            <h:commandButton id="btnDeleteSprint" styleClass="botaoPostIt" action="#{sprintManager.remove}" value="#{i18n['sprint.show.button.delete']} AJAX"
+                            <h:commandButton id="btnDeleteSprint" styleClass="botaoPostIt" action="#{sprintManager.remove(sprint)}" value="#{i18n['sprint.show.button.delete']} AJAX"
                                              onclick="jsf.ajax.request(this, event, {execute: 'frmListSprints',
                                                  render: 'frmListSprints'}); return false;" />
 
-                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.remove}" value="#{i18n['sprint.show.button.delete']}"  />
-                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.showDashboard}" value="#{i18n['sprint.show.button.showDashboard']}"  />
-                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.showStories}" value="#{i18n['sprint.show.button.showStories']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.remove(sprint)}" value="#{i18n['sprint.show.button.delete']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.showDashboard(sprint)}" value="#{i18n['sprint.show.button.showDashboard']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.showStories(sprint)}" value="#{i18n['sprint.show.button.showStories']}"  />
                         </h:column>
 
                     </h:dataTable>

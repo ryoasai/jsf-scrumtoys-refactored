@@ -46,12 +46,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import javax.enterprise.context.SessionScoped;
@@ -73,8 +70,7 @@ public class StoryManager extends AbstractManager implements Serializable {
     
     private Story currentStory;
     
-    private DataModel<Story> stories;
-    private List<Story> storyList;
+    private List<Story> stories;
 
     @PostConstruct
     public void construct() {
@@ -93,14 +89,13 @@ public class StoryManager extends AbstractManager implements Serializable {
 
         if (currentSprint != null) {
             Story story = new Story();
-            setStoryList(new LinkedList<Story>(currentSprint.getStories()));
             story.setSprint(currentSprint);
             setCurrentStory(story);
+            
+            stories = currentSprint.getStories();
         } else {
-            setStoryList(new ArrayList<Story>());
+            stories = Collections.emptyList();
         }
-        
-        stories = new ListDataModel<Story>(getStoryList());
     }
 
     public Story getCurrentStory() {
@@ -111,17 +106,8 @@ public class StoryManager extends AbstractManager implements Serializable {
         this.currentStory = currentStory;
     }
 
-    public DataModel<Story> getStories() {
-        if (sprintManager.getCurrentSprint() != null) {
-            this.stories = new ListDataModel(sprintManager.getCurrentSprint().getStories());
-            return stories;
-        } else {
-            return new ListDataModel<Story>();
-        }
-    }
-
-    public void setStories(DataModel<Story> stories) {
-        this.stories = stories;
+    public List<Story> getStories() {
+        return stories;
     }
 
     public Sprint getSprint() {
@@ -132,37 +118,6 @@ public class StoryManager extends AbstractManager implements Serializable {
         sprintManager.setCurrentSprint(sprint);
     }
 
-    /**
-     * @return the storyList
-     */
-    public List<Story> getStoryList() {
-        if (sprintManager.getCurrentSprint() != null) {
-            this.storyList = sprintManager.getCurrentSprint().getStories();
-        }
-        return this.storyList;
-    }
-
-    /**
-     * @param storyList the storyList to set
-     */
-    public void setStoryList(List<Story> storyList) {
-        this.storyList = storyList;
-    }
-
-    /**
-     * @return the sprintManager
-     */
-    public SprintManager getSprintManager() {
-        return sprintManager;
-    }
-
-    /**
-     * @param sprintManager the sprintManager to set
-     */
-    public void setSprintManager(SprintManager sprintManager) {
-        this.sprintManager = sprintManager;
-    }
-
     public String create() {
         Story story = new Story();
         story.setSprint(sprintManager.getCurrentSprint());
@@ -171,6 +126,12 @@ public class StoryManager extends AbstractManager implements Serializable {
         return "create";
     }
 
+    public String edit(Story story) {
+        setCurrentStory(story);
+        
+        return "edit";
+    }
+        
     public String save() {
         if (currentStory != null) {
             Story merged = storyRepository.save(currentStory);
@@ -178,23 +139,20 @@ public class StoryManager extends AbstractManager implements Serializable {
             sprintManager.getCurrentSprint().addStory(merged);
         }
         
+        init(); // TODO. better to user update event.
+
         return "show";
     }
 
-    public String edit() {
-        setCurrentStory(stories.getRowData());
-        
-        return "edit";
-    }
-
-    public String remove() {
-        Story story = stories.getRowData();
+    public String remove(Story story) {
         if (story != null) {
             storyRepository.remove(story);
 
             sprintManager.getCurrentSprint().removeStory(story);
         }
 
+        init(); // TODO. better to user update event.
+        
         return "show";
     }
 
@@ -211,8 +169,8 @@ public class StoryManager extends AbstractManager implements Serializable {
         return "show";
     }
 
-    public String showTasks() {
-        setCurrentStory(stories.getRowData());
+    public String showTasks(Story story) {
+        setCurrentStory(story);
         return "showTasks";
     }
 }

@@ -66,10 +66,10 @@ Other names may be trademarks of their respective owners.
                 <h:panelGrid columns="3" headerClass="tituloForm" footerClass="footerForm">
 
                     <h:outputText value="#{i18n['story.show.table.label.empty']}"
-                                  rendered="#{storyManager.stories.rowCount eq 0}" />
+                                  rendered="#{empty storyManager.stories}" />
 
                     <h:dataTable value="#{storyManager.stories}" var="story"
-                                 rendered="#{storyManager.stories.rowCount > 0}"
+                                 rendered="#{not empty storyManager.stories}"
                                  title="#{i18n['story.show.table.title']}"
                                  summary="#{i18n['story.show.table.title']}"
                                  border="0"
@@ -79,10 +79,6 @@ Other names may be trademarks of their respective owners.
                                  styleClass="datatable"
                                  id="dtStories">
 
-                        <h:column>
-                            <f:facet name="header"><h:outputText value="#" /></f:facet>
-                            <h:outputText value="#{storyManager.stories.rowIndex + 1}" />
-                        </h:column>
                         <h:column>
                             <f:facet name="header"><h:outputText value="#{i18n['story.show.table.header.name']}" /></f:facet>
                             <h:outputText value="#{story.name}" />
@@ -107,12 +103,12 @@ Other names may be trademarks of their respective owners.
                         </h:column>
                         <h:column>
                             <f:facet name="header"><h:outputText value="#{i18n['story.show.table.header.actions']}"/></f:facet>
-                            <h:commandButton styleClass="botaoPostIt" action="#{storyManager.edit}" value="#{i18n['story.show.button.edit']}"  />
-                            <h:commandButton styleClass="botaoPostIt" action="#{storyManager.remove}" value="#{i18n['story.show.button.delete']}"  />
-                            <h:commandButton id="btnDeleteStory" styleClass="botaoPostIt" action="#{storyManager.remove}" value="#{i18n['story.show.button.delete']} AJAX"
+                            <h:commandButton styleClass="botaoPostIt" action="#{storyManager.edit(story)}" value="#{i18n['story.show.button.edit']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{storyManager.remove(story)}" value="#{i18n['story.show.button.delete']}"  />
+                            <h:commandButton id="btnDeleteStory" styleClass="botaoPostIt" action="#{storyManager.remove(story)}" value="#{i18n['story.show.button.delete']} AJAX"
                                              onclick="jsf.ajax.request(this, event, {execute: 'frmListStories',
                                                  render: 'frmListStories'}); return false;" />
-                            <h:commandButton styleClass="botaoPostIt" action="#{storyManager.showTasks}" value="#{i18n['story.show.button.showTasks']}"  />
+                            <h:commandButton styleClass="botaoPostIt" action="#{storyManager.showTasks(story)}" value="#{i18n['story.show.button.showTasks']}"  />
                         </h:column>
                     </h:dataTable>
 

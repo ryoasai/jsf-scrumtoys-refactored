@@ -56,7 +56,6 @@ import javax.inject.Named;
 
 
 @Named
-//@ViewScoped
 @SessionScoped
 public class DashboardManager extends AbstractManager implements Serializable {
 
@@ -90,20 +89,16 @@ public class DashboardManager extends AbstractManager implements Serializable {
         this.getSprintManager().setCurrentSprint(sprint);
     }
 
-    public DataModel<Story> getStories() {
+    public List<Story> getStories() {
         return storyManager.getStories();
     }
 
-    public void setStories(DataModel<Story> stories) {
-        storyManager.setStories(stories);
-    }
-
     public ListDataModel getToDoTasks() {
-        List toDoTasksList = new ArrayList();
+        List<Task> toDoTasksList = new ArrayList<Task>();
         if (sprintManager.getCurrentSprint() == null) {
             return new ListDataModel(toDoTasksList);
         }
-        for (Story story : storyManager.getStoryList()) {
+        for (Story story : storyManager.getStories()) {
             toDoTasksList.addAll(story.getTodoTasks());
         }
         toDoTasks = new ListDataModel(toDoTasksList);
@@ -111,11 +106,11 @@ public class DashboardManager extends AbstractManager implements Serializable {
     }
 
     public ListDataModel getWorkingTasks() {
-        List workingTasksList = new ArrayList();
+        List<Task> workingTasksList = new ArrayList<Task>();
         if (sprintManager.getCurrentSprint() == null) {
             return new ListDataModel(workingTasksList);
         }
-        for (Story story : storyManager.getStoryList()) {
+        for (Story story : storyManager.getStories()) {
             workingTasksList.addAll(story.getWorkingTasks());
         }
         workingTasks = new ListDataModel(workingTasksList);
@@ -127,7 +122,7 @@ public class DashboardManager extends AbstractManager implements Serializable {
         if (sprintManager.getCurrentSprint() == null) {
             return new ListDataModel(doneTasksList);
         }
-        for (Story story : storyManager.getStoryList()) {
+        for (Story story : storyManager.getStories()) {
             doneTasksList.addAll(story.getDoneTasks());
         }
         doneTasks = new ListDataModel(doneTasksList);
