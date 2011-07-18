@@ -59,6 +59,7 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.task.TaskRepository;
@@ -67,7 +68,7 @@ import jsf2.demo.scrum.domain.task.TaskRepository;
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
-@ConversationScoped
+@SessionScoped
 public class TaskManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -78,9 +79,6 @@ public class TaskManager extends AbstractManager implements Serializable {
 
     @Inject
     private TaskRepository taskRepository;
-    
-    @Inject
-    private Conversation conversation;
     
     @Inject
     private StoryManager storyManager;
@@ -145,8 +143,6 @@ public class TaskManager extends AbstractManager implements Serializable {
     }    
 
     public String create() {
-        conversation.begin();
-
         Task task = new Task();
         task.setStory(storyManager.getCurrentStory());
         setCurrentTask(task);
@@ -161,14 +157,10 @@ public class TaskManager extends AbstractManager implements Serializable {
             storyManager.getCurrentStory().addTask(merged);
         }
 
-        conversation.end();
-
         return "show";
     }
 
     public String edit() {
-        conversation.begin();
-
         setCurrentTask(tasks.getRowData());
         return "edit";
     }
@@ -194,8 +186,6 @@ public class TaskManager extends AbstractManager implements Serializable {
     }
 
     public String cancelEdit() {
-        conversation.end();
-        
         return "show";
     }
 

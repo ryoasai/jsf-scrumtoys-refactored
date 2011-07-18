@@ -44,30 +44,23 @@ import jsf2.demo.scrum.domain.story.Story;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.validator.ValidatorException;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.Stateful;
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.story.StoryRepository;
 
 @Named
-@ConversationScoped
+@SessionScoped
 public class StoryManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -77,9 +70,6 @@ public class StoryManager extends AbstractManager implements Serializable {
    
     @Inject
     private StoryRepository storyRepository;
-    
-    @Inject
-    private Conversation conversation;
     
     private Story currentStory;
     
@@ -99,7 +89,6 @@ public class StoryManager extends AbstractManager implements Serializable {
     }
     
     public void init() {
-
         Sprint currentSprint = sprintManager.getCurrentSprint();
 
         if (currentSprint != null) {
@@ -175,8 +164,6 @@ public class StoryManager extends AbstractManager implements Serializable {
     }
 
     public String create() {
-        conversation.begin();
-                
         Story story = new Story();
         story.setSprint(sprintManager.getCurrentSprint());
         setCurrentStory(story);
@@ -191,14 +178,10 @@ public class StoryManager extends AbstractManager implements Serializable {
             sprintManager.getCurrentSprint().addStory(merged);
         }
         
-        conversation.end();
-
         return "show";
     }
 
     public String edit() {
-        conversation.begin();
-
         setCurrentStory(stories.getRowData());
         
         return "edit";
@@ -225,8 +208,6 @@ public class StoryManager extends AbstractManager implements Serializable {
     }
 
     public String cancelEdit() {
-        conversation.end();        
-        
         return "show";
     }
 

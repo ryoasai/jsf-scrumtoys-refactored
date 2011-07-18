@@ -54,8 +54,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.sprint.SprintRepository;
@@ -64,7 +63,7 @@ import jsf2.demo.scrum.domain.sprint.SprintRepository;
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
-@ConversationScoped
+@SessionScoped
 public class SprintManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -79,9 +78,6 @@ public class SprintManager extends AbstractManager implements Serializable {
     @Inject
     private SprintRepository sprintRepository;
 
-    @Inject
-    private Conversation conversation;
-        
     @PostConstruct
     public void construct() {
         getLogger(getClass()).log(Level.INFO, "new intance of sprintManager in conversation");
@@ -143,8 +139,6 @@ public class SprintManager extends AbstractManager implements Serializable {
     }
     
     public String create() {
-        conversation.begin();
-        
         Sprint sprint = new Sprint();
         sprint.setProject(getProjectManager().getCurrentProject());
         setCurrentSprint(sprint);
@@ -153,23 +147,18 @@ public class SprintManager extends AbstractManager implements Serializable {
     }
 
     public String edit() {
-        conversation.begin();
-        
         setCurrentSprint(sprints.getRowData());
 
         return "edit";
     }
         
     public String save() {
-        
         if (currentSprint != null) {
             Sprint merged = sprintRepository.save(currentSprint);
 
             getProjectManager().getCurrentProject().addSprint(merged);
         }
         
-        conversation.end();
-
         return "show";
     }
 
@@ -184,8 +173,6 @@ public class SprintManager extends AbstractManager implements Serializable {
     }
 
     public String cancelEdit() {
-        conversation.end();
-        
         return "show";
     }
         
