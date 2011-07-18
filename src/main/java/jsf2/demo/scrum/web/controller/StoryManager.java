@@ -47,6 +47,7 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,7 +55,7 @@ import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
 @Named
-@SessionScoped
+@ConversationScoped
 public class StoryManager extends BaseCrudManager<Story> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,28 +66,8 @@ public class StoryManager extends BaseCrudManager<Story> implements Serializable
     @Inject
     private StoryRepository storyRepository;
 
-    @Override
-    public void init() {
-        Sprint currentSprint = sprintManager.getCurrentSprint();
-
-        if (currentSprint != null) {
-            Story story = new Story();
-            story.setSprint(currentSprint);
-            setCurrentEntity(story);
-            
-            setEntities(currentSprint.getStories());
-        } else {
-            List<Story> stories = Collections.emptyList();
-            setEntities(stories);
-        }
-    }
-
     public Story getCurrentStory() {
         return getCurrentEntity();
-    }
-
-    public List<Story> getStories() {
-        return getEntities();
     }
 
     public Sprint getSprint() {
@@ -122,6 +103,8 @@ public class StoryManager extends BaseCrudManager<Story> implements Serializable
     }
 
     public String showTasks(Story story) {
+        beginConversation();
+        
         setCurrentEntity(story);
         return "showTasks";
     }

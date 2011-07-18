@@ -47,6 +47,7 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,7 +58,7 @@ import jsf2.demo.scrum.infra.manager.BaseCrudManager;
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
-@SessionScoped
+@ConversationScoped
 public class SprintManager extends BaseCrudManager<Sprint> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -68,36 +69,13 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
     @Inject
     private SprintRepository sprintRepository;
 
-    @Override
-    public void init() {
-        Sprint sprint = new Sprint();
-        Project currentProject = projectManager.getCurrentProject();
-        sprint.setProject(currentProject);
-        setCurrentEntity(sprint);
-
-        if (currentProject != null) {
-            setEntities(currentProject.getSprints());
-        } else {
-            List<Sprint> sprints = Collections.emptyList();
-            setEntities(sprints);
-        }
-    }
-
     public Sprint getCurrentSprint() {
         return getCurrentEntity();
-    }
-
-    public List<Sprint> getSprints() {
-        return getEntities();
     }
 
     public Project getProject() {
         return projectManager.getCurrentProject();
     }   
-    
-//    public void setProject(Project project) {
-//        projectManager.setCurrentProject(project);
-//    }
     
     @Override
     public Sprint doCreate() {
@@ -157,11 +135,15 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
     }
 
     public String showStories(Sprint sprint) {
+        beginConversation();
+        
         setCurrentEntity(sprint);
         return "showStories";
     }
 
     public String showDashboard(Sprint sprint) {
+        beginConversation();
+                    
         setCurrentEntity(sprint);
         return "showDashboard";
     }

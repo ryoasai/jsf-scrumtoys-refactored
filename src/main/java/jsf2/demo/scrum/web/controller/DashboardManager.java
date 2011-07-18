@@ -69,6 +69,9 @@ public class DashboardManager extends AbstractManager implements Serializable {
     @Inject
     private StoryManager storyManager;
 
+    @Inject
+    private StoryListManager storyListManager;
+        
     private ListDataModel<Task> toDoTasks;
     private ListDataModel<Task> workingTasks;
     private ListDataModel<Task> doneTasks;
@@ -85,7 +88,7 @@ public class DashboardManager extends AbstractManager implements Serializable {
     }
 
     public List<Story> getStories() {
-        return storyManager.getStories();
+        return storyListManager.getStories();
     }
 
     public ListDataModel getToDoTasks() {
@@ -93,7 +96,7 @@ public class DashboardManager extends AbstractManager implements Serializable {
         if (sprintManager.getCurrentSprint() == null) {
             return new ListDataModel(toDoTasksList);
         }
-        for (Story story : storyManager.getStories()) {
+        for (Story story : storyListManager.getStories()) {
             toDoTasksList.addAll(story.getTodoTasks());
         }
         toDoTasks = new ListDataModel(toDoTasksList);
@@ -105,7 +108,7 @@ public class DashboardManager extends AbstractManager implements Serializable {
         if (sprintManager.getCurrentSprint() == null) {
             return new ListDataModel(workingTasksList);
         }
-        for (Story story : storyManager.getStories()) {
+        for (Story story : storyListManager.getStories()) {
             workingTasksList.addAll(story.getWorkingTasks());
         }
         workingTasks = new ListDataModel(workingTasksList);
@@ -117,7 +120,7 @@ public class DashboardManager extends AbstractManager implements Serializable {
         if (sprintManager.getCurrentSprint() == null) {
             return new ListDataModel(doneTasksList);
         }
-        for (Story story : storyManager.getStories()) {
+        for (Story story : storyListManager.getStories()) {
             doneTasksList.addAll(story.getDoneTasks());
         }
         doneTasks = new ListDataModel(doneTasksList);

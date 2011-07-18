@@ -69,9 +69,9 @@ Other names may be trademarks of their respective owners.
             <h:form id="frmListTasks">
                 <h:panelGrid columns="3" headerClass="tituloForm" footerClass="footerForm">
                     <h:outputText value="#{i18n['task.show.table.label.empty']}"
-                                  rendered="#{empty taskManager.tasks}" />
-                    <h:dataTable value="#{taskManager.tasks}" var="task"
-                                 rendered="#{not empty taskManager.tasks}"
+                                  rendered="#{empty tasks}" />
+                    <h:dataTable value="#{tasks}" var="task"
+                                 rendered="#{not empty tasks}"
                                  title="#{i18n['task.show.table.title']}"
                                  summary="#{i18n['task.show.table.title']}"
                                  border="0"

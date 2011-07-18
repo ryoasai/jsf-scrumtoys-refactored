@@ -79,7 +79,7 @@ Other names may be trademarks of their respective owners.
                     <td>
                         <h:outputLabel for="prjCombo" value="#{i18n['home.project.combo.label']}" styleClass="formLabel" />
                         <h:selectOneMenu id="prjCombo" value="#{projectManager.currentProject}" styleClass="formInput">
-                            <f:selectItems value="#{projectManager.projects}" var="project" itemLabel="#{project.name}" itemValue="#{project}"/>
+                            <f:selectItems value="#{projects}" var="project" itemLabel="#{project.name}" itemValue="#{project}"/>
                         </h:selectOneMenu>
                     </td>
                     <td>

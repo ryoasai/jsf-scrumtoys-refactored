@@ -38,78 +38,38 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller;
 
-import jsf2.demo.scrum.domain.story.Story;
-import jsf2.demo.scrum.domain.task.Task;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import jsf2.demo.scrum.domain.task.TaskRepository;
-import jsf2.demo.scrum.infra.manager.BaseCrudManager;
+import jsf2.demo.scrum.domain.sprint.Sprint;
+import jsf2.demo.scrum.domain.story.Story;
+import jsf2.demo.scrum.infra.manager.AbstractManager;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
-@ConversationScoped
-public class TaskManager extends BaseCrudManager<Task> implements Serializable {
+@ViewScoped
+public class StoryListManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private TaskRepository taskRepository;
-    
-    @Inject
-    private StoryManager storyManager;
+    private SprintManager sprintManager;
+            
+    @Produces @Named
+    public List<Story> getStories() {
+        Sprint currentSprint = sprintManager.getCurrentSprint();
 
-    public Task getCurrentTask() {
-        return getCurrentEntity();
-    }
-
-    public Story getStory() {
-        return storyManager.getCurrentStory();
-    }
-
-    @Override
-    protected Task doCreate() {
-        Task task = new Task();
-        task.setStory(storyManager.getCurrentStory());
-        
-        return task;
-    }
-
-    @Override
-    protected void doSave(Task task) {
-        Task merged = taskRepository.save(task);
-        storyManager.getCurrentStory().addTask(merged);
-    }
-
-    @Override
-    protected void doRemove(Task task) {
-        taskRepository.remove(task);
-        storyManager.getCurrentStory().removeTask(task);
-    }
-
-    public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
-        final String newName = (String) newValue;
-
-        long count = taskRepository.countOtherTasksWithName(storyManager.getCurrentStory(), getCurrentEntity(), newName);
-        if (count > 0) {
-            throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
+        if (currentSprint != null) {
+            return currentSprint.getStories();
+        } else {
+            return Collections.emptyList();
         }
     }
-
-    public String showStories() {
-        endConversation();
-        
-        return "/story/show";
-    }
- 
 }

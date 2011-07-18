@@ -63,10 +63,10 @@ Other names may be trademarks of their respective owners.
                 <h:panelGrid columns="2" headerClass="tituloForm" footerClass="footerForm">
 
                     <h:outputText value="#{i18n['sprint.show.table.label.empty']}"
-                                  rendered="#{empty sprintManager.sprints}" />
+                                  rendered="#{empty sprints}" />
 
-                    <h:dataTable value="#{sprintManager.sprints}" var="sprint"
-                                 rendered="#{not empty sprintManager.sprints}"
+                    <h:dataTable value="#{sprints}" var="sprint"
+                                 rendered="#{not empty sprints}"
                                  title="#{i18n['sprint.show.table.title']}"
                                  summary="#{i18n['sprint.show.table.title']}"
                                  border="0"

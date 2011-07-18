@@ -44,6 +44,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Conversation;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -57,19 +59,35 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
     private E currentEntity;
     private List<E> entities;
 
+    private boolean conversationNested;
+    
+    @Inject
+    private Conversation conversation;
+    
     @PostConstruct
     public void construct() {
         getLogger(getClass()).log(Level.INFO, "new intance of taskManager in conversation");
-        init();
     }
 
     @PreDestroy
     public void destroy() {
         getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in conversation");
     }
-       
-    public abstract void init();
+
+    protected void beginConversation() {
+        if (conversation.isTransient()) {
+            conversationNested = false;
+            conversation.begin();
+        } else {
+            conversationNested = true;
+        }
+    }
     
+    protected void endConversation() {
+        if (!conversationNested && !conversation.isTransient()) {
+            conversation.end();
+        }
+    }
     
     public E getCurrentEntity() {
         return currentEntity;
@@ -88,28 +106,32 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
     }
 
     public String create() {
+        beginConversation();
+        
         E entity = doCreate();
 
         setCurrentEntity(entity);
         
         return "create";
     }
-    
+
     protected abstract E doCreate();
     
 
     public String edit(E entity) {
+        beginConversation();
+                
         setCurrentEntity(entity);
         return "edit";
     }
         
-    public String save() {
+    public String save() {                
         if (currentEntity != null) {
             doSave(currentEntity);
         }
         
-        init(); // TODO. better to user update event.
-        
+        endConversation();
+                
         return "show";
     }
     
@@ -120,14 +142,14 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
             doRemove(entity);
         }
 
-        init(); // TODO. better to user update event.
-        
         return "show";
     }
 
     protected abstract void doRemove(E entity);
     
     public String cancelEdit() {
+        endConversation();
+        
         return "show";
     }
  

@@ -44,8 +44,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
-import java.util.List;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.project.ProjectRepository;
@@ -55,28 +54,16 @@ import jsf2.demo.scrum.infra.manager.BaseCrudManager;
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
-@SessionScoped
+@ConversationScoped
 public class ProjectManager extends BaseCrudManager<Project> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // TODO スレッドセーフ化
-
     @Inject
     private ProjectRepository projectRepository;
 
-
-    @Override
-    public void init() {
-        setEntities(projectRepository.findByNamedQuery("project.getAll"));
-    }
-
     public Project getCurrentProject() {
         return getCurrentEntity();
-    }
-
-    public List<Project> getProjects() {
-        return getEntities();
     }
 
     @Override
@@ -105,6 +92,8 @@ public class ProjectManager extends BaseCrudManager<Project> implements Serializ
     }
 
     public String showSprints(Project project) {
+        beginConversation();
+        
         setCurrentEntity(project);
         
         // Implicity navigation, this request come from /projects/show.xhtml and directs to /project/showSprints.xhtml
