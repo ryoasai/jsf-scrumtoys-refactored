@@ -57,7 +57,6 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
     private static final long serialVersionUID = 1L;
 
     private E currentEntity;
-    private List<E> entities;
 
     private boolean conversationNested;
     
@@ -97,14 +96,6 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
         this.currentEntity = currentEntity;
     }
 
-    public void setEntities(List<E> entities) {
-        this.entities = entities;
-    }
-    
-    public List<E> getEntities() {
-        return entities;
-    }
-
     public String create() {
         beginConversation();
         
@@ -112,7 +103,7 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
 
         setCurrentEntity(entity);
         
-        return "create";
+        return "create?faces-redirect=true";
     }
 
     protected abstract E doCreate();
@@ -122,7 +113,7 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
         beginConversation();
                 
         setCurrentEntity(entity);
-        return "edit";
+        return "edit?faces-redirect=true";
     }
         
     public String save() {                
@@ -132,7 +123,7 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
         
         endConversation();
                 
-        return "show";
+        return "show?faces-redirect=true";
     }
     
     protected abstract void doSave(E enetity);
@@ -142,7 +133,7 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
             doRemove(entity);
         }
 
-        return "show";
+        return "show?faces-redirect=true";
     }
 
     protected abstract void doRemove(E entity);
@@ -150,7 +141,7 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
     public String cancelEdit() {
         endConversation();
         
-        return "show";
+        return "show?faces-redirect=true";
     }
  
 }
