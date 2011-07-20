@@ -70,7 +70,12 @@ public class ProjectManager extends BaseCrudManager<Project> implements Serializ
     public Project getCurrentProject() {
         return getCurrentEntity();
     }
-    
+
+    public void setCurrentProject(Project project) {
+        endConversation();
+        setCurrentEntity(project);
+    }
+        
     @Produces @Named @ViewScoped
     public List<Project> getProjects() {
         return projectRepository.findByNamedQuery("project.getAll");
@@ -106,7 +111,6 @@ public class ProjectManager extends BaseCrudManager<Project> implements Serializ
         
         setCurrentEntity(project);
         
-        // Implicity navigation, this request come from /projects/show.xhtml and directs to /project/showSprints.xhtml
         return "showSprints";
     }
 

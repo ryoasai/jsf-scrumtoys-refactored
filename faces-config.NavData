@@ -6,16 +6,16 @@
         <Node id="task/edit.xhtml" x="650" y="300" zoom="true"/>
         <Node id="footer.xhtml" x="900" y="450" zoom="true"/>
         <Node id="template.xhtml" x="650" y="600" zoom="true"/>
-        <Node id="burndown.xhtml" x="2150" y="150" zoom="true"/>
         <Node id="story/create.xhtml" x="400" y="900" zoom="true"/>
+        <Node id="burndown.xhtml" x="2150" y="150" zoom="true"/>
         <Node id="sprint/edit.jsf" x="650" y="450" zoom="true"/>
         <Node id="resources/components/submenuItem.xhtml" x="1650" y="450" zoom="true"/>
-        <Node id="resources/components/postitLink.xhtml" x="400" y="1050" zoom="true"/>
         <Node id=".dashboard.stories.xhtml" x="650" y="750" zoom="true"/>
-        <Node id="resources/components/submenu.xhtml" x="900" y="300" zoom="true"/>
+        <Node id="resources/components/postitLink.xhtml" x="400" y="1050" zoom="true"/>
         <Node id="home.xhtml" x="400" y="600" zoom="true"/>
-        <Node id="story/show.xhtml" x="1400" y="300" zoom="true"/>
+        <Node id="resources/components/submenu.xhtml" x="900" y="300" zoom="true"/>
         <Node id="resources/components/postit.xhtml" x="400" y="300" zoom="true"/>
+        <Node id="story/show.xhtml" x="1400" y="300" zoom="true"/>
         <Node id="story/edit.xhtml" x="1400" y="150" zoom="true"/>
         <Node id="project/show.jsf" x="150" y="150" zoom="true"/>
         <Node id="sprint/form.xhtml" x="150" y="900" zoom="true"/>
@@ -23,23 +23,23 @@
         <Node id="project/create.xhtml" x="900" y="600" zoom="true"/>
         <Node id="sprint/edit.xhtml" x="150" y="1050" zoom="true"/>
         <Node id="*" x="150" y="1200" zoom="true"/>
-        <Node id=".dashboard.doneTasks.xhtml" x="150" y="300" zoom="true"/>
         <Node id="sprint/show.xhtml" x="150" y="750" zoom="true"/>
         <Node id="project/show.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id=".dashboard.doneTasks.xhtml" x="150" y="300" zoom="true"/>
         <Node id="project/edit.xhtml" x="1650" y="300" zoom="true"/>
         <Node id="task/show.xhtml" x="1900" y="150" zoom="true"/>
-        <Node id="index.html" x="900" y="150" zoom="true"/>
         <Node id="project/edit.jsf" x="1150" y="600" zoom="true"/>
+        <Node id="index.html" x="900" y="150" zoom="true"/>
         <Node id="task/create.xhtml" x="1150" y="300" zoom="true"/>
         <Node id="task/form.xhtml" x="650" y="150" zoom="true"/>
         <Node id="dashboard/show.jsf" x="1150" y="450" zoom="true"/>
         <Node id="resources/components/menuItem.xhtml" x="1650" y="150" zoom="true"/>
-        <Node id="project/form.xhtml" x="650" y="900" zoom="true"/>
         <Node id="skin/changeSkin.xhtml" x="900" y="750" zoom="true"/>
+        <Node id="project/form.xhtml" x="650" y="900" zoom="true"/>
         <Node id=".dashboard.workingTasks.xhtml" x="150" y="600" zoom="true"/>
         <Node id="story/form.xhtml" x="400" y="150" zoom="true"/>
-        <Node id="sprint/create.xhtml" x="400" y="450" zoom="true"/>
         <Node id="dashboard/show.xhtml" x="1400" y="450" zoom="true"/>
+        <Node id="sprint/create.xhtml" x="400" y="450" zoom="true"/>
         <Node id="resources/components/bigPostit.xhtml" x="400" y="750" zoom="true"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>
