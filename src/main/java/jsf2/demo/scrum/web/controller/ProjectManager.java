@@ -44,11 +44,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
+import java.util.List;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.project.ProjectRepository;
+import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
@@ -68,6 +70,11 @@ public class ProjectManager extends BaseCrudManager<Project> implements Serializ
     public Project getCurrentProject() {
         return getCurrentEntity();
     }
+    
+    @Produces @Named @ViewScoped
+    public List<Project> getProjects() {
+        return projectRepository.findByNamedQuery("project.getAll");
+    }    
 
     @Override
     protected Project doCreate() {

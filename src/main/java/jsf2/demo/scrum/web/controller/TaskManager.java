@@ -45,11 +45,14 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.task.TaskRepository;
+import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
@@ -68,6 +71,15 @@ public class TaskManager extends BaseCrudManager<Task> implements Serializable {
     @Inject @Current
     private Story currentStory;
 
+    @Produces @Named @ViewScoped
+    public List<Task> getTasks() {
+        if (currentStory != null) {
+            return currentStory.getTasks();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
     @Produces @Current @Named
     public Task getCurrentTask() {
         return getCurrentEntity();

@@ -53,6 +53,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.sprint.SprintRepository;
+import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
@@ -65,9 +66,6 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
 
     private static final long serialVersionUID = 1L;
     
-//    @Inject
-//    private ProjectManager projectManager;
-    
     @Inject @Current
     Project currentProject;
     
@@ -79,6 +77,15 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
         return getCurrentEntity();
     }
 
+    @Produces @Named @ViewScoped
+    public List<Sprint> getSprints() {
+        if (currentProject != null) {
+            return currentProject.getSprints();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
     public Project getProject() {
         return currentProject;
     }   

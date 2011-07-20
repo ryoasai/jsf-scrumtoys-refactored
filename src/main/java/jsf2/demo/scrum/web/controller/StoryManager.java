@@ -53,6 +53,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.domain.story.StoryRepository;
+import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
 
@@ -73,6 +74,15 @@ public class StoryManager extends BaseCrudManager<Story> implements Serializable
         return getCurrentEntity();
     }
 
+    @Produces @Named @ViewScoped
+    public List<Story> getStories() {
+        if (currentSprint != null) {
+            return currentSprint.getStories();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+        
     public Sprint getSprint() {
         return currentSprint;
     }

@@ -8,7 +8,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.faces.bean.ViewScoped;
+//import javax.faces.bean.ViewScoped;
 
 /**
  * An extension to provide @ViewScoped CDI / JSF 2 integration.

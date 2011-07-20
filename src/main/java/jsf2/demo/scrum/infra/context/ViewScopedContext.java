@@ -15,7 +15,6 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PreDestroyViewMapEvent;
@@ -36,6 +35,7 @@ public class ViewScopedContext implements Context, SystemEventListener {
     private boolean isJsfSubscribed = false;
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T get(final Contextual<T> component) {
         assertActive();
 
@@ -50,6 +50,7 @@ public class ViewScopedContext implements Context, SystemEventListener {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T get(final Contextual<T> component, final CreationalContext<T> creationalContext) {
         assertActive();
 
@@ -75,10 +76,12 @@ public class ViewScopedContext implements Context, SystemEventListener {
         return instance;
     }
 
+    @Override
     public Class<? extends Annotation> getScope() {
         return ViewScoped.class;
     }
 
+    @Override
     public boolean isActive() {
         return getViewRoot() != null;
     }
@@ -90,6 +93,7 @@ public class ViewScopedContext implements Context, SystemEventListener {
         }
     }
 
+    @Override
     public boolean isListenerForSource(final Object source) {
         if (source instanceof UIViewRoot) {
             return true;
@@ -106,6 +110,7 @@ public class ViewScopedContext implements Context, SystemEventListener {
      * @see javax.faces.event.SystemEventListener#processEvent(javax.faces.event.SystemEvent)
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void processEvent(final SystemEvent event) {
         if (event instanceof PreDestroyViewMapEvent) {
             Map<Contextual<?>, Object> componentInstanceMap = getComponentInstanceMap();
