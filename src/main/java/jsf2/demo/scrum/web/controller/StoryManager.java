@@ -47,6 +47,7 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
@@ -56,10 +57,12 @@ import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
+import jsf2.demo.scrum.infra.repository.Repository;
 
 @Named
 @ConversationScoped
-public class StoryManager extends BaseCrudManager<Story> implements Serializable {
+@Stateful
+public class StoryManager extends BaseCrudManager<Long, Story> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -95,9 +98,9 @@ public class StoryManager extends BaseCrudManager<Story> implements Serializable
     }
 
     @Override
-    protected void doSave(Story story) {
-        Story merged = storyRepository.save(story);
-        currentSprint.addStory(merged);
+    protected void doPersist(Story story) {
+        storyRepository.persist(story);
+        currentSprint.addStory(story);
     }
 
     @Override
@@ -121,4 +124,9 @@ public class StoryManager extends BaseCrudManager<Story> implements Serializable
         setCurrentEntity(story);
         return "showTasks";
     }
+    
+    @Override
+    protected Repository<Long, Story> getRepository() {
+        return storyRepository;
+    }    
 }

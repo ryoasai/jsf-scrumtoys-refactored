@@ -36,7 +36,6 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package jsf2.demo.scrum.web.controller;
 
 import jsf2.demo.scrum.infra.manager.AbstractManager;
@@ -53,31 +52,26 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 @Named
 @SessionScoped
 public class DashboardManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     @Inject
     private TaskManager taskManager;
-    
     @Inject
     private SprintManager sprintManager;
-
     @Inject
     private StoryManager storyManager;
-
     private ListDataModel<Task> toDoTasks;
     private ListDataModel<Task> workingTasks;
     private ListDataModel<Task> doneTasks;
 
     @PreDestroy
     public void destroy() {
-	toDoTasks = null;
-	workingTasks = null;
-	doneTasks = null;
+        toDoTasks = null;
+        workingTasks = null;
+        doneTasks = null;
     }
 
     public Sprint getSprint() {
@@ -125,8 +119,9 @@ public class DashboardManager extends AbstractManager implements Serializable {
     }
 
     private String editTask(Task currentTask) {
-        if (currentTask == null)
+        if (currentTask == null) {
             return "";
+        }
 
         taskManager.setCurrentEntity(currentTask);
         Story currentStory = storyManager.getCurrentStory();
@@ -171,5 +166,4 @@ public class DashboardManager extends AbstractManager implements Serializable {
     public void setStoryManager(StoryManager storyManager) {
         this.storyManager = storyManager;
     }
-
 }

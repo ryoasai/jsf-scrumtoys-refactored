@@ -55,28 +55,6 @@ import jsf2.demo.scrum.infra.entity.AbstractEntity;
  */
 public abstract class AbstractManager {
 
-//    @PersistenceContext
-//    protected EntityManager em;
-//
-//    protected void doRemove(E entity) {
-//        if (em.contains(entity)) {
-//            em.remove(entity);
-//        } else {
-//            em.remove(em.merge(entity));
-//        }
-//    }
-//
-//    protected E doSave(E entity) {
-//        if (entity.isNew()) {
-//            em.persist(entity);
-//            return entity;
-//        } else if (!em.contains(entity)) {
-//            return em.merge(entity);
-//        } else {
-//            return entity;
-//        }
-//    }
-
     protected void addMessage(String message) {
         addMessage(null, message, FacesMessage.SEVERITY_INFO);
     }

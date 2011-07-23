@@ -45,6 +45,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.List;
+import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -53,13 +54,15 @@ import jsf2.demo.scrum.domain.project.ProjectRepository;
 import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
+import jsf2.demo.scrum.infra.repository.Repository;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @ConversationScoped
-public class ProjectManager extends BaseCrudManager<Project> implements Serializable {
+@Stateful
+public class ProjectManager extends BaseCrudManager<Long, Project> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -85,10 +88,10 @@ public class ProjectManager extends BaseCrudManager<Project> implements Serializ
     protected Project doCreate() {
         return new Project();
     }
-
+        
     @Override
-    protected void doSave(Project project) {
-        projectRepository.save(project);
+    protected void doPersist(Project project) {
+        projectRepository.persist(project);
     }
 
     @Override
@@ -116,5 +119,10 @@ public class ProjectManager extends BaseCrudManager<Project> implements Serializ
 
     public String viewSprints() {
         return "/sprint/show";
+    }
+
+    @Override
+    protected Repository<Long, Project> getRepository() {
+        return projectRepository;
     }
 }

@@ -44,15 +44,23 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.PreDestroy;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import jsf2.demo.scrum.infra.entity.PersistentEntity;
+import jsf2.demo.scrum.infra.repository.Repository;
 
 /**
  * @author Ryo Asai.
  */
 @Named
-public abstract class BaseCrudManager<E> extends AbstractManager implements Serializable {
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+public abstract class BaseCrudManager<K extends Serializable, E extends PersistentEntity<K>> extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +70,10 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
     
     @Inject
     private Conversation conversation;
-    
+
+    @PersistenceContext(type= PersistenceContextType.EXTENDED)
+    protected EntityManager em;
+            
     @PostConstruct
     public void construct() {
         getLogger(getClass()).log(Level.INFO, "new intance of taskManager in conversation");
@@ -106,19 +117,28 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
         return "create?faces-redirect=true";
     }
 
+    protected abstract Repository<K, E> getRepository();
+    
     protected abstract E doCreate();
     
+    public E findById(K id) {
+        return getRepository().findById(id);
+    }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String edit(E entity) {
         beginConversation();
-                
-        setCurrentEntity(entity);
+        
+        // set managed entity
+        setCurrentEntity(findById(entity.getId()));
+        
         return "edit?faces-redirect=true";
     }
-        
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String save() {                
-        if (currentEntity != null) {
-            doSave(currentEntity);
+        if (currentEntity != null && currentEntity.isNew()) {
+            doPersist(currentEntity);
         }
         
         endConversation();
@@ -126,8 +146,9 @@ public abstract class BaseCrudManager<E> extends AbstractManager implements Seri
         return "show?faces-redirect=true";
     }
     
-    protected abstract void doSave(E enetity);
+    protected abstract void doPersist(E enetity);
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String remove(E entity) {
         if (entity != null) {
             doRemove(entity);

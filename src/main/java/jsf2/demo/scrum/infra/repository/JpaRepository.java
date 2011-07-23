@@ -38,23 +38,23 @@ public abstract class JpaRepository<K extends Serializable, E extends Persistent
     }
 
     @Override
-    public E save(E entity) {
+    public E persist(E entity) {
         if (entity.isNew()) {
             em.persist(entity);
             return entity;
-        } else if (!em.contains(entity)) {
-            return em.merge(entity);
         } else {
             return entity;
         }
     }
 
     @Override
+    public void remove(K id) {
+        E managed = findById(id);
+        em.remove(managed);
+    }
+        
+    @Override
     public void remove(E entity) {
-        if (em.contains(entity)) {
-            em.remove(entity);
-        } else {
-            em.remove(em.merge(entity));
-        }
+        remove(entity.getId());
     }
 }

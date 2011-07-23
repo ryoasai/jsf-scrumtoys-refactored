@@ -18,7 +18,10 @@ public interface Repository<K extends Serializable, E extends PersistentEntity<K
 
     List<E> findByNamedQuery(String queryName);
 
-    E save(E entity);
+    E persist(E entity);
 
     void remove(E entity);
+    
+    void remove(K id);
+
 }

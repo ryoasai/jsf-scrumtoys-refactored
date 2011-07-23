@@ -47,6 +47,7 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
@@ -56,13 +57,15 @@ import jsf2.demo.scrum.domain.sprint.SprintRepository;
 import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
+import jsf2.demo.scrum.infra.repository.Repository;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @ConversationScoped
-public class SprintManager extends BaseCrudManager<Sprint> implements Serializable {
+@Stateful
+public class SprintManager extends BaseCrudManager<Long, Sprint> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -89,7 +92,7 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
     public Project getProject() {
         return currentProject;
     }   
-    
+
     @Override
     public Sprint doCreate() {
         Sprint sprint = new Sprint();
@@ -99,15 +102,15 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
     }
 
     @Override
-    protected void doSave(Sprint sprint) {
-        Sprint merged = sprintRepository.save(sprint);
-        currentProject.addSprint(merged);
+    protected void doPersist(Sprint sprint) {
+        sprintRepository.persist(sprint);
+        currentProject.addSprint(sprint);
     }
 
     @Override
     protected void doRemove(Sprint sprint) {
         sprintRepository.remove(sprint);
-        currentProject.removeSpring(sprint);
+        currentProject.removeSprint(sprint);
     }
 
     /*
@@ -159,6 +162,11 @@ public class SprintManager extends BaseCrudManager<Sprint> implements Serializab
                     
         setCurrentEntity(sprint);
         return "showDashboard";
+    }
+    
+    @Override
+    protected Repository<Long, Sprint> getRepository() {
+        return sprintRepository;
     }
 
 }

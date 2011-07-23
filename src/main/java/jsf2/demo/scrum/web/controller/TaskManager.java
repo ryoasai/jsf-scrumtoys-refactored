@@ -47,6 +47,7 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -55,13 +56,15 @@ import jsf2.demo.scrum.domain.task.TaskRepository;
 import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.entity.Current;
 import jsf2.demo.scrum.infra.manager.BaseCrudManager;
+import jsf2.demo.scrum.infra.repository.Repository;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @ConversationScoped
-public class TaskManager extends BaseCrudManager<Task> implements Serializable {
+@Stateful
+public class TaskManager extends BaseCrudManager<Long, Task> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -98,9 +101,9 @@ public class TaskManager extends BaseCrudManager<Task> implements Serializable {
     }
 
     @Override
-    protected void doSave(Task task) {
-        Task merged = taskRepository.save(task);
-        currentStory.addTask(merged);
+    protected void doPersist(Task task) {
+        taskRepository.persist(task);
+        currentStory.addTask(task);
     }
 
     @Override
@@ -124,4 +127,8 @@ public class TaskManager extends BaseCrudManager<Task> implements Serializable {
         return "/story/show";
     }
  
+    @Override
+    protected Repository<Long, Task> getRepository() {
+        return taskRepository;
+    }       
 }
