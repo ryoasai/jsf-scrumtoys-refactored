@@ -50,8 +50,9 @@ Other names may be trademarks of their respective owners.
         </resource-bundle>
         <message-bundle>i18n</message-bundle>
         <locale-config>
-          <default-locale>en_US</default-locale>
-          <supported-locale>pt_BR</supported-locale>
+            <default-locale>ja</default-locale>
+            <supported-locale>en_US</supported-locale>
+            <supported-locale>pt_BR</supported-locale>
         </locale-config>
 
     </application>
@@ -104,7 +105,7 @@ Other names may be trademarks of their respective owners.
             <from-outcome>burndown</from-outcome>
             <to-view-id>/burndown.xhtml</to-view-id>
             <redirect/>
-  </navigation-case>
+        </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
