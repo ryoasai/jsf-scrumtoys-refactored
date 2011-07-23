@@ -48,7 +48,7 @@ Other names may be trademarks of their respective owners.
 
     <ui:composition template="/template.xhtml">
         <ui:define name="pageTitle">
-            <h:outputText value="#{i18n['project.show.title']}"></h:outputText>
+            #{i18n['project.show.title']}
         </ui:define>
         <ui:define name="navigationBar">
             <h:outputText value="#{i18n['project.show.title']}" styleClass="tituloForm" />
@@ -70,23 +70,23 @@ Other names may be trademarks of their respective owners.
                              id="dtProjects">
 
                     <h:column>
-                        <f:facet name="header"><h:outputText value="#{i18n['project.show.table.header.name']}" /></f:facet>
-                        <h:outputText value="#{project.name}" />
+                        <f:facet name="header">#{i18n['project.show.table.header.name']}</f:facet>
+                        #{project.name}
                     </h:column>
                     <h:column>
-                        <f:facet name="header"><h:outputText value="#{i18n['project.show.table.header.startDate']}"/></f:facet>
+                        <f:facet name="header">#{i18n['project.show.table.header.startDate']}</f:facet>
                         <h:outputText value="#{project.startDate}">
                             <f:convertDateTime pattern="#{i18n['project.show.table.header.startDate.pattern']}" />
                         </h:outputText>
                     </h:column>
                     <h:column>
-                        <f:facet name="header"><h:outputText value="#{i18n['project.show.table.header.endDate']}"/></f:facet>
+                        <f:facet name="header">#{i18n['project.show.table.header.endDate']}</f:facet>
                         <h:outputText value="#{project.endDate}">
                             <f:convertDateTime pattern="#{i18n['project.show.table.header.endDate.pattern']}" />
                         </h:outputText>
                     </h:column>
                     <h:column>
-                        <f:facet name="header"><h:outputText value="#{i18n['project.show.table.header.actions']}"/></f:facet>
+                        <f:facet name="header">#{i18n['project.show.table.header.actions']}</f:facet>
                         <h:commandButton styleClass="botaoPostIt" action="#{projectManager.edit(project)}" value="#{i18n['project.show.button.edit']}"  />
                         <h:commandButton styleClass="botaoPostIt" action="#{projectManager.remove(project)}" value="#{i18n['project.show.button.delete']}"  />
                         <h:commandButton styleClass="botaoPostIt" action="#{projectManager.showSprints(project)}" value="#{i18n['project.show.button.showSprints']}"  />

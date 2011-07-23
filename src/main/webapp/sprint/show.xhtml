@@ -48,14 +48,14 @@ Other names may be trademarks of their respective owners.
 
     <ui:composition template="/template.xhtml">
         <ui:define name="pageTitle">
-            <h:outputText value="#{i18n['sprint.show.title']}"></h:outputText>
+            #{i18n['sprint.show.title']}
         </ui:define>
 
         <ui:define name="navigationBar">
             <h:commandLink action="/project/show" value="#{i18n['sprint.form.label.projects']}"></h:commandLink>
-            <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
+            #{i18n['navigation.separtor']}
             <h:commandLink action="/project/edit"  value="#{sprintManager.project.name}"></h:commandLink>
-            <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
+            #{i18n['navigation.separtor']}
             <h:outputText value="#{i18n['sprints.table.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
         <ui:define name="content">
@@ -78,19 +78,19 @@ Other names may be trademarks of their respective owners.
 
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{i18n['sprint.show.table.header.name']}" />
+                                #{i18n['sprint.show.table.header.name']}
                             </f:facet>
-                            <h:outputText value="#{sprint.name}" />
+                            #{sprint.name}
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{i18n['sprint.show.table.header.goals']}" />
+                                #{i18n['sprint.show.table.header.goals']}
                             </f:facet>
-                            <h:outputText value="#{sprint.goals}" />
+                            #{sprint.goals}
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{i18n['sprint.show.table.header.startDate']}"/>
+                                #{i18n['sprint.show.table.header.startDate']}
                             </f:facet>
                             <h:outputText value="#{sprint.startDate}">
                                 <f:convertDateTime pattern="#{i18n['sprint.show.table.header.startDate.pattern']}" />
@@ -98,7 +98,7 @@ Other names may be trademarks of their respective owners.
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{i18n['sprint.show.table.header.dailyMeetingTime']}" />
+                                #{i18n['sprint.show.table.header.dailyMeetingTime']}
                             </f:facet>
                             <h:outputText value="#{sprint.dailyMeetingTime}">
                                 <f:convertDateTime pattern="#{i18n['sprint.show.table.header.dailyMeetingTime.pattern']}" />
@@ -106,7 +106,7 @@ Other names may be trademarks of their respective owners.
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{i18n['sprint.show.table.header.actions']}"/>
+                                #{i18n['sprint.show.table.header.actions']}
                             </f:facet>
                             <h:commandButton styleClass="botaoPostIt" action="#{sprintManager.edit(sprint)}" value="#{i18n['sprint.show.button.edit']}"  />
 

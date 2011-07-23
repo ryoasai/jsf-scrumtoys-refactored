@@ -55,7 +55,7 @@ Other names may be trademarks of their respective owners.
 
         <td>
             <h:outputLink styleClass="menuhandler" value="#{destination}" onmouseover="menuHighlight(#{menuid})" rendered="#{label!=''}">
-                <h:outputText value="#{label}"/>
+                #{label}
             </h:outputLink>
             <composite:insertChildren rendered="#{label==''}"></composite:insertChildren>
 

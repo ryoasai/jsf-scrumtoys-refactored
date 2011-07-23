@@ -48,11 +48,11 @@ Other names may be trademarks of their respective owners.
 
     <ui:composition template="/template.xhtml">
         <ui:define name="pageTitle">
-            <h:outputText value="#{i18n['project.edit.title']}"></h:outputText>
+            #{i18n['project.edit.title']}
         </ui:define>
         <ui:define name="navigationBar">
             <h:commandLink action="/project/show" value="#{i18n['navigation.projects']}"></h:commandLink>
-            <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
+            #{i18n['navigation.separtor']}
             <h:outputText value="#{i18n['project.edit.form.title']}:" styleClass="tituloForm" />
         </ui:define>
         
