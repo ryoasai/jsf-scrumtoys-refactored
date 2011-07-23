@@ -103,13 +103,21 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         return currentEntity;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void setCurrentEntity(E currentEntity) {
-        this.currentEntity = currentEntity;
-    }
-
-    public String create() {
+        if (currentEntity == null) return;
+        
         beginConversation();
         
+        if (currentEntity.isNew()) {
+            this.currentEntity = currentEntity;
+        } else {
+            this.currentEntity = findById(currentEntity.getId());
+        }
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public String create() {
         E entity = doCreate();
 
         setCurrentEntity(entity);
@@ -127,10 +135,8 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String edit(E entity) {
-        beginConversation();
-        
         // set managed entity
-        setCurrentEntity(findById(entity.getId()));
+        setCurrentEntity(entity);
         
         return "edit?faces-redirect=true";
     }
@@ -146,7 +152,9 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         return "show?faces-redirect=true";
     }
     
-    protected abstract void doPersist(E enetity);
+    protected void doPersist(E project) {
+        getRepository().persist(project);
+    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String remove(E entity) {

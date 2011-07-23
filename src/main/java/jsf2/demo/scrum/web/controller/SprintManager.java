@@ -100,15 +100,9 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
     @Override
     public Sprint doCreate() {
         Sprint sprint = new Sprint();
-        sprint.setProject(getProject());
+        getProject().addSprint(sprint);
         
         return sprint;
-    }
-
-    @Override
-    protected void doPersist(Sprint sprint) {
-        sprintRepository.persist(sprint);
-        getProject().addSprint(sprint);
     }
 
     @Override
@@ -155,15 +149,11 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
     }
 
     public String showStories(Sprint sprint) {
-        beginConversation();
-        
         setCurrentEntity(sprint);
         return "showStories";
     }
 
     public String showDashboard(Sprint sprint) {
-        beginConversation();
-                    
         setCurrentEntity(sprint);
         return "showDashboard";
     }

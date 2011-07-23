@@ -99,15 +99,9 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     @Override
     protected Task doCreate() {
         Task task = new Task();
-        task.setStory(getStory());
+        getStory().addTask(task);
         
         return task;
-    }
-
-    @Override
-    protected void doPersist(Task task) {
-        taskRepository.persist(task);
-        getStory().addTask(task);
     }
 
     @Override
@@ -126,8 +120,6 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     }
 
     public String showStories() {
-        endConversation();
-        
         return "/story/show";
     }
  

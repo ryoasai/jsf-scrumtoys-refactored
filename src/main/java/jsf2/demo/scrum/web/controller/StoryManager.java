@@ -97,14 +97,9 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
     @Override
     protected Story doCreate() {
         Story story = new Story();
-        story.setSprint(getSprint());
-        return story;
-    }
-
-    @Override
-    protected void doPersist(Story story) {
-        storyRepository.persist(story);
         getSprint().addStory(story);
+        
+        return story;
     }
 
     @Override
@@ -123,8 +118,6 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
     }
 
     public String showTasks(Story story) {
-        beginConversation();
-        
         setCurrentEntity(story);
         return "showTasks";
     }

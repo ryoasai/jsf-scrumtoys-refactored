@@ -41,6 +41,7 @@ package jsf2.demo.scrum.domain.project;
 
 import jsf2.demo.scrum.infra.entity.AbstractEntity;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -81,7 +82,7 @@ public class Project extends AbstractEntity implements Serializable {
     private Date endDate;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Sprint> sprints;
+    private List<Sprint> sprints = new ArrayList<Sprint>();
 
     public Project() {
         this.startDate = new Date();
@@ -126,9 +127,6 @@ public class Project extends AbstractEntity implements Serializable {
     }
 
     public boolean addSprint(Sprint sprint) {
-        if (sprints == null) {
-            sprints = new LinkedList<Sprint>();
-        }
         if (sprint != null && !sprints.contains(sprint)) {
             sprints.add(sprint);
             sprint.setProject(this);

@@ -74,11 +74,12 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
 
     @Produces @Current @Named
     public Project getCurrentProject() {
-        return getCurrentEntity();
+        Project project = getCurrentEntity();
+                
+        return project;
     }
 
     public void setCurrentProject(Project project) {
-        endConversation();
         setCurrentEntity(project);
     }
         
@@ -92,11 +93,6 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
         return new Project();
     }
         
-    @Override
-    protected void doPersist(Project project) {
-        projectRepository.persist(project);
-    }
-
     @Override
     protected void doRemove(Project project) {
         projectRepository.remove(project);
@@ -113,8 +109,6 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
     }
 
     public String showSprints(Project project) {
-        beginConversation();
-        
         setCurrentEntity(project);
         
         return "showSprints";
