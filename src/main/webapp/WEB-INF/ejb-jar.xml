@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar>
+    <application-exception>
+        <exception-class>javax.faces.validator.ValidatorException</exception-class>
+        <rollback>false</rollback>
+    </application-exception>
+</ejb-jar>
