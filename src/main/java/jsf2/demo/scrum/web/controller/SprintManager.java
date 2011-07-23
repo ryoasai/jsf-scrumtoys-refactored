@@ -48,8 +48,11 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -65,12 +68,13 @@ import jsf2.demo.scrum.infra.repository.Repository;
 @Named
 @ConversationScoped
 @Stateful
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class SprintManager extends BaseCrudManager<Long, Sprint> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
     @Inject @Current
-    Project currentProject;
+    Instance<Project> currentProject;
     
     @Inject
     private SprintRepository sprintRepository;
@@ -82,21 +86,21 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
 
     @Produces @Named @ViewScoped
     public List<Sprint> getSprints() {
-        if (currentProject != null) {
-            return currentProject.getSprints();
+        if (getProject() != null) {
+            return getProject().getSprints();
         } else {
             return Collections.emptyList();
         }
     }
     
     public Project getProject() {
-        return currentProject;
+        return currentProject.get();
     }   
 
     @Override
     public Sprint doCreate() {
         Sprint sprint = new Sprint();
-        sprint.setProject(currentProject);
+        sprint.setProject(getProject());
         
         return sprint;
     }
@@ -104,13 +108,13 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
     @Override
     protected void doPersist(Sprint sprint) {
         sprintRepository.persist(sprint);
-        currentProject.addSprint(sprint);
+        getProject().addSprint(sprint);
     }
 
     @Override
     protected void doRemove(Sprint sprint) {
         sprintRepository.remove(sprint);
-        currentProject.removeSprint(sprint);
+        getProject().removeSprint(sprint);
     }
 
     /*
@@ -141,7 +145,7 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
 
         final String newName = (String) newValue;
 
-        long count = sprintRepository.countOtherSprintsWithName(currentProject, getCurrentEntity(), newName);
+        long count = sprintRepository.countOtherSprintsWithName(getProject(), getCurrentEntity(), newName);
 
         if (count > 0) {
             message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();

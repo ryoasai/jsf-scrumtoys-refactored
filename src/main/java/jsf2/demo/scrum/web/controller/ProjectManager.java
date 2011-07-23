@@ -46,6 +46,8 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -62,6 +64,7 @@ import jsf2.demo.scrum.infra.repository.Repository;
 @Named
 @ConversationScoped
 @Stateful
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProjectManager extends BaseCrudManager<Long, Project> implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -48,7 +48,10 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,6 +67,7 @@ import jsf2.demo.scrum.infra.repository.Repository;
 @Named
 @ConversationScoped
 @Stateful
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class TaskManager extends BaseCrudManager<Long, Task> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -72,12 +76,12 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     private TaskRepository taskRepository;
     
     @Inject @Current
-    private Story currentStory;
+    private Instance<Story> currentStory;
 
     @Produces @Named @ViewScoped
     public List<Task> getTasks() {
-        if (currentStory != null) {
-            return currentStory.getTasks();
+        if (getStory() != null) {
+            return getStory().getTasks();
         } else {
             return Collections.emptyList();
         }
@@ -89,13 +93,13 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     }
 
     public Story getStory() {
-        return currentStory;
+        return currentStory.get();
     }
 
     @Override
     protected Task doCreate() {
         Task task = new Task();
-        task.setStory(currentStory);
+        task.setStory(getStory());
         
         return task;
     }
@@ -103,19 +107,19 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     @Override
     protected void doPersist(Task task) {
         taskRepository.persist(task);
-        currentStory.addTask(task);
+        getStory().addTask(task);
     }
 
     @Override
     protected void doRemove(Task task) {
         taskRepository.remove(task);
-        currentStory.removeTask(task);
+        getStory().removeTask(task);
     }
 
     public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = taskRepository.countOtherTasksWithName(currentStory, getCurrentEntity(), newName);
+        long count = taskRepository.countOtherTasksWithName(getStory(), getCurrentEntity(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
         }

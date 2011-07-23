@@ -48,8 +48,11 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -62,12 +65,13 @@ import jsf2.demo.scrum.infra.repository.Repository;
 @Named
 @ConversationScoped
 @Stateful
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class StoryManager extends BaseCrudManager<Long, Story> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
     @Inject @Current
-    private Sprint currentSprint;
+    Instance<Sprint> currentSprint;
    
     @Inject 
     private StoryRepository storyRepository;
@@ -79,40 +83,40 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
 
     @Produces @Named @ViewScoped
     public List<Story> getStories() {
-        if (currentSprint != null) {
-            return currentSprint.getStories();
+        if (getSprint() != null) {
+            return getSprint().getStories();
         } else {
             return Collections.emptyList();
         }
     }
         
     public Sprint getSprint() {
-        return currentSprint;
+        return currentSprint.get();
     }
 
     @Override
     protected Story doCreate() {
         Story story = new Story();
-        story.setSprint(currentSprint);
+        story.setSprint(getSprint());
         return story;
     }
 
     @Override
     protected void doPersist(Story story) {
         storyRepository.persist(story);
-        currentSprint.addStory(story);
+        getSprint().addStory(story);
     }
 
     @Override
     protected void doRemove(Story story) {
          storyRepository.remove(story);
-         currentSprint.removeStory(story);
+         getSprint().removeStory(story);
     }
     
     public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = storyRepository.countOtherStoriesWithName(currentSprint, getCurrentEntity(), newName);
+        long count = storyRepository.countOtherStoriesWithName(getSprint(), getCurrentEntity(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
         }
