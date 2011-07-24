@@ -65,8 +65,6 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
     private static final long serialVersionUID = 1L;
 
     private E currentEntity;
-
-    private boolean conversationNested;
     
     @Inject
     protected Conversation conversation;
@@ -84,21 +82,14 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         getLogger(getClass()).log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
     }
 
-    public boolean isConversationNested() {
-        return conversationNested;
-    }
-        
     public void beginConversation() {
         if (conversation.isTransient()) {
-            conversationNested = false;
             conversation.begin();
-        } else {
-            conversationNested = true;
         }
     }
     
     public void endConversation() {
-        if (!isConversationNested() && !conversation.isTransient()) {
+        if (!conversation.isTransient()) {
             conversation.end();
         }
         
