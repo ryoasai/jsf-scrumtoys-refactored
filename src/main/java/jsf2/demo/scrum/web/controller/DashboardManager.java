@@ -43,17 +43,15 @@ import jsf2.demo.scrum.domain.sprint.Sprint;
 import jsf2.demo.scrum.domain.story.Story;
 import jsf2.demo.scrum.domain.task.Task;
 
-import javax.annotation.PreDestroy;
-import javax.faces.model.ListDataModel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
-@SessionScoped
+@ConversationScoped
 public class DashboardManager extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -63,59 +61,49 @@ public class DashboardManager extends AbstractManager implements Serializable {
     private SprintManager sprintManager;
     @Inject
     private StoryManager storyManager;
-    private ListDataModel<Task> toDoTasks;
-    private ListDataModel<Task> workingTasks;
-    private ListDataModel<Task> doneTasks;
-
-    @PreDestroy
-    public void destroy() {
-        toDoTasks = null;
-        workingTasks = null;
-        doneTasks = null;
-    }
 
     public Sprint getSprint() {
-        return getSprintManager().getCurrentSprint();
+        return sprintManager.getCurrentSprint();
     }
 
     public List<Story> getStories() {
         return storyManager.getStories();
     }
 
-    public ListDataModel getToDoTasks() {
+    public List<Task> getToDoTasks() {
         List<Task> toDoTasksList = new ArrayList<Task>();
         if (sprintManager.getCurrentSprint() == null) {
-            return new ListDataModel(toDoTasksList);
+            return toDoTasksList;
         }
         for (Story story : storyManager.getStories()) {
             toDoTasksList.addAll(story.getTodoTasks());
         }
-        toDoTasks = new ListDataModel(toDoTasksList);
-        return toDoTasks;
+       
+        return toDoTasksList;
     }
 
-    public ListDataModel getWorkingTasks() {
+    public List<Task> getWorkingTasks() {
         List<Task> workingTasksList = new ArrayList<Task>();
         if (sprintManager.getCurrentSprint() == null) {
-            return new ListDataModel(workingTasksList);
+            return workingTasksList;
         }
         for (Story story : storyManager.getStories()) {
             workingTasksList.addAll(story.getWorkingTasks());
         }
-        workingTasks = new ListDataModel(workingTasksList);
-        return workingTasks;
+        
+        return workingTasksList;
     }
 
-    public ListDataModel getDoneTasks() {
+    public List<Task> getDoneTasks() {
         List doneTasksList = new ArrayList();
         if (sprintManager.getCurrentSprint() == null) {
-            return new ListDataModel(doneTasksList);
+            return doneTasksList;
         }
         for (Story story : storyManager.getStories()) {
             doneTasksList.addAll(story.getDoneTasks());
         }
-        doneTasks = new ListDataModel(doneTasksList);
-        return doneTasks;
+        
+        return doneTasksList;
     }
 
     private String editTask(Task currentTask) {
@@ -131,39 +119,16 @@ public class DashboardManager extends AbstractManager implements Serializable {
         return "/task/edit";
     }
 
-    public String editToDoTask() {
-        return editTask(toDoTasks.getRowData());
+    public String editToDoTask(Task task) {
+        return editTask(task);
     }
 
-    public String editDoneTask() {
-        return editTask(doneTasks.getRowData());
+    public String editDoneTask(Task task) {
+        return editTask(task);
     }
 
-    public String editWorkingTask() {
-        return editTask(workingTasks.getRowData());
+    public String editWorkingTask(Task task) {
+        return editTask(task);
     }
 
-    public TaskManager getTaskManager() {
-        return taskManager;
-    }
-
-    public void setTaskManager(TaskManager taskManager) {
-        this.taskManager = taskManager;
-    }
-
-    public SprintManager getSprintManager() {
-        return sprintManager;
-    }
-
-    public void setSprintManager(SprintManager sprintManager) {
-        this.sprintManager = sprintManager;
-    }
-
-    public StoryManager getStoryManager() {
-        return storyManager;
-    }
-
-    public void setStoryManager(StoryManager storyManager) {
-        this.storyManager = storyManager;
-    }
 }

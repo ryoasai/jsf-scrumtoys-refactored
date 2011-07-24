@@ -82,7 +82,7 @@ Other names may be trademarks of their respective owners.
                     <h:dataTable  value="#{dashboardManager.toDoTasks}" var="task" title="Todo Tasks">
                         <f:facet name="header"><h:outputText value="TO DO" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardManager.editToDoTask}">
+                            <scrum:postit action="#{dashboardManager.editToDoTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>
@@ -92,7 +92,7 @@ Other names may be trademarks of their respective owners.
                     <h:dataTable  value="#{dashboardManager.workingTasks}" var="task" title="Working Tasks">
                         <f:facet name="header"><h:outputText value="DOING" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardManager.editWorkingTask}">
+                            <scrum:postit action="#{dashboardManager.editWorkingTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>
@@ -102,7 +102,7 @@ Other names may be trademarks of their respective owners.
                     <h:dataTable  value="#{dashboardManager.doneTasks}" var="task" title="Done Tasks">
                         <f:facet name="header"><h:outputText value="DONE" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardManager.editDoneTask}">
+                            <scrum:postit action="#{dashboardManager.editDoneTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>

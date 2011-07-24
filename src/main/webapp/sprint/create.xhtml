@@ -51,7 +51,9 @@ Other names may be trademarks of their respective owners.
             #{i18n['sprint.create.title']}
         </ui:define>
         <ui:define name="navigationBar">
-            <h:commandLink   immediate="true" action="/project/show" value="#{i18n['sprint.form.label.projects']}"></h:commandLink>
+            <h:link outcome="/project/show" value="#{i18n['sprint.form.label.projects']}">
+                <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+            </h:link>
             #{i18n['navigation.separtor']}
             <h:commandLink   immediate="true" action="/project/edit"  value="#{sprintManager.project.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
