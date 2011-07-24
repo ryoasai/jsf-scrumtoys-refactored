@@ -46,9 +46,9 @@ Other names may be trademarks of their respective owners.
 
     <ui:composition template="template.xhtml">
         <f:metadata>
-            <f:viewParam name="skin" value="#{skinUrlManager.skin}" />
-            <f:event type="preRenderView" listener="#{skinUrlManager.update}" />
-            <f:event type="preRenderView" listener="#{projectManager.endConversation}" />
+            <f:viewParam name="skin" value="#{skinUrlAction.skin}" />
+            <f:event type="preRenderView" listener="#{skinUrlAction.update}" />
+            <f:event type="preRenderView" listener="#{projectAction.endConversation}" />
         </f:metadata>
         <ui:insert name="pageTitle">
             <h:outputText value="#{i18n['template.title']}"></h:outputText>

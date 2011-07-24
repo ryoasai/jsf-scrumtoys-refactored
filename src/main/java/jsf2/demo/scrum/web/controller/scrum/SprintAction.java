@@ -36,106 +36,124 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.web.controller.scrum;
 
 import jsf2.demo.scrum.domain.project.Project;
+import jsf2.demo.scrum.domain.sprint.Sprint;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
-import javax.ejb.Stateful;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
-import jsf2.demo.scrum.domain.project.ProjectRepository;
+import jsf2.demo.scrum.application.scrum_management.ScrumManager;
+import jsf2.demo.scrum.domain.sprint.SprintRepository;
 import jsf2.demo.scrum.infra.context.ViewScoped;
-import jsf2.demo.scrum.infra.entity.Current;
-import jsf2.demo.scrum.infra.manager.BaseCrudManager;
-import jsf2.demo.scrum.infra.repository.Repository;
+import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
 @ConversationScoped
-public class ProjectManager extends BaseCrudManager<Long, Project> implements Serializable {
+public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @Inject
-    private ProjectRepository projectRepository;
-
+    
     @Inject
     ScrumManager scrumManager;
     
-    @Override
-    public boolean isConversationNested() {
-        return false;
-    }
-        
-    public Project getCurrentProject() {
-        return scrumManager.getCurrentProject();
-    }
-    
-    @Override
-    protected void onSelectCurrentEntity(Project project) {
-        scrumManager.setCurrentProject(project);
+    @Inject
+    private SprintRepository sprintRepository;
+
+    public Sprint getCurrentSprint() {
+        return scrumManager.getCurrentSprint();
     }
 
     @Override
-    public void endConversation() {
-        scrumManager.setCurrentProject(null);
-        
-        super.endConversation();
+    protected void onSelectCurrentEntity(Sprint sprint) {
+        scrumManager.setCurrentSprint(sprint);
     }
 
-    
-    public void setCurrentProject(Project project) {
-        setCurrentEntity(project);
-    }
         
     @Produces @Named @ViewScoped
-    public List<Project> getProjects() {
-        return projectRepository.findByNamedQuery("project.getAll");
-    }    
+    public List<Sprint> getSprints() {
+        if (getProject() != null) {
+            return getProject().getSprints();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    public Project getProject() {
+        return scrumManager.getCurrentProject();
+    }   
 
     @Override
-    protected Project doCreate() {
-        return new Project();
+    public Sprint doCreate() {
+        return new Sprint();
     }
-
+    
     @Override
     protected void doSave() {
-        scrumManager.persistCurrentProject();
+        scrumManager.persistCurrentSprint();
     }
-        
+
     @Override
-    protected void doRemove(Project project) {
-        scrumManager.removeProject(project);
+    protected void doRemove(Sprint sprint) {
+        scrumManager.removeSprint(sprint);
     }
 
-    public void checkUniqueProjectName(FacesContext context, UIComponent component, Object newValue) {
+    /*
+     * This method can be pointed to by a validator methodExpression, such as:
+     *
+     * <h:inputText id="itName" value="#{sprintAction.currentSprint.name}" required="true"
+     *   requiredMessage="#{i18n['sprint.form.label.name.required']}" maxLength="30" size="30"
+     *   validator="#{sprintAction.checkUniqueSprintName}" />
+     */
+    public void checkUniqueSprintNameFacesValidatorMethod(FacesContext context, UIComponent component, Object newValue) {
+
         final String newName = (String) newValue;
-
-        long count = projectRepository.countOtherProjectsWithName(getCurrentProject(), newName);
-
-        if (count > 0) {
-            throw new ValidatorException(getFacesMessageForKey("project.form.label.name.unique"));
+        String message = checkUniqueSprintNameApplicationValidatorMethod(newName);
+        if (null != message) {
+            throw new ValidatorException(getFacesMessageForKey("sprint.form.label.name.unique"));
         }
     }
 
-    public String showSprints(Project project) {
-        setCurrentEntity(project);
-        return "showSprints";
+
+    /*
+     * This method is called by the JSR-303 SprintNameUniquenessConstraintValidator.
+     * If it returns non-null, the result must be interpreted as the localized
+     * validation message.
+     *
+     */
+    public String checkUniqueSprintNameApplicationValidatorMethod(String newValue) {
+        String message = null;
+
+        final String newName = (String) newValue;
+
+        long count = sprintRepository.countOtherSprintsWithName(getProject(), getCurrentEntity(), newName);
+
+        if (count > 0) {
+            message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
+        }
+
+        return message;
     }
 
-    public String viewSprints() {
-        return "/sprint/show";
+    public String showStories(Sprint sprint) {
+        setCurrentEntity(sprint);
+        return "showStories";
     }
 
+    public String showDashboard(Sprint sprint) {
+        setCurrentEntity(sprint);
+        return "showDashboard";
+    }
+    
 }

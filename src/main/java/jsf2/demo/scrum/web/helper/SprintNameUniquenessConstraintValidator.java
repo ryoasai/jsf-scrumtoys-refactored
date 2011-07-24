@@ -37,23 +37,25 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.domain.sprint;
+package jsf2.demo.scrum.web.helper;
 
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import jsf2.demo.scrum.web.controller.SprintManager;
+import jsf2.demo.scrum.domain.sprint.SprintNameUniquenessConstraint;
+import jsf2.demo.scrum.web.controller.scrum.SprintAction;
 
 public class SprintNameUniquenessConstraintValidator implements ConstraintValidator<SprintNameUniquenessConstraint, String> {
 
+    @Override
     public boolean isValid(String value, ConstraintValidatorContext ctx) {
         
         FacesContext context = FacesContext.getCurrentInstance();
-        SprintManager sprintManager = (SprintManager)
+        SprintAction sprintAction = (SprintAction)
                 context.getApplication().evaluateExpressionGet(context, 
-                "#{sprintManager}", SprintManager.class);
+                "#{sprintAction}", SprintAction.class);
         boolean result = true;
-        String message = sprintManager.
+        String message = sprintAction.
                 checkUniqueSprintNameApplicationValidatorMethod(value);
         if (null != message) {
             result = false;
@@ -66,6 +68,7 @@ public class SprintNameUniquenessConstraintValidator implements ConstraintValida
         return result;
     }
 
+    @Override
     public void initialize(SprintNameUniquenessConstraint arg0) {
     }
     

@@ -36,13 +36,13 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.application.scrum_management.impl;
 
 
-import jsf2.demo.scrum.infra.manager.*;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
@@ -54,6 +54,7 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import jsf2.demo.scrum.application.scrum_management.ScrumManager;
 import jsf2.demo.scrum.domain.project.Project;
 import jsf2.demo.scrum.domain.project.ProjectRepository;
 import jsf2.demo.scrum.domain.sprint.Sprint;
@@ -65,13 +66,16 @@ import jsf2.demo.scrum.domain.task.TaskRepository;
 import jsf2.demo.scrum.infra.entity.Current;
 
 /**
+ * Because of the limitation of extended persistence context progagation,
+ * all states related to a conversation must be consolidated to a single bean.
+ * 
  * @author Ryo Asai.
  */
-@Named
+@Named("scrumManager")
 @Stateful
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @ConversationScoped
-public class ScrumManager extends AbstractManager implements Serializable {
+public class ScrumManagerImpl implements ScrumManager, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -94,7 +98,14 @@ public class ScrumManager extends AbstractManager implements Serializable {
         
     @PersistenceContext(type= PersistenceContextType.EXTENDED)
     protected EntityManager em;
-            
+
+    protected Logger getLogger(Class<?> clazz) {
+        if (clazz == null) {
+            throw new IllegalArgumentException("Class for logger is required.");
+        }
+        return Logger.getLogger(clazz.getName());
+    }
+    
     @PostConstruct
     public void construct() {
         getLogger(getClass()).log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
@@ -105,12 +116,18 @@ public class ScrumManager extends AbstractManager implements Serializable {
         getLogger(getClass()).log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
     }
    
+    //=========================================================================
+    // Project Management
+    //=========================================================================
+    
     @Produces @Current @Named    
+    @Override
     public Project getCurrentProject() {
         return currentProject;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void setCurrentProject(Project currentProject) {
         if (currentProject == null || currentProject.isNew()) {
             this.currentProject = currentProject;
@@ -124,6 +141,7 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void persistCurrentProject() {
         if (currentProject == null) return;
         if (!currentProject.isNew()) return;
@@ -132,16 +150,23 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void removeProject(Project project) {
         projectRepository.remove(projectRepository.findById(project.getId()));
     }
 
+    //=========================================================================
+    // Sprint Management
+    //=========================================================================
+    
     @Produces @Current @Named    
+    @Override
     public Sprint getCurrentSprint() {
         return currentSprint;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void setCurrentSprint(Sprint currentSprint) {
         if (currentSprint == null || currentSprint.isNew()) {
             this.currentSprint = currentSprint;
@@ -154,6 +179,7 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
+    @Override
     public void persistCurrentSprint() {
         if (currentProject == null) return;
         if (currentSprint == null) return;
@@ -164,6 +190,7 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void removeSprint(Sprint sprint) {
         if (currentProject == null) return;
 
@@ -171,12 +198,18 @@ public class ScrumManager extends AbstractManager implements Serializable {
         currentProject.removeSprint(sprint);
     }
 
+    //=========================================================================
+    // Story Management
+    //=========================================================================
+    
     @Produces @Current @Named    
+    @Override
     public Story getCurrentStory() {
         return currentStory;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void setCurrentStory(Story currentStory) {
         if (currentStory == null || currentStory.isNew()) {
             this.currentStory = currentStory;
@@ -188,6 +221,7 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }    
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
+    @Override
     public void persistCurrentStory() {
         if (currentProject == null) return;
         if (currentSprint == null) return;
@@ -199,6 +233,7 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void removeStory(Story story) {
         if (currentSprint == null) return;
 
@@ -206,12 +241,18 @@ public class ScrumManager extends AbstractManager implements Serializable {
         currentSprint.removeStory(story);
     }
 
+    //=========================================================================
+    // Task Management
+    //=========================================================================
+    
     @Produces @Current @Named    
+    @Override
     public Task getCurrentTask() {
         return currentTask;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
+    @Override
     public void persistCurrentTask() {
         if (currentProject == null) return;
         if (currentSprint == null) return;
@@ -224,6 +265,7 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void removeTask(Task task) {
         if (currentStory == null) return;
 
@@ -232,6 +274,7 @@ public class ScrumManager extends AbstractManager implements Serializable {
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void setCurrentTask(Task currentTask) {
         if (currentTask == null || currentTask.isNew()) {
             this.currentTask = currentTask;

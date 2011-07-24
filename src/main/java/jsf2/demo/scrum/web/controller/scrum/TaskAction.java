@@ -36,40 +36,89 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+package jsf2.demo.scrum.web.controller.scrum;
 
-package jsf2.demo.scrum.web.controller;
+import jsf2.demo.scrum.domain.story.Story;
+import jsf2.demo.scrum.domain.task.Task;
 
-import jsf2.demo.scrum.infra.manager.AbstractManager;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import java.util.Collections;
+import java.util.List;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
+import jsf2.demo.scrum.application.scrum_management.ScrumManager;
+import jsf2.demo.scrum.domain.task.TaskRepository;
+import jsf2.demo.scrum.infra.context.ViewScoped;
+import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 
 /**
- *
  * @author Dr. Spock (spock at dev.java.net)
  */
-@Named("skinManager")
-@SessionScoped
-public class SkinManager extends AbstractManager implements Serializable {
+@Named
+@ConversationScoped
+public class TaskAction extends BaseCrudAction<Long, Task> implements Serializable {
 
-    private String selectedSkin;
+    private static final long serialVersionUID = 1L;
 
     @Inject
-    private SkinValuesManager skinValuesManager;
+    private TaskRepository taskRepository;
+    
+    @Inject
+    ScrumManager scrumManager;
 
-    @PostConstruct
-    public synchronized void construct() {
-        selectedSkin = skinValuesManager.getDefaultSkinCss();
-    }
-
-    public synchronized String getSelectedSkin() {
-        return selectedSkin;
-    }
-
-    public synchronized void setSelectedSkin(String selectedSkin) {
-        this.selectedSkin = selectedSkin;
+    @Produces @Named @ViewScoped
+    public List<Task> getTasks() {
+        if (getStory() != null) {
+            return getStory().getTasks();
+        } else {
+            return Collections.emptyList();
+        }
     }
     
+    public Task getCurrentTask() {
+        return scrumManager.getCurrentTask();
+    }
+
+    @Override
+    protected void onSelectCurrentEntity(Task task) {
+        scrumManager.setCurrentTask(task);
+    }
+
+    public Story getStory() {
+        return scrumManager.getCurrentStory();
+    }
+
+    @Override
+    protected Task doCreate() {
+        return new Task();
+    }
+
+    @Override
+    protected void doSave() {
+        scrumManager.persistCurrentTask();
+    }
+
+    @Override
+    protected void doRemove(Task task) {
+        scrumManager.removeTask(task);
+    }
+
+    public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
+        final String newName = (String) newValue;
+
+        long count = taskRepository.countOtherTasksWithName(getStory(), getCurrentEntity(), newName);
+        if (count > 0) {
+            throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
+        }
+    }
+
+    public String showStories() {
+        return "/story/show";
+    }
+ 
 }

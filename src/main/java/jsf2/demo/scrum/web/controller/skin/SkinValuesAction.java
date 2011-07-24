@@ -37,21 +37,64 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.infra.manager;
+package jsf2.demo.scrum.web.controller.skin;
+
+import java.io.Serializable;
+import javax.annotation.PostConstruct;
+
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ArrayList;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 /**
  *
- * @author Dr. Spock (spock at dev.java.net)
+ * @author edermag
  */
-public class ManagerException extends Exception {
+@Named
+@ApplicationScoped
+public class SkinValuesAction implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private Map<String, String> values;
 
-    public ManagerException(Throwable cause) {
-        super(cause);
+    private String defaultSkin = "blue";
+    
+    @PostConstruct
+    public void construct() {
+        values = new LinkedHashMap<String, String>();
+        values.put("yellow", "appYellowSkin.css");
+        values.put("orange", "appOrangeSkin.css");
+        values.put("red", "appRedSkin.css");
+        values.put(defaultSkin, "appBlueSkin.css");
     }
 
-    public ManagerException(String message, Throwable cause) {
-        super(message, cause);
+    @PreDestroy
+    public void destroy() {
+      if (null != values) {
+          values.clear();
+          values = null;
+      }
     }
+    
+    public String getSkinCss(String skin) {
+        if (!values.containsKey(skin))
+            return getDefaultSkinCss();
+        return values.get(skin);
+    }
+
+    public String getDefaultSkinCss() {
+        return values.get(defaultSkin);
+    }
+
+    public List<String> getNames() {
+        return new ArrayList<String>(values == null ? null : values.keySet());
+    }
+
+    public int getSize() {
+        return values.keySet().size();
+    }
+
 }

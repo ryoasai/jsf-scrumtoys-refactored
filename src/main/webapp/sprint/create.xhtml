@@ -55,7 +55,7 @@ Other names may be trademarks of their respective owners.
                 <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
             </h:link>
             #{i18n['navigation.separtor']}
-            <h:commandLink   immediate="true" action="/project/edit"  value="#{sprintManager.project.name}"></h:commandLink>
+            <h:commandLink   immediate="true" action="/project/edit"  value="#{sprintAction.project.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
             <h:outputText value="#{i18n['sprint.create.form.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
@@ -64,8 +64,8 @@ Other names may be trademarks of their respective owners.
                 <h:panelGrid columns="2" headerClass="tituloForm" footerClass="footerForm">
                     <ui:include src="form.xhtml" />
                     <f:facet name="footer">
-                        <h:commandButton rendered="#{sprintManager.project.name != null}" id="btnCreate" action="#{sprintManager.save}" value="#{i18n['sprint.create.button.create']}" styleClass="botaoPostIt" />
-                        <h:commandButton rendered="#{sprintManager.project.name != null}" id="btnCancel" action="show" value="#{i18n['sprint.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
+                        <h:commandButton rendered="#{sprintAction.project.name != null}" id="btnCreate" action="#{sprintAction.save}" value="#{i18n['sprint.create.button.create']}" styleClass="botaoPostIt" />
+                        <h:commandButton rendered="#{sprintAction.project.name != null}" id="btnCancel" action="show" value="#{i18n['sprint.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
                     </f:facet>
                 </h:panelGrid>
             </h:form>

@@ -36,7 +36,7 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.web.controller.scrum;
 
 import jsf2.demo.scrum.domain.sprint.Sprint;
 import jsf2.demo.scrum.domain.story.Story;
@@ -47,24 +47,18 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import javax.ejb.Stateful;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
+import jsf2.demo.scrum.application.scrum_management.ScrumManager;
 import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.infra.context.ViewScoped;
-import jsf2.demo.scrum.infra.entity.Current;
-import jsf2.demo.scrum.infra.manager.BaseCrudManager;
-import jsf2.demo.scrum.infra.repository.Repository;
+import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 
 @Named
 @ConversationScoped
-public class StoryManager extends BaseCrudManager<Long, Story> implements Serializable {
+public class StoryAction extends BaseCrudAction<Long, Story> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     

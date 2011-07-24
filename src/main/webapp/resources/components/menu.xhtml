@@ -54,7 +54,7 @@ Other names may be trademarks of their respective owners.
         <script type="text/javascript" language="javascript">
             window.onload = function() {
                 var changeProjectButton = document.getElementById("#{cc.clientId}:menuSelectProjectForm:changeProjectButton");
-                changeProjectButton.disabled = #{empty projectManager.currentProject};
+                changeProjectButton.disabled = #{empty projectAction.currentProject};
             }
             
             function onProjectSelected(item) {
@@ -89,13 +89,13 @@ Other names may be trademarks of their respective owners.
 
                     <td>
                         <h:outputLabel for="prjectCombo" value="#{i18n['home.project.combo.label']}" styleClass="formLabel" />
-                        <h:selectOneMenu id="prjectCombo" onchange="onProjectSelected(this)" hideNoSelectionOption="#{not empty projectManager.currentProject}" value="#{projectManager.currentProject}" styleClass="formInput" converter="projectConverter">
+                        <h:selectOneMenu id="prjectCombo" onchange="onProjectSelected(this)" hideNoSelectionOption="#{not empty projectAction.currentProject}" value="#{projectAction.currentProject}" styleClass="formInput" converter="projectConverter">
                             <f:selectItem noSelectionOption="true" itemLabel="#{i18n['home.project.combo.default.item']}" />
                             <f:selectItems value="#{projects}" var="project" itemLabel="#{project.name}" itemValue="#{project}" />
                         </h:selectOneMenu>
                     </td>
                     <td>
-                        <h:commandButton id="changeProjectButton" value="#{i18n['menuitem.button.changeProject']}" action="#{projectManager.viewSprints}" />
+                        <h:commandButton id="changeProjectButton" value="#{i18n['menuitem.button.changeProject']}" action="#{projectAction.viewSprints}" />
                     </td>
                 </tr>
                 <tr>

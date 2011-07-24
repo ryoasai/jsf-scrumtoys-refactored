@@ -36,7 +36,7 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jsf2.demo.scrum.infra.manager;
+package jsf2.demo.scrum.infra.web.controller;
 
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -53,7 +53,7 @@ import jsf2.demo.scrum.infra.entity.AbstractEntity;
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-public abstract class AbstractManager {
+public abstract class AbstractAction {
 
     protected void addMessage(String message) {
         addMessage(null, message, FacesMessage.SEVERITY_INFO);

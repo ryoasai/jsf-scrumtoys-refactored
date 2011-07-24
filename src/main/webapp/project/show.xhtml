@@ -47,7 +47,7 @@ Other names may be trademarks of their respective owners.
       xmlns:f="http://java.sun.com/jsf/core">
 
     <f:metadata>
-        <f:event type="preRenderView" listener="#{projectManager.endConversation}" />
+        <f:event type="preRenderView" listener="#{projectAction.endConversation}" />
     </f:metadata>
 
     <ui:composition template="/template.xhtml">
@@ -91,13 +91,13 @@ Other names may be trademarks of their respective owners.
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{i18n['project.show.table.header.actions']}</f:facet>
-                        <h:commandButton styleClass="botaoPostIt" action="#{projectManager.edit(project)}" value="#{i18n['project.show.button.edit']}"  />
-                        <h:commandButton styleClass="botaoPostIt" action="#{projectManager.remove(project)}" value="#{i18n['project.show.button.delete']}"  />
-                        <h:commandButton styleClass="botaoPostIt" action="#{projectManager.showSprints(project)}" value="#{i18n['project.show.button.showSprints']}"  />
+                        <h:commandButton styleClass="botaoPostIt" action="#{projectAction.edit(project)}" value="#{i18n['project.show.button.edit']}"  />
+                        <h:commandButton styleClass="botaoPostIt" action="#{projectAction.remove(project)}" value="#{i18n['project.show.button.delete']}"  />
+                        <h:commandButton styleClass="botaoPostIt" action="#{projectAction.showSprints(project)}" value="#{i18n['project.show.button.showSprints']}"  />
                     </h:column>
 
                 </h:dataTable>
-                <h:commandButton styleClass="botaoPostIt" action="#{projectManager.create}" value="#{i18n['project.show.button.newProject']}"  />
+                <h:commandButton styleClass="botaoPostIt" action="#{projectAction.create}" value="#{i18n['project.show.button.newProject']}"  />
             </h:form>
         </ui:define>
     </ui:composition>

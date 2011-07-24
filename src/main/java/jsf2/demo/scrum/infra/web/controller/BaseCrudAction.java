@@ -36,7 +36,7 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jsf2.demo.scrum.infra.manager;
+package jsf2.demo.scrum.infra.web.controller;
 
 
 import javax.annotation.PostConstruct;
@@ -59,7 +59,7 @@ import jsf2.demo.scrum.infra.repository.Repository;
  * @author Ryo Asai.
  */
 @Named
-public abstract class BaseCrudManager<K extends Serializable, E extends PersistentEntity<K>> extends AbstractManager implements Serializable {
+public abstract class BaseCrudAction<K extends Serializable, E extends PersistentEntity<K>> extends AbstractAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

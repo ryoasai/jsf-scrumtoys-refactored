@@ -38,6 +38,7 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.domain.sprint;
 
+import jsf2.demo.scrum.web.helper.SprintNameUniquenessConstraintValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

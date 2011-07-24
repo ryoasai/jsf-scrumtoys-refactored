@@ -37,9 +37,9 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.web.controller.skin;
 
-import jsf2.demo.scrum.infra.manager.AbstractManager;
+import jsf2.demo.scrum.infra.web.controller.AbstractAction;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -51,15 +51,15 @@ import javax.inject.Named;
  */
 @Named
 @RequestScoped
-public class SkinUrlManager extends AbstractManager implements Serializable {
+public class SkinUrlAction extends AbstractAction implements Serializable {
 
     private String skin;
 
     @Inject
-    private SkinManager skinManager;
+    private SkinAction skinAction;
     
     @Inject
-    private SkinValuesManager skinValuesManager;
+    private SkinValuesAction skinValuesAction;
     
     public String getSkin() {
         return skin;
@@ -72,24 +72,8 @@ public class SkinUrlManager extends AbstractManager implements Serializable {
     public void update() {
         if (skin == null ||"".equals(skin))
             return;
-        String skinCss = skinValuesManager.getSkinCss(skin.toLowerCase());
-        skinManager.setSelectedSkin(skinCss);
-    }
-
-    public SkinManager getSkinManager() {
-        return skinManager;
-    }
-
-    public void setSkinManager(SkinManager skinManager) {
-        this.skinManager = skinManager;
-    }
-
-    public SkinValuesManager getSkinValuesManager() {
-        return skinValuesManager;
-    }
-
-    public void setSkinValuesManager(SkinValuesManager skinValuesManager) {
-        this.skinValuesManager = skinValuesManager;
+        String skinCss = skinValuesAction.getSkinCss(skin.toLowerCase());
+        skinAction.setSelectedSkin(skinCss);
     }
 
 }

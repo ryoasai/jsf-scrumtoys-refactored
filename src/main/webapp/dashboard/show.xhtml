@@ -49,8 +49,8 @@ Other names may be trademarks of their respective owners.
 
     <ui:composition template="/template.xhtml">
         <f:metadata>
-            <f:viewParam name="skin" value="#{skinUrlManager.skin}" />
-            <f:event type="preRenderView" listener="#{skinUrlManager.update}" />
+            <f:viewParam name="skin" value="#{skinUrlAction.skin}" />
+            <f:event type="preRenderView" listener="#{skinUrlAction.update}" />
         </f:metadata>
         <ui:define name="pageTitle">
             <h:outputText value="#{i18n['story.show.title']}"></h:outputText>
@@ -59,7 +59,7 @@ Other names may be trademarks of their respective owners.
         <ui:define name="navigationBar">
             <h:commandLink   immediate="true" action="/project/show" value="#{i18n['navigation.projects']}"></h:commandLink>
             <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
-            <h:commandLink   immediate="true" action="/project/edit"  value="#{sprintManager.project.name}"></h:commandLink>
+            <h:commandLink   immediate="true" action="/project/edit"  value="#{sprintAction.project.name}"></h:commandLink>
             <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
             <h:commandLink   immediate="true" action="/sprint/show" value="#{i18n['navigation.sprints']}"></h:commandLink>
             <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
@@ -79,30 +79,30 @@ Other names may be trademarks of their respective owners.
                         </h:column>
                     </h:dataTable>
 
-                    <h:dataTable  value="#{dashboardManager.toDoTasks}" var="task" title="Todo Tasks">
+                    <h:dataTable  value="#{dashboardAction.toDoTasks}" var="task" title="Todo Tasks">
                         <f:facet name="header"><h:outputText value="TO DO" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardManager.editToDoTask(task)}">
+                            <scrum:postit action="#{dashboardAction.editToDoTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>
                         </h:column>
                     </h:dataTable>
 
-                    <h:dataTable  value="#{dashboardManager.workingTasks}" var="task" title="Working Tasks">
+                    <h:dataTable  value="#{dashboardAction.workingTasks}" var="task" title="Working Tasks">
                         <f:facet name="header"><h:outputText value="DOING" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardManager.editWorkingTask(task)}">
+                            <scrum:postit action="#{dashboardAction.editWorkingTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>
                         </h:column>
                     </h:dataTable>
 
-                    <h:dataTable  value="#{dashboardManager.doneTasks}" var="task" title="Done Tasks">
+                    <h:dataTable  value="#{dashboardAction.doneTasks}" var="task" title="Done Tasks">
                         <f:facet name="header"><h:outputText value="DONE" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardManager.editDoneTask(task)}">
+                            <scrum:postit action="#{dashboardAction.editDoneTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>

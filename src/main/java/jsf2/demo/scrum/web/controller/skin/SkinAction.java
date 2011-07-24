@@ -37,64 +37,39 @@ Other names may be trademarks of their respective owners.
  * holder.
  */
 
-package jsf2.demo.scrum.web.controller;
+package jsf2.demo.scrum.web.controller.skin;
 
+import jsf2.demo.scrum.infra.web.controller.AbstractAction;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ArrayList;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
  *
- * @author edermag
+ * @author Dr. Spock (spock at dev.java.net)
  */
 @Named
-@ApplicationScoped
-public class SkinValuesManager implements Serializable {
+@SessionScoped
+public class SkinAction extends AbstractAction implements Serializable {
 
-    private Map<String, String> values;
+    private String selectedSkin;
 
-    private String defaultSkin = "blue";
-    
+    @Inject
+    private SkinValuesAction skinValuesAction;
+
     @PostConstruct
-    public void construct() {
-        values = new LinkedHashMap<String, String>();
-        values.put("yellow", "appYellowSkin.css");
-        values.put("orange", "appOrangeSkin.css");
-        values.put("red", "appRedSkin.css");
-        values.put(defaultSkin, "appBlueSkin.css");
+    public synchronized void construct() {
+        selectedSkin = skinValuesAction.getDefaultSkinCss();
     }
 
-    @PreDestroy
-    public void destroy() {
-      if (null != values) {
-          values.clear();
-          values = null;
-      }
+    public synchronized String getSelectedSkin() {
+        return selectedSkin;
+    }
+
+    public synchronized void setSelectedSkin(String selectedSkin) {
+        this.selectedSkin = selectedSkin;
     }
     
-    protected String getSkinCss(String skin) {
-        if (!values.containsKey(skin))
-            return getDefaultSkinCss();
-        return values.get(skin);
-    }
-
-    protected String getDefaultSkinCss() {
-        return values.get(defaultSkin);
-    }
-
-    public List<String> getNames() {
-        return new ArrayList<String>(values == null ? null : values.keySet());
-    }
-
-    public int getSize() {
-        return values.keySet().size();
-    }
-
 }
