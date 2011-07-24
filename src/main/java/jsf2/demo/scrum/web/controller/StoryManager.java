@@ -96,11 +96,15 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
 
     @Override
     protected Story doCreate() {
-        Story story = new Story();
-        getSprint().addStory(story);
-        
-        return story;
+        return new Story();
     }
+
+    @Override
+    protected void doPersist(Story story) {
+        getSprint().addStory(story);
+        getRepository().persist(story);
+    }
+        
 
     @Override
     protected void doRemove(Story story) {

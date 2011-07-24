@@ -98,12 +98,16 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
 
     @Override
     protected Task doCreate() {
-        Task task = new Task();
-        getStory().addTask(task);
-        
-        return task;
+        return new Task();
     }
 
+    @Override
+    protected void doPersist(Task task) {
+        getStory().addTask(task);
+        getRepository().persist(task);
+    }
+        
+    
     @Override
     protected void doRemove(Task task) {
         taskRepository.remove(task);

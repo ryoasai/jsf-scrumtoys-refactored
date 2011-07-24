@@ -69,7 +69,7 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
     private boolean conversationNested;
     
     @Inject
-    private Conversation conversation;
+    protected Conversation conversation;
 
     @PersistenceContext(type= PersistenceContextType.EXTENDED)
     protected EntityManager em;
@@ -84,6 +84,10 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in conversation");
     }
 
+    public boolean isConversationNested() {
+        return conversationNested;
+    }
+        
     public void beginConversation() {
         if (conversation.isTransient()) {
             conversationNested = false;
@@ -94,7 +98,7 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
     }
     
     public void endConversation() {
-        if (!conversationNested && !conversation.isTransient()) {
+        if (!isConversationNested() && !conversation.isTransient()) {
             conversation.end();
         }
     }

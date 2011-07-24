@@ -99,10 +99,13 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
 
     @Override
     public Sprint doCreate() {
-        Sprint sprint = new Sprint();
+        return new Sprint();
+    }
+    
+    @Override
+    protected void doPersist(Sprint sprint) {
         getProject().addSprint(sprint);
-        
-        return sprint;
+        getRepository().persist(sprint);
     }
 
     @Override

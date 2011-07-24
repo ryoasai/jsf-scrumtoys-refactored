@@ -72,11 +72,15 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
     @Inject
     private ProjectRepository projectRepository;
 
+    @Override
+    public boolean isConversationNested() {
+        // This entity has always a root conversation.
+        return false;
+    }
+    
     @Produces @Current @Named
     public Project getCurrentProject() {
-        Project project = getCurrentEntity();
-                
-        return project;
+        return getCurrentEntity();
     }
 
     public void setCurrentProject(Project project) {
