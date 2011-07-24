@@ -90,7 +90,7 @@ Other names may be trademarks of their respective owners.
 
                         <h:column>
                             <f:facet name="header">
-                               #{i18n['task.show.table.header.name']}
+                                #{i18n['task.show.table.header.name']}
                             </f:facet>
                             <h:outputText value="#{task.name}" />
                         </h:column>
@@ -104,7 +104,7 @@ Other names may be trademarks of their respective owners.
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                               #{i18n['task.show.table.header.endDate']}
+                                #{i18n['task.show.table.header.endDate']}
                             </f:facet>
                             <h:outputText value="#{task.endDate}">
                                 <f:convertDateTime pattern="#{i18n['task.show.table.header.endDate.pattern']}" />
@@ -133,7 +133,9 @@ Other names may be trademarks of their respective owners.
                     <f:facet name="footer">
                         <h:commandButton styleClass="botaoPostIt" action="#{taskManager.create}" value="#{i18n['task.show.button.newTask']}"  />
                         <h:commandButton styleClass="botaoPostIt" action="#{taskManager.showStories}" value="#{i18n['task.show.button.showStories']}"  />
-                        <h:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
+                     <h:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" >
+                            <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+                        </h:button>
                     </f:facet>
                 </h:panelGrid>
             </h:form>

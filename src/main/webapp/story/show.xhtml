@@ -119,7 +119,9 @@ Other names may be trademarks of their respective owners.
                     <f:facet name="footer">
                         <h:commandButton styleClass="botaoPostIt" action="#{storyManager.create}" value="#{i18n['story.show.button.newStory']}"  />
                         <h:commandButton styleClass="botaoPostIt" action="showSprints" value="#{i18n['story.show.button.showSprints']}"  />
-                        <h:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
+                        <h:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" >
+                            <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+                        </h:button>
                     </f:facet>
                 </h:panelGrid>
             </h:form>

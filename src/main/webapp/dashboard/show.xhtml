@@ -69,7 +69,7 @@ Other names may be trademarks of their respective owners.
         <ui:define name="content">
             <h:form id="frmListStories">
                 <h:panelGrid columns="5">                    
-                    <h:dataTable value="#{dashboardManager.stories}" var="story" rendered="#{dashboardManager.stories.rowCount > 0}" border="0" id="dtStories" >
+                    <h:dataTable value="#{dashboardManager.stories}" var="story" rendered="#{not empty dashboardManager.stories}" border="0" id="dtStories" >
                         <h:column>
                             <f:facet name="header"><h:outputText value="STORIES" /></f:facet>
                             <scrum:bigPostit>
