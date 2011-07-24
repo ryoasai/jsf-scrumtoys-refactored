@@ -39,12 +39,12 @@ Other names may be trademarks of their respective owners.
 package jsf2.demo.scrum.web.controller;
 
 import jsf2.demo.scrum.infra.manager.AbstractManager;
-import jsf2.demo.scrum.domain.sprint.Sprint;
 import jsf2.demo.scrum.domain.story.Story;
 import jsf2.demo.scrum.domain.task.Task;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
@@ -62,19 +62,12 @@ public class DashboardManager extends AbstractManager implements Serializable {
     @Inject
     private StoryManager storyManager;
 
-    public Sprint getSprint() {
-        return sprintManager.getCurrentSprint();
-    }
-
-    public List<Story> getStories() {
-        return storyManager.getStories();
-    }
-
     public List<Task> getToDoTasks() {
-        List<Task> toDoTasksList = new ArrayList<Task>();
         if (sprintManager.getCurrentSprint() == null) {
-            return toDoTasksList;
+            return Collections.emptyList();
         }
+
+        List<Task> toDoTasksList = new ArrayList<Task>();
         for (Story story : storyManager.getStories()) {
             toDoTasksList.addAll(story.getTodoTasks());
         }
@@ -83,10 +76,11 @@ public class DashboardManager extends AbstractManager implements Serializable {
     }
 
     public List<Task> getWorkingTasks() {
-        List<Task> workingTasksList = new ArrayList<Task>();
         if (sprintManager.getCurrentSprint() == null) {
-            return workingTasksList;
+            return Collections.emptyList();
         }
+
+        List<Task> workingTasksList = new ArrayList<Task>();
         for (Story story : storyManager.getStories()) {
             workingTasksList.addAll(story.getWorkingTasks());
         }
@@ -95,28 +89,16 @@ public class DashboardManager extends AbstractManager implements Serializable {
     }
 
     public List<Task> getDoneTasks() {
-        List doneTasksList = new ArrayList();
         if (sprintManager.getCurrentSprint() == null) {
-            return doneTasksList;
+            return Collections.emptyList();
         }
+
+        List<Task> doneTasksList = new ArrayList<Task>();
         for (Story story : storyManager.getStories()) {
             doneTasksList.addAll(story.getDoneTasks());
         }
         
         return doneTasksList;
-    }
-
-    private String editTask(Task currentTask) {
-        if (currentTask == null) {
-            return "";
-        }
-
-        taskManager.setCurrentEntity(currentTask);
-        Story currentStory = storyManager.getCurrentStory();
-        if (currentStory != currentTask.getStory()) {
-            storyManager.setCurrentEntity(currentTask.getStory());
-        }
-        return "/task/edit";
     }
 
     public String editToDoTask(Task task) {
@@ -130,5 +112,17 @@ public class DashboardManager extends AbstractManager implements Serializable {
     public String editWorkingTask(Task task) {
         return editTask(task);
     }
+    
+    private String editTask(Task currentTask) {
+        if (currentTask == null) {
+            return "";
+        }
 
+        taskManager.setCurrentEntity(currentTask);
+        Story currentStory = storyManager.getCurrentStory();
+        if (currentStory != currentTask.getStory()) {
+            storyManager.setCurrentEntity(currentTask.getStory());
+        }
+        return "/task/edit";
+    }
 }

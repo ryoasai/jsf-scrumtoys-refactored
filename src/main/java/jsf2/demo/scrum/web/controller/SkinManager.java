@@ -60,24 +60,16 @@ public class SkinManager extends AbstractManager implements Serializable {
     private SkinValuesManager skinValuesManager;
 
     @PostConstruct
-    public void construct() {
+    public synchronized void construct() {
         selectedSkin = skinValuesManager.getDefaultSkinCss();
     }
 
-    public String getSelectedSkin() {
+    public synchronized String getSelectedSkin() {
         return selectedSkin;
     }
 
-    public void setSelectedSkin(String selectedSkin) {
+    public synchronized void setSelectedSkin(String selectedSkin) {
         this.selectedSkin = selectedSkin;
-    }
-
-    public SkinValuesManager getSkinValuesManager() {
-        return skinValuesManager;
-    }
-
-    public void setSkinValuesManager(SkinValuesManager skinValuesManager) {
-        this.skinValuesManager = skinValuesManager;
     }
     
 }
