@@ -101,6 +101,8 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         if (!isConversationNested() && !conversation.isTransient()) {
             conversation.end();
         }
+        
+        this.currentEntity = null;
     }
     
     public E getCurrentEntity() {

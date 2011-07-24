@@ -53,8 +53,12 @@ Other names may be trademarks of their respective owners.
     <composite:implementation>
 
         <li>
-            <h:outputLink  value="#{destination}" rendered="#{label!=''}">
+            <h:outputLink  value="#{destination}" rendered="#{empty javax.enterprise.context.conversation.id and label!=''}">
                 <h:outputText value="#{label}" />
+            </h:outputLink>
+            <h:outputLink  value="#{destination}" rendered="#{not empty javax.enterprise.context.conversation.id and label!=''}">
+                <h:outputText value="#{label}" />
+                <f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />             
             </h:outputLink>
         </li>
 
