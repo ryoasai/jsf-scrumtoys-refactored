@@ -39,6 +39,9 @@ Other names may be trademarks of their respective owners.
  
 package jsf2.demo.scrum.web.helper;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.NamingException;
 import jsf2.demo.scrum.domain.project.Project;
 
 import javax.faces.component.UIComponent;
@@ -46,8 +49,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
-import java.util.HashMap;
-import java.util.Map;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import jsf2.demo.scrum.domain.project.ProjectRepository;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
@@ -55,15 +59,26 @@ import java.util.Map;
 @FacesConverter("projectConverter")
 public class ProjectConverter implements Converter {
 
-    private static Map<Long, Project> cache = new HashMap<Long, Project>();
-
+    // CDI injection does not work, we have to do manual lookup.
+    private ProjectRepository getProjectRepository() {
+        Context ctx;
+        try {
+            ctx = new InitialContext();
+            return (ProjectRepository) ctx.lookup("java:module/ProjectRepository");
+        } catch (NamingException ex) {
+            Logger.getLogger(ProjectConverter.class.getName()).log(Level.SEVERE, null, ex);
+            
+            throw new RuntimeException(ex);
+        }
+    }
+    
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         if (value == null && value.equals("0")) {
             return null;
         }
         try {
-            return cache.get(Long.parseLong(value));
+            return getProjectRepository().findById(Long.parseLong(value));
         } catch (NumberFormatException e) {
             throw new ConverterException("Invalid value: " + value, e);
         }
@@ -76,7 +91,6 @@ public class ProjectConverter implements Converter {
         Project project = (Project) object;
         Long id = project.getId();
         if (id != null) {
-            cache.put(id, project);
             return String.valueOf(id.longValue());
         } else {
             return "0";
