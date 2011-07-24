@@ -64,23 +64,26 @@ import jsf2.demo.scrum.infra.repository.Repository;
 
 @Named
 @ConversationScoped
-@Stateful
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class StoryManager extends BaseCrudManager<Long, Story> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    @Inject @Current
-    Instance<Sprint> currentSprint;
+    @Inject
+    ScrumManager scrumManager;
    
     @Inject 
     private StoryRepository storyRepository;
 
-    @Produces @Current @Named
     public Story getCurrentStory() {
-        return getCurrentEntity();
+        return scrumManager.getCurrentStory();
     }
 
+    @Override
+    protected void onSelectCurrentEntity(Story story) {
+        scrumManager.setCurrentStory(story);
+    }
+
+    
     @Produces @Named @ViewScoped
     public List<Story> getStories() {
         if (getSprint() != null) {
@@ -91,7 +94,7 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
     }
         
     public Sprint getSprint() {
-        return em.find(Sprint.class, currentSprint.get().getId());
+        return scrumManager.getCurrentSprint();
     }
 
     @Override
@@ -100,15 +103,13 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
     }
 
     @Override
-    protected void doPersist(Story story) {
-        getRepository().persist(story);
-        getSprint().addStory(story);
+    protected void doSave() {
+        scrumManager.persistCurrentStory();
     }
 
     @Override
     protected void doRemove(Story story) {
-         storyRepository.remove(story);
-         getSprint().removeStory(story);
+        scrumManager.removeStory(story);
     }
     
     public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
@@ -125,8 +126,4 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
         return "showTasks";
     }
     
-    @Override
-    protected Repository<Long, Story> getRepository() {
-        return storyRepository;
-    }    
 }

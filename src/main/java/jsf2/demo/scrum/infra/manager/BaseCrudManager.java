@@ -59,7 +59,6 @@ import jsf2.demo.scrum.infra.repository.Repository;
  * @author Ryo Asai.
  */
 @Named
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public abstract class BaseCrudManager<K extends Serializable, E extends PersistentEntity<K>> extends AbstractManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -71,9 +70,6 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
     @Inject
     protected Conversation conversation;
 
-    @PersistenceContext(type= PersistenceContextType.EXTENDED)
-    protected EntityManager em;
-            
     @PostConstruct
     public void construct() {
         getLogger(getClass()).log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
@@ -109,8 +105,9 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         return currentEntity;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void setCurrentEntity(E currentEntity) {
+        onSelectCurrentEntity(currentEntity);
+        
         if (currentEntity == null) {
             this.currentEntity = currentEntity;
             endConversation();
@@ -119,14 +116,11 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         
         beginConversation();
         
-        if (currentEntity.isNew()) {
-            this.currentEntity = currentEntity;
-        } else {
-            this.currentEntity = findById(currentEntity.getId());
-        }
+        this.currentEntity = currentEntity;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    protected abstract void onSelectCurrentEntity(E currentEntity);
+            
     public String create() {
         E entity = doCreate();
 
@@ -135,28 +129,17 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         return "create?faces-redirect=true";
     }
 
-    protected abstract Repository<K, E> getRepository();
-    
     protected abstract E doCreate();
     
-    public E findById(K id) {
-        return getRepository().findById(id);
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String edit(E entity) {
-        // set managed entity
         setCurrentEntity(entity);
         
         return "edit?faces-redirect=true";
     }
     
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String save() {                
         if (currentEntity != null) {
-            if (currentEntity.isNew()) {
-                doPersist(currentEntity);
-            }
+            doSave();
         }
         
         endConversation();
@@ -164,11 +147,8 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         return "show?faces-redirect=true";
     }
     
-    protected void doPersist(E project) {
-        getRepository().persist(project);
-    }
+    protected abstract void doSave();
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String remove(E entity) {
         if (entity != null) {
             doRemove(entity);

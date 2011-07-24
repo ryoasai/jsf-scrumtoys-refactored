@@ -63,8 +63,6 @@ import jsf2.demo.scrum.infra.repository.Repository;
  */
 @Named
 @ConversationScoped
-@Stateful
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProjectManager extends BaseCrudManager<Long, Project> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -72,16 +70,31 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
     @Inject
     private ProjectRepository projectRepository;
 
+    @Inject
+    ScrumManager scrumManager;
+    
     @Override
     public boolean isConversationNested() {
         return false;
     }
         
-    @Produces @Current @Named
     public Project getCurrentProject() {
-        return getCurrentEntity();
+        return scrumManager.getCurrentProject();
+    }
+    
+    @Override
+    protected void onSelectCurrentEntity(Project project) {
+        scrumManager.setCurrentProject(project);
     }
 
+    @Override
+    public void endConversation() {
+        scrumManager.setCurrentProject(null);
+        
+        super.endConversation();
+    }
+
+    
     public void setCurrentProject(Project project) {
         setCurrentEntity(project);
     }
@@ -95,10 +108,15 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
     protected Project doCreate() {
         return new Project();
     }
+
+    @Override
+    protected void doSave() {
+        scrumManager.persistCurrentProject();
+    }
         
     @Override
     protected void doRemove(Project project) {
-        projectRepository.remove(project);
+        scrumManager.removeProject(project);
     }
 
     public void checkUniqueProjectName(FacesContext context, UIComponent component, Object newValue) {
@@ -113,7 +131,6 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
 
     public String showSprints(Project project) {
         setCurrentEntity(project);
-        
         return "showSprints";
     }
 
@@ -121,8 +138,4 @@ public class ProjectManager extends BaseCrudManager<Long, Project> implements Se
         return "/sprint/show";
     }
 
-    @Override
-    protected Repository<Long, Project> getRepository() {
-        return projectRepository;
-    }
 }

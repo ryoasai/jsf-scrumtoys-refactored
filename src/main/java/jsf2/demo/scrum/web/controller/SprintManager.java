@@ -67,23 +67,26 @@ import jsf2.demo.scrum.infra.repository.Repository;
  */
 @Named
 @ConversationScoped
-@Stateful
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class SprintManager extends BaseCrudManager<Long, Sprint> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    @Inject @Current
-    Instance<Project> currentProject;
+    @Inject
+    ScrumManager scrumManager;
     
     @Inject
     private SprintRepository sprintRepository;
 
-    @Produces @Current @Named
     public Sprint getCurrentSprint() {
-        return getCurrentEntity();
+        return scrumManager.getCurrentSprint();
     }
 
+    @Override
+    protected void onSelectCurrentEntity(Sprint sprint) {
+        scrumManager.setCurrentSprint(sprint);
+    }
+
+        
     @Produces @Named @ViewScoped
     public List<Sprint> getSprints() {
         if (getProject() != null) {
@@ -94,7 +97,7 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
     }
     
     public Project getProject() {
-        return em.find(Project.class, currentProject.get().getId());
+        return scrumManager.getCurrentProject();
     }   
 
     @Override
@@ -103,15 +106,13 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
     }
     
     @Override
-    protected void doPersist(Sprint sprint) {
-        getProject().addSprint(sprint);
-        getRepository().persist(sprint);
+    protected void doSave() {
+        scrumManager.persistCurrentSprint();
     }
 
     @Override
     protected void doRemove(Sprint sprint) {
-        sprintRepository.remove(sprint);
-        getProject().removeSprint(sprint);
+        scrumManager.removeSprint(sprint);
     }
 
     /*
@@ -161,9 +162,4 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
         return "showDashboard";
     }
     
-    @Override
-    protected Repository<Long, Sprint> getRepository() {
-        return sprintRepository;
-    }
-
 }

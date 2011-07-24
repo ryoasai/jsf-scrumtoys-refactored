@@ -61,7 +61,7 @@ public class DashboardManager extends AbstractManager implements Serializable {
     private SprintManager sprintManager;
     @Inject
     private StoryManager storyManager;
-
+    
     public List<Task> getToDoTasks() {
         if (sprintManager.getCurrentSprint() == null) {
             return Collections.emptyList();
@@ -118,11 +118,14 @@ public class DashboardManager extends AbstractManager implements Serializable {
             return "";
         }
 
-        taskManager.setCurrentEntity(currentTask);
+
         Story currentStory = storyManager.getCurrentStory();
         if (currentStory != currentTask.getStory()) {
             storyManager.setCurrentEntity(currentTask.getStory());
         }
+        
+        taskManager.setCurrentEntity(currentTask);        
+        
         return "/task/edit";
     }
 }

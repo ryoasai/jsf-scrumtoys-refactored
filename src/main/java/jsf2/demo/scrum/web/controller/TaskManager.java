@@ -66,8 +66,6 @@ import jsf2.demo.scrum.infra.repository.Repository;
  */
 @Named
 @ConversationScoped
-@Stateful
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class TaskManager extends BaseCrudManager<Long, Task> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -75,8 +73,8 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     @Inject
     private TaskRepository taskRepository;
     
-    @Inject @Current
-    private Instance<Story> currentStory;
+    @Inject
+    ScrumManager scrumManager;
 
     @Produces @Named @ViewScoped
     public List<Task> getTasks() {
@@ -87,13 +85,17 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
         }
     }
     
-    @Produces @Current @Named
     public Task getCurrentTask() {
-        return getCurrentEntity();
+        return scrumManager.getCurrentTask();
+    }
+
+    @Override
+    protected void onSelectCurrentEntity(Task task) {
+        scrumManager.setCurrentTask(task);
     }
 
     public Story getStory() {
-        return em.find(Story.class, currentStory.get().getId());
+        return scrumManager.getCurrentStory();
     }
 
     @Override
@@ -102,15 +104,13 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     }
 
     @Override
-    protected void doPersist(Task task) {
-        getStory().addTask(task);
-        getRepository().persist(task);
+    protected void doSave() {
+        scrumManager.persistCurrentTask();
     }
 
     @Override
     protected void doRemove(Task task) {
-        taskRepository.remove(task);
-        getStory().removeTask(task);
+        scrumManager.removeTask(task);
     }
 
     public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
@@ -126,8 +126,4 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
         return "/story/show";
     }
  
-    @Override
-    protected Repository<Long, Task> getRepository() {
-        return taskRepository;
-    }       
 }
