@@ -60,7 +60,7 @@ Other names may be trademarks of their respective owners.
 
     <h:body>
         <div align="center">
-            <h:panelGrid  width="990">
+            <h:panelGrid id="grid" width="990">
                 <scrum:menu>
                     <ui:param name="image" value="/resources/images/menu/barraSuperior-04.png"></ui:param>
                 </scrum:menu>
@@ -70,17 +70,17 @@ Other names may be trademarks of their respective owners.
                     </div>
                 </h:form>
 
-                <h:panelGrid columns="1"  headerClass="tableHeader" footerClass="tableFooter" cellpadding="0" cellspacing="0">
+                <h:panelGrid id="tablePanel" columns="1"  headerClass="tableHeader" footerClass="tableFooter" cellpadding="0" cellspacing="0">
                     <f:facet name="header">
                         <h:outputText value=""></h:outputText>
                     </f:facet>
 
                     <table class="tableBody"><tr><td>
-                        <table align="center">
-                            <tr><td>
+                                <table align="center">
+                                    <tr><td>
                                     <ui:insert name="content"></ui:insert>
                             </td></tr>
-                        </table>
+                    </table>
                     </td></tr></table>
 
 
@@ -88,7 +88,6 @@ Other names may be trademarks of their respective owners.
                         <h:graphicImage value="/resources/images/lousaNova/quadroNegro_botton_990x120.png" ></h:graphicImage>
                     </f:facet>
                 </h:panelGrid>
-
                 <h:panelGroup>
                     <ui:include src="./footer.xhtml" />
                 </h:panelGroup>

@@ -46,6 +46,10 @@ Other names may be trademarks of their respective owners.
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
 
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{projectManager.endConversation()}" />
+    </f:metadata>
+
     <ui:composition template="/template.xhtml">
         <ui:define name="pageTitle">
             #{i18n['project.show.title']}

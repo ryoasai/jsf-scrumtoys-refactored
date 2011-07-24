@@ -34,15 +34,14 @@ label {
 
 }
 
+
 input, select,textarea {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
-  /* Orange 100% */
   color: #0069AA;
   text-align: left;
   background-color:white;
   border-style:ridge;
-  /*lightgray*/
   border:1px solid lightgray;
   padding:4px;
   margin:4px;

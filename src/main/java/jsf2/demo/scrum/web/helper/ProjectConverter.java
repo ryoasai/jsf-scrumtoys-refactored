@@ -52,7 +52,7 @@ import java.util.Map;
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
-@FacesConverter(forClass = Project.class)
+@FacesConverter("projectConverter")
 public class ProjectConverter implements Converter {
 
     private static Map<Long, Project> cache = new HashMap<Long, Project>();
@@ -71,6 +71,8 @@ public class ProjectConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object object) {
+        if (object == null) return "";
+        
         Project project = (Project) object;
         Long id = project.getId();
         if (id != null) {

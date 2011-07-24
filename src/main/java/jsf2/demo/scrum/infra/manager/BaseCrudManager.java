@@ -84,7 +84,7 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in conversation");
     }
 
-    protected void beginConversation() {
+    public void beginConversation() {
         if (conversation.isTransient()) {
             conversationNested = false;
             conversation.begin();
@@ -93,7 +93,7 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
         }
     }
     
-    protected void endConversation() {
+    public void endConversation() {
         if (!conversationNested && !conversation.isTransient()) {
             conversation.end();
         }
@@ -105,7 +105,11 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void setCurrentEntity(E currentEntity) {
-        if (currentEntity == null) return;
+        if (currentEntity == null) {
+            this.currentEntity = currentEntity;
+            endConversation();
+            return;
+        }
         
         beginConversation();
         

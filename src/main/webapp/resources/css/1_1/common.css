@@ -38,8 +38,8 @@ table.tableBody tr td{
 td.tableFooter{
     width:990px;
     height:120px;
-    background-image:url("../resources/images/lousaNova/quadroNegro_top_990x80");
-    background-repeat:no-repeat;
+/*    background-image:url("../resources/images/lousaNova/quadroNegro_top_990x80.png");
+    background-repeat:no-repeat; */
     margin:0px;
     padding:0px;
 
@@ -185,3 +185,9 @@ td{
     text-align:left;
 }
 
+input[type="button"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+button:disabled, select:disabled, keygen:disabled, optgroup:disabled, option:disabled, datagrid:disabled {
+    color: graytext;
+}
