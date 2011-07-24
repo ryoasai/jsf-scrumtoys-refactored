@@ -91,7 +91,7 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
     }
         
     public Sprint getSprint() {
-        return currentSprint.get();
+        return em.find(Sprint.class, currentSprint.get().getId());
     }
 
     @Override
@@ -101,10 +101,9 @@ public class StoryManager extends BaseCrudManager<Long, Story> implements Serial
 
     @Override
     protected void doPersist(Story story) {
-        getSprint().addStory(story);
         getRepository().persist(story);
+        getSprint().addStory(story);
     }
-        
 
     @Override
     protected void doRemove(Story story) {

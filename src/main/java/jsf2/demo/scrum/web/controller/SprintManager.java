@@ -94,7 +94,7 @@ public class SprintManager extends BaseCrudManager<Long, Sprint> implements Seri
     }
     
     public Project getProject() {
-        return currentProject.get();
+        return em.find(Project.class, currentProject.get().getId());
     }   
 
     @Override

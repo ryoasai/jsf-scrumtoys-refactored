@@ -93,7 +93,7 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
     }
 
     public Story getStory() {
-        return currentStory.get();
+        return em.find(Story.class, currentStory.get().getId());
     }
 
     @Override
@@ -106,8 +106,7 @@ public class TaskManager extends BaseCrudManager<Long, Task> implements Serializ
         getStory().addTask(task);
         getRepository().persist(task);
     }
-        
-    
+
     @Override
     protected void doRemove(Task task) {
         taskRepository.remove(task);

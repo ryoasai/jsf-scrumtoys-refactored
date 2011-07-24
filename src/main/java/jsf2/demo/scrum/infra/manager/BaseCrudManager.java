@@ -76,12 +76,12 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
             
     @PostConstruct
     public void construct() {
-        getLogger(getClass()).log(Level.INFO, "new intance of taskManager in conversation");
+        getLogger(getClass()).log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
     }
 
     @PreDestroy
     public void destroy() {
-        getLogger(getClass()).log(Level.INFO, "destroy intance of taskManager in conversation");
+        getLogger(getClass()).log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
     }
 
     public boolean isConversationNested() {
@@ -153,8 +153,10 @@ public abstract class BaseCrudManager<K extends Serializable, E extends Persiste
     
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String save() {                
-        if (currentEntity != null && currentEntity.isNew()) {
-            doPersist(currentEntity);
+        if (currentEntity != null) {
+            if (currentEntity.isNew()) {
+                doPersist(currentEntity);
+            }
         }
         
         endConversation();
