@@ -57,13 +57,13 @@ Other names may be trademarks of their respective owners.
         </ui:define>
 
         <ui:define name="navigationBar">
-            <h:commandLink   immediate="true" action="/project/show" value="#{i18n['navigation.projects']}"></h:commandLink>
-            <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
+            <scrum:link outcome="/project/show" value="#{i18n['navigation.projects']}" />
+            #{i18n['navigation.separtor']}
             <h:commandLink   immediate="true" action="/project/edit"  value="#{currentProject.name}"></h:commandLink>
-            <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
-            <h:commandLink   immediate="true" action="/sprint/show" value="#{i18n['navigation.sprints']}"></h:commandLink>
-            <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
-            <h:outputText value="#{i18n['sprint.edit.form.title']}" styleClass="tituloForm"></h:outputText>
+            #{i18n['navigation.separtor']}
+            <scrum:link   outcome="/sprint/show" value="#{i18n['navigation.sprints']}" />
+            #{i18n['navigation.separtor']}
+            #{i18n['sprint.edit.form.title']}
         </ui:define>
 
         <ui:define name="content">
