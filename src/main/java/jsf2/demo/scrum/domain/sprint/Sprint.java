@@ -84,7 +84,7 @@ public class Sprint extends AbstractEntity implements Serializable {
     @Column(name = "daily_meeting_time")
     private Date dailyMeetingTime;
     
-    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Story> stories = new ArrayList<Story>();
     
     @ManyToOne

@@ -64,8 +64,7 @@ import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.domain.task.Task;
 import jsf2.demo.scrum.domain.task.TaskRepository;
 import jsf2.demo.scrum.infra.entity.Current;
-import jsf2.demo.scrum.infra.entity.PersistentEntity;
-import jsf2.demo.scrum.infra.repository.Repository;
+import static jsf2.demo.scrum.infra.entity.EntityStatusAssertions.*;
 
 /**
  * Because of the limitation of extended persistence context progagation,
@@ -144,8 +143,8 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
-    public void persistCurrentProject() {
-        if (currentProject == null) return;
+    public void saveCurrentProject() {
+        assertThatEntityIsNotNull(currentProject);
         if (!currentProject.isNew()) return;
         
         projectRepository.persist(currentProject);
@@ -178,21 +177,19 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
     @Override
-    public void persistCurrentSprint() {
-        if (currentProject == null) return;
-        if (currentSprint == null) return;
+    public void saveCurrentSprint() {
+        assertThatEntityIsNotNull(currentProject);
+        assertThatEntityIsNotNull(currentSprint);
         if (!currentSprint.isNew()) return;
         
-        sprintRepository.persist(currentSprint);
         currentProject.addSprint(currentSprint);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void removeSprint(Sprint sprint) {
-        if (currentProject == null) return;
+        assertThatEntityIsNotNull(currentProject);      
 
-        sprintRepository.remove(sprintRepository.findById(sprint.getId()));
         currentProject.removeSprint(sprint);
     }
 
@@ -216,22 +213,19 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
     @Override
-    public void persistCurrentStory() {
-        if (currentProject == null) return;
-        if (currentSprint == null) return;
-        if (currentStory == null) return;
-        if (!currentStory.isNew()) return;
-        
-        storyRepository.persist(currentStory);
+    public void saveCurrentStory() {
+        assertThatEntityIsNotNull(currentSprint);
+        assertThatEntityIsNotNull(currentStory);
+       if (!currentStory.isNew()) return;
+       
         currentSprint.addStory(currentStory);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void removeStory(Story story) {
-        if (currentSprint == null) return;
+        assertThatEntityIsNotNull(currentSprint);
 
-        storyRepository.remove(storyRepository.findById(story.getId()));
         currentSprint.removeStory(story);
     }
 
@@ -247,23 +241,19 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
     @Override
-    public void persistCurrentTask() {
-        if (currentProject == null) return;
-        if (currentSprint == null) return;
-        if (currentStory == null) return;
-        if (currentTask == null) return;
-        if (!currentTask.isNew()) return;
-        
-        taskRepository.persist(currentTask);
+    public void saveCurrentTask() {
+        assertThatEntityIsNotNull(currentStory);
+        assertThatEntityIsNotNull(currentTask);
+       if (!currentTask.isNew()) return;
+       
         currentStory.addTask(currentTask);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void removeTask(Task task) {
-        if (currentStory == null) return;
+        assertThatEntityIsNotNull(currentStory);
 
-        taskRepository.remove(taskRepository.findById(task.getId()));
         currentStory.removeTask(task);
     }
     

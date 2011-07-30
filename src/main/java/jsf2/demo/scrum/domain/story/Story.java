@@ -78,7 +78,7 @@ public class Story extends AbstractEntity implements Serializable {
     @JoinColumn(name = "sprint_id")
     private Sprint sprint;
     
-    @OneToMany(mappedBy = "story", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "story", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<Task>();
 
     public Story() {

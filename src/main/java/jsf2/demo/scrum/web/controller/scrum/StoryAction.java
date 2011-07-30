@@ -98,7 +98,7 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
 
     @Override
     protected void doSave() {
-        scrumManager.persistCurrentStory();
+        scrumManager.saveCurrentStory();
     }
 
     @Override

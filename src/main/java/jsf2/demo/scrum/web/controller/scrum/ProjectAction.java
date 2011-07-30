@@ -107,7 +107,7 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
 
     @Override
     protected void doSave() {
-        scrumManager.persistCurrentProject();
+        scrumManager.saveCurrentProject();
     }
         
     @Override

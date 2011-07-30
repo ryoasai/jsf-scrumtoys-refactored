@@ -101,7 +101,7 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
     
     @Override
     protected void doSave() {
-        scrumManager.persistCurrentSprint();
+        scrumManager.saveCurrentSprint();
     }
 
     @Override

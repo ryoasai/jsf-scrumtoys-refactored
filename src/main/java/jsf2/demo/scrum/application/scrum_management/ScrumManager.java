@@ -21,7 +21,7 @@ public interface ScrumManager {
 
     void setCurrentProject(Project currentProject);
     
-    void persistCurrentProject();
+    void saveCurrentProject();
 
     void removeProject(Project project);
 
@@ -29,7 +29,7 @@ public interface ScrumManager {
 
     void setCurrentSprint(Sprint currentSprint);
 
-    void persistCurrentSprint();
+    void saveCurrentSprint();
 
     void removeSprint(Sprint sprint);
 
@@ -37,13 +37,13 @@ public interface ScrumManager {
     
     void setCurrentStory(Story currentStory);
     
-    void persistCurrentStory();
+    void saveCurrentStory();
 
     void removeStory(Story story);
 
     Task getCurrentTask();
 
-    void persistCurrentTask();
+    void saveCurrentTask();
 
     void removeTask(Task task);
     

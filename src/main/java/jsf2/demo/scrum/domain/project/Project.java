@@ -81,7 +81,7 @@ public class Project extends AbstractEntity implements Serializable {
     @Column(name = "end_date")
     private Date endDate;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Sprint> sprints = new ArrayList<Sprint>();
 
     public Project() {

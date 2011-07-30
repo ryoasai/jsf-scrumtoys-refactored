@@ -100,7 +100,7 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
 
     @Override
     protected void doSave() {
-        scrumManager.persistCurrentTask();
+        scrumManager.saveCurrentTask();
     }
 
     @Override
