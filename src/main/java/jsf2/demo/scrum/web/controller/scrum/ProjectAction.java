@@ -89,7 +89,6 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
         
         super.endConversation();
     }
-
     
     public void setCurrentProject(Project project) {
         setCurrentEntity(project);
@@ -128,10 +127,6 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
     public String showSprints(Project project) {
         setCurrentEntity(project);
         return "showSprints";
-    }
-
-    public String viewSprints() {
-        return "/sprint/show";
     }
 
 }
