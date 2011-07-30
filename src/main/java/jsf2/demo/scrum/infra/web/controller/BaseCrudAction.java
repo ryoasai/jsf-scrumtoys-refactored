@@ -39,27 +39,17 @@ Other names may be trademarks of their respective owners.
 package jsf2.demo.scrum.infra.web.controller;
 
 
-import javax.annotation.PostConstruct;
 import java.io.Serializable;
-import java.util.List;
-import java.util.logging.Level;
-import javax.annotation.PreDestroy;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import jsf2.demo.scrum.infra.entity.PersistentEntity;
-import jsf2.demo.scrum.infra.repository.Repository;
 
 /**
  * @author Ryo Asai.
  */
 @Named
-public abstract class BaseCrudAction<K extends Serializable, E extends PersistentEntity<K>> extends AbstractAction implements Serializable {
+public abstract class BaseCrudAction<K extends Serializable, E extends PersistentEntity<K>> extends AbstractAction {
 
     private static final long serialVersionUID = 1L;
 
@@ -70,16 +60,6 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
     @Inject
     protected Conversation conversation;
 
-    @PostConstruct
-    public void construct() {
-        getLogger(getClass()).log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
-    }
-
-    @PreDestroy
-    public void destroy() {
-        getLogger(getClass()).log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
-    }
-   
     public boolean isConversationNested() {
         return conversationNested;
     }

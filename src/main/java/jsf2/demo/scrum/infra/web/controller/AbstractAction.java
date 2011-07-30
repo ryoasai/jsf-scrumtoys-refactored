@@ -38,13 +38,18 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.infra.web.controller;
 
+import java.io.Serializable;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import jsf2.demo.scrum.infra.entity.AbstractEntity;
@@ -53,8 +58,21 @@ import jsf2.demo.scrum.infra.entity.AbstractEntity;
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-public abstract class AbstractAction {
+public abstract class AbstractAction implements Serializable {
 
+    @Inject
+    transient Logger logger;
+
+    @PostConstruct
+    public void construct() {
+        logger.log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
+    }
+
+    @PreDestroy
+    public void destroy() {
+        logger.log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
+    }
+    
     protected void addMessage(String message) {
         addMessage(null, message, FacesMessage.SEVERITY_INFO);
     }
@@ -79,13 +97,6 @@ public abstract class AbstractAction {
 
     protected FacesMessage getFacesMessageForKey(String key) {
         return new FacesMessage(getMessageForKey(key));
-    }
-
-    protected Logger getLogger(Class<?> clazz) {
-        if (clazz == null) {
-            throw new IllegalArgumentException("Class for logger is required.");
-        }
-        return Logger.getLogger(clazz.getName());
     }
 
     protected void publishEvent(Class<? extends SystemEvent> eventClass, Object source) {

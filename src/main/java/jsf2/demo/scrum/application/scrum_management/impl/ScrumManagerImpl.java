@@ -96,16 +96,13 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
 
     @Inject
     TaskRepository taskRepository;
-        
+    
+    @Inject
+    @SuppressWarnings("NonConstantLogger")
+    transient Logger logger;
+    
     @PersistenceContext(type= PersistenceContextType.EXTENDED)
     protected EntityManager em;
-
-    protected Logger getLogger(Class<?> clazz) {
-        if (clazz == null) {
-            throw new IllegalArgumentException("Class for logger is required.");
-        }
-        return Logger.getLogger(clazz.getName());
-    }
     
     //=========================================================================
     // Bean lifecycle callbacks
@@ -113,12 +110,12 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     
     @PostConstruct
     public void construct() {
-        getLogger(getClass()).log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
+        logger.log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
     }
 
     @PreDestroy
     public void destroy() {
-        getLogger(getClass()).log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
+        logger.log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
     }
    
     //=========================================================================
