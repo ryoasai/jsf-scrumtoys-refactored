@@ -96,7 +96,7 @@ Other names may be trademarks of their respective owners.
                     <h:message for="itAcceptance" styleClass="errorMessage" />
                     <f:facet name="footer">
                         <h:commandButton  id="btnCreate" action="#{storyAction.save}" value="#{i18n['story.create.button.create']}" styleClass="botaoPostIt" />
-                        <h:commandButton  id="btnCancel" action="show" value="#{i18n['story.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
+                        <h:commandButton  id="btnCancel" action="#{storyAction.cancelEdit}" value="#{i18n['story.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
                     </f:facet>
                 </h:panelGrid>
             </h:form>

@@ -113,12 +113,12 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
 
     public String showStories(Sprint sprint) {
         selectCurrentEntity(sprint);
-        return "showStories";
+        return "/story/show?faces-redirect=true";
     }
 
     public String showDashboard(Sprint sprint) {
         selectCurrentEntity(sprint);
-        return "showDashboard";
+        return "/dashboard/show?faces-redirect=true";
     }
     
     //=========================================================================

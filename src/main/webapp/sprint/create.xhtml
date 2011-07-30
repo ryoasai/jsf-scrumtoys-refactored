@@ -63,8 +63,8 @@ Other names may be trademarks of their respective owners.
                 <h:panelGrid columns="2" headerClass="tituloForm" footerClass="footerForm">
                     <ui:include src="form.xhtml" />
                     <f:facet name="footer">
-                        <h:commandButton rendered="#{currentProject.name != null}" id="btnCreate" action="#{sprintAction.save}" value="#{i18n['sprint.create.button.create']}" styleClass="botaoPostIt" />
-                        <h:commandButton rendered="#{currentProject.name != null}" id="btnCancel" action="show" value="#{i18n['sprint.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
+                        <h:commandButton id="btnCreate" action="#{sprintAction.save}" value="#{i18n['sprint.create.button.create']}" styleClass="botaoPostIt" />
+                        <h:commandButton id="btnCancel" action="#{sprintAction.cancelEdit}" value="#{i18n['sprint.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
                     </f:facet>
                 </h:panelGrid>
             </h:form>

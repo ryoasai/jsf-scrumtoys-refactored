@@ -54,65 +54,6 @@ Other names may be trademarks of their respective owners.
             <supported-locale>en_US</supported-locale>
             <supported-locale>pt_BR</supported-locale>
         </locale-config>
-
     </application>
-
-    <navigation-rule>
-        <description>
-            project navigation rules
-        </description>
-        <from-view-id>/project/show.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>showSprints</from-outcome>
-            <to-view-id>/sprint/show.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
-
-    <navigation-rule>
-        <description>
-            sprint navigation rules
-        </description>
-        <from-view-id>/sprint/show.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>showStories</from-outcome>
-            <to-view-id>/story/show.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>showDashboard</from-outcome>
-            <to-view-id>/dashboard/show.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
-
-    <navigation-rule>
-        <description>
-            story navigation rules
-        </description>
-        <from-view-id>/story/show.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>showTasks</from-outcome>
-            <to-view-id>/task/show.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>showSprints</from-outcome>
-            <to-view-id>/sprint/show.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
-
-    <navigation-rule>
-        <description>
-            task navigation rules
-        </description>
-        <from-view-id>/task/show.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>showStories</from-outcome>
-            <to-view-id>/story/show.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
 
 </faces-config>
