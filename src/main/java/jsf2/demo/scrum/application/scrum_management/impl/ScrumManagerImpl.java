@@ -72,13 +72,16 @@ import static jsf2.demo.scrum.infra.entity.EntityStatusAssertions.*;
  * 
  * @author Ryo Asai.
  */
-@Named("scrumManager")
 @Stateful
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @ConversationScoped
 public class ScrumManagerImpl implements ScrumManager, Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    //=========================================================================
+    // Fields.
+    //=========================================================================    
 
     private Project currentProject;
     private Sprint currentSprint;

@@ -42,6 +42,7 @@ package jsf2.demo.scrum.web.controller.skin;
 import jsf2.demo.scrum.infra.web.controller.AbstractAction;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -49,10 +50,13 @@ import javax.inject.Named;
  *
  * @author eder
  */
-@Named
-@RequestScoped
-public class SkinUrlAction extends AbstractAction implements Serializable {
+@Model
+public class SkinUrlAction extends AbstractAction {
 
+    //=========================================================================
+    // Fields.
+    //=========================================================================
+    
     private String skin;
 
     @Inject
@@ -60,6 +64,10 @@ public class SkinUrlAction extends AbstractAction implements Serializable {
     
     @Inject
     SkinValuesAction skinValuesAction;
+
+    //=========================================================================
+    // Properties.
+    //=========================================================================
     
     public String getSkin() {
         return skin;
@@ -69,6 +77,10 @@ public class SkinUrlAction extends AbstractAction implements Serializable {
         this.skin = skin;
     }
 
+    //=========================================================================
+    // Actions.
+    //=========================================================================
+    
     public void update() {
         if (skin == null ||"".equals(skin))
             return;

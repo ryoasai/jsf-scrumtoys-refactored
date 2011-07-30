@@ -47,6 +47,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,18 +59,25 @@ import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
-@Named
-@ConversationScoped
+@ConversationScoped @Model
 public class TaskAction extends BaseCrudAction<Long, Task> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //=========================================================================
+    // Fields.
+    //=========================================================================    
+    
     @Inject
     TaskRepository taskRepository;
     
     @Inject
     ScrumManager scrumManager;
 
+    //=========================================================================
+    // Properties.
+    //=========================================================================
+    
     @Produces @Named @ViewScoped
     public List<Task> getTasks() {
         if (scrumManager.getCurrentStory() != null) {
@@ -79,6 +87,10 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
         }
     }
 
+    //=========================================================================
+    // Actions.
+    //=========================================================================
+    
     @Override
     protected void onSelectCurrentEntity(Task task) {
         scrumManager.setCurrentTask(task);
@@ -99,6 +111,17 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
         scrumManager.removeTask(task);
     }
 
+    public String showStories() {
+        // Reset selected story and task to null.
+        scrumManager.setCurrentSprint(scrumManager.getCurrentSprint());
+        
+        return "showStories";
+    }
+    
+    //=========================================================================
+    // Validator.
+    //=========================================================================
+    
     public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
@@ -107,12 +130,4 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
             throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
         }
     }
-
-    public String showStories() {
-        // Reset selected story and task to null.
-        scrumManager.setCurrentSprint(scrumManager.getCurrentSprint());
-        
-        return "showStories";
-    }
- 
 }

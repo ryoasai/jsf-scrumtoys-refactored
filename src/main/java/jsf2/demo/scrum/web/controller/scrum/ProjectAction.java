@@ -46,6 +46,7 @@ import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
 import java.util.List;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,17 +58,23 @@ import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
-@Named
-@ConversationScoped
+@ConversationScoped @Model
 public class ProjectAction extends BaseCrudAction<Long, Project> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //=========================================================================
+    // Fields.
+    //=========================================================================        
     @Inject
     ProjectRepository projectRepository;
 
     @Inject
     ScrumManager scrumManager;
+
+    //=========================================================================
+    // Properties.
+    //=========================================================================
     
     @Override
     public boolean isConversationNested() {
@@ -81,24 +88,21 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
     public void setCurrentProject(Project project) {
         selectCurrentEntity(project);
     }
+
+    @Produces @Named @ViewScoped
+    public List<Project> getProjects() {
+        return projectRepository.findByNamedQuery("project.getAll");
+    }
         
+    //=========================================================================
+    // Actions.
+    //=========================================================================
+    
     @Override
     protected void onSelectCurrentEntity(Project project) {
         scrumManager.setCurrentProject(project);
     }
-
-    @Override
-    public void endConversation() {
-        scrumManager.setCurrentProject(null);
         
-        super.endConversation();
-    }
-    
-    @Produces @Named @ViewScoped
-    public List<Project> getProjects() {
-        return projectRepository.findByNamedQuery("project.getAll");
-    }    
-
     @Override
     protected Project doCreate() {
         return new Project();
@@ -114,6 +118,22 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
         scrumManager.removeProject(project);
     }
 
+    public String showSprints(Project project) {
+        selectCurrentEntity(project);
+        return "showSprints";
+    }
+
+    @Override
+    public void endConversation() {
+        scrumManager.setCurrentProject(null);
+        
+        super.endConversation();
+    }
+    
+    //=========================================================================
+    // Validator.
+    //=========================================================================
+    
     public void checkUniqueProjectName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
@@ -122,11 +142,6 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("project.form.label.name.unique"));
         }
-    }
-
-    public String showSprints(Project project) {
-        selectCurrentEntity(project);
-        return "showSprints";
     }
 
 }

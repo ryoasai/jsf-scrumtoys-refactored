@@ -79,30 +79,30 @@ Other names may be trademarks of their respective owners.
                         </h:column>
                     </h:dataTable>
 
-                    <h:dataTable  value="#{dashboardAction.toDoTasks}" var="task" title="Todo Tasks">
+                    <h:dataTable  value="#{toDoTasks}" var="task" title="Todo Tasks">
                         <f:facet name="header"><h:outputText value="TO DO" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardAction.editToDoTask(task)}">
+                            <scrum:postit action="#{dashboardAction.editTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>
                         </h:column>
                     </h:dataTable>
 
-                    <h:dataTable  value="#{dashboardAction.workingTasks}" var="task" title="Working Tasks">
+                    <h:dataTable  value="#{workingTasks}" var="task" title="Working Tasks">
                         <f:facet name="header"><h:outputText value="DOING" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardAction.editWorkingTask(task)}">
+                            <scrum:postit action="#{dashboardAction.editTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>
                         </h:column>
                     </h:dataTable>
 
-                    <h:dataTable  value="#{dashboardAction.doneTasks}" var="task" title="Done Tasks">
+                    <h:dataTable  value="#{doneTasks}" var="task" title="Done Tasks">
                         <f:facet name="header"><h:outputText value="DONE" /></f:facet>
                         <h:column>
-                            <scrum:postit action="#{dashboardAction.editDoneTask(task)}">
+                            <scrum:postit action="#{dashboardAction.editTask(task)}">
                                 <ui:param name="postitLabel" value=""></ui:param>
                                 <ui:param name="postitText" value="#{task.name}"></ui:param>
                             </scrum:postit>

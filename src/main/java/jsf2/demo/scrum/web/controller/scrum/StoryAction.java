@@ -47,6 +47,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,11 +56,14 @@ import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 
-@Named
-@ConversationScoped
+@ConversationScoped @Model
 public class StoryAction extends BaseCrudAction<Long, Story> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    //=========================================================================
+    // Fields.
+    //=========================================================================    
     
     @Inject
     ScrumManager scrumManager;
@@ -67,6 +71,10 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
     @Inject 
     StoryRepository storyRepository;
 
+    //=========================================================================
+    // Properties.
+    //=========================================================================
+    
     @Produces @Named @ViewScoped
     public List<Story> getStories() {
         if (scrumManager.getCurrentSprint() != null) {
@@ -75,6 +83,10 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
             return Collections.emptyList();
         }
     }
+
+    //=========================================================================
+    // Actions.
+    //=========================================================================    
         
     @Override
     protected void onSelectCurrentEntity(Story story) {
@@ -95,6 +107,15 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
     protected void doRemove(Story story) {
         scrumManager.removeStory(story);
     }
+
+    public String showTasks(Story story) {
+        selectCurrentEntity(story);
+        return "showTasks";
+    }
+    
+    //=========================================================================
+    // Validator.
+    //=========================================================================
     
     public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
@@ -103,11 +124,6 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
         }
-    }
-
-    public String showTasks(Story story) {
-        selectCurrentEntity(story);
-        return "showTasks";
     }
     
 }

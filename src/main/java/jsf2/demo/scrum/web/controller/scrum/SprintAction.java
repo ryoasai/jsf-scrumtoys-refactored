@@ -38,7 +38,6 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller.scrum;
 
-import jsf2.demo.scrum.domain.project.Project;
 import jsf2.demo.scrum.domain.sprint.Sprint;
 
 import javax.faces.component.UIComponent;
@@ -48,6 +47,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,11 +59,14 @@ import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 /**
  * @author Dr. Spock (spock at dev.java.net)
  */
-@Named
-@ConversationScoped
+@ConversationScoped @Model
 public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    //=========================================================================
+    // Fields.
+    //=========================================================================    
     
     @Inject
     ScrumManager scrumManager;
@@ -71,6 +74,10 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
     @Inject
     SprintRepository sprintRepository;
 
+    //=========================================================================
+    // Properties.
+    //=========================================================================
+    
     @Produces @Named @ViewScoped
     public List<Sprint> getSprints() {
         if (scrumManager.getCurrentProject() != null) {
@@ -79,6 +86,10 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
             return Collections.emptyList();
         }
     }
+
+    //=========================================================================
+    // Actions.
+    //=========================================================================
     
     @Override
     protected void onSelectCurrentEntity(Sprint sprint) {
@@ -100,6 +111,20 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
         scrumManager.removeSprint(sprint);
     }
 
+    public String showStories(Sprint sprint) {
+        selectCurrentEntity(sprint);
+        return "showStories";
+    }
+
+    public String showDashboard(Sprint sprint) {
+        selectCurrentEntity(sprint);
+        return "showDashboard";
+    }
+    
+    //=========================================================================
+    // Validator.
+    //=========================================================================
+    
     /*
      * This method can be pointed to by a validator methodExpression, such as:
      *
@@ -115,7 +140,6 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
             throw new ValidatorException(getFacesMessageForKey("sprint.form.label.name.unique"));
         }
     }
-
 
     /*
      * This method is called by the JSR-303 SprintNameUniquenessConstraintValidator.
@@ -135,16 +159,6 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
         }
 
         return message;
-    }
-
-    public String showStories(Sprint sprint) {
-        selectCurrentEntity(sprint);
-        return "showStories";
-    }
-
-    public String showDashboard(Sprint sprint) {
-        selectCurrentEntity(sprint);
-        return "showDashboard";
     }
     
 }

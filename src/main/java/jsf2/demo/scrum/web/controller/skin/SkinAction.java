@@ -43,6 +43,7 @@ import jsf2.demo.scrum.infra.web.controller.AbstractAction;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -50,20 +51,35 @@ import javax.inject.Named;
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-@Named
-@SessionScoped
+@SessionScoped @Model
 public class SkinAction extends AbstractAction implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    //=========================================================================
+    // Fields.
+    //=========================================================================
+    
     private String selectedSkin;
 
     @Inject
     SkinValuesAction skinValuesAction;
 
+    //=========================================================================
+    // Bean lifecycle callbacks.
+    //=========================================================================
+    
     @PostConstruct
+    @Override
     public synchronized void construct() {
+        super.construct();
         selectedSkin = skinValuesAction.getDefaultSkinCss();
     }
 
+    //=========================================================================
+    // Properties.
+    //=========================================================================
+    
     public synchronized String getSelectedSkin() {
         return selectedSkin;
     }

@@ -48,22 +48,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Model;
 import javax.inject.Named;
+import jsf2.demo.scrum.infra.web.controller.AbstractAction;
 
 /**
  *
  * @author edermag
  */
-@Named
-@ApplicationScoped
-public class SkinValuesAction implements Serializable {
+@ApplicationScoped @Model
+public class SkinValuesAction extends AbstractAction implements Serializable {
 
+    //=========================================================================
+    // Fields.
+    //=========================================================================
+    
     private Map<String, String> values;
     
     private String defaultSkin = "blue";
 
+    //=========================================================================
+    // Bean lifecycle callbacks.
+    //=========================================================================
+    
     @PostConstruct
+    @Override
     public void construct() {
+        super.construct();
+        
         Map<String, String> tempValues = new LinkedHashMap<String, String>();
         
         tempValues.put("yellow", "appYellowSkin.css");
@@ -74,14 +86,10 @@ public class SkinValuesAction implements Serializable {
         this.values = Collections.unmodifiableMap(tempValues);
     }
 
-    @PreDestroy
-    public void destroy() {
-        if (null != values) {
-            values.clear();
-            values = null;
-        }
-    }
-
+    //=========================================================================
+    // Properties.
+    //=========================================================================
+    
     public String getSkinCss(String skin) {
         if (!values.containsKey(skin)) {
             return getDefaultSkinCss();

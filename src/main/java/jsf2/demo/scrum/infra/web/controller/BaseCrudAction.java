@@ -48,8 +48,7 @@ import jsf2.demo.scrum.infra.entity.PersistentEntity;
 /**
  * @author Ryo Asai.
  */
-@Named
-public abstract class BaseCrudAction<K extends Serializable, E extends PersistentEntity<K>> extends AbstractAction {
+public abstract class BaseCrudAction<K extends Serializable, E extends PersistentEntity<K>> extends AbstractAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -58,7 +58,7 @@ import jsf2.demo.scrum.infra.entity.AbstractEntity;
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
-public abstract class AbstractAction implements Serializable {
+public abstract class AbstractAction {
 
     @Inject
     transient Logger logger;

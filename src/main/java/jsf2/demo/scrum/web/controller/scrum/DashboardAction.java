@@ -44,31 +44,37 @@ import jsf2.demo.scrum.domain.task.Task;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Model;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.application.scrum_management.ScrumManager;
+import jsf2.demo.scrum.infra.context.ViewScoped;
 
-@Named
-@ConversationScoped
+@Model
 public class DashboardAction extends AbstractAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //=========================================================================
+    // Fields.
+    //=========================================================================    
+
     @Inject
     TaskAction taskAction;
-//
-//    @Inject
-//    SprintAction sprintAction;
-//
+
     @Inject
     StoryAction storyAction;
     
     @Inject
     ScrumManager scrumManager;
+
+    //=========================================================================
+    // Properties.
+    //=========================================================================
     
+    @Produces @ViewScoped @Named
     public List<Task> getToDoTasks() {
         List<Task> toDoTasksList = new ArrayList<Task>();
         for (Story story : storyAction.getStories()) {
@@ -78,6 +84,7 @@ public class DashboardAction extends AbstractAction implements Serializable {
         return toDoTasksList;
     }
 
+    @Produces @ViewScoped @Named
     public List<Task> getWorkingTasks() {
         List<Task> workingTasksList = new ArrayList<Task>();
         for (Story story : storyAction.getStories()) {
@@ -87,6 +94,7 @@ public class DashboardAction extends AbstractAction implements Serializable {
         return workingTasksList;
     }
 
+    @Produces @ViewScoped @Named
     public List<Task> getDoneTasks() {
         List<Task> doneTasksList = new ArrayList<Task>();
         for (Story story : storyAction.getStories()) {
@@ -96,19 +104,11 @@ public class DashboardAction extends AbstractAction implements Serializable {
         return doneTasksList;
     }
 
-    public String editToDoTask(Task task) {
-        return editTask(task);
-    }
+    //=========================================================================
+    // Actions.
+    //=========================================================================    
 
-    public String editDoneTask(Task task) {
-        return editTask(task);
-    }
-
-    public String editWorkingTask(Task task) {
-        return editTask(task);
-    }
-    
-    private String editTask(Task currentTask) {
+    public String editTask(Task currentTask) {
         if (currentTask == null) {
             return "";
         }
@@ -120,6 +120,6 @@ public class DashboardAction extends AbstractAction implements Serializable {
         
         taskAction.selectCurrentEntity(currentTask);        
         
-        return "/task/edit";
+        return "/task/edit?faces-redirect=true";
     }
 }
