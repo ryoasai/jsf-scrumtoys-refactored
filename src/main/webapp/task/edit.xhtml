@@ -44,22 +44,23 @@ Other names may be trademarks of their respective owners.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:scrum="http://java.sun.com/jsf/composite/components">
 
     <ui:composition template="/template.xhtml">
         <ui:define name="pageTitle">
             #{i18n['task.edit.title']}
         </ui:define>
         <ui:define name="navigationBar">
-            <h:commandLink  immediate="true" action="/project/show" value="#{i18n['navigation.projects']}" ></h:commandLink>
+            <scrum:link  outcome="/project/show" value="#{i18n['navigation.projects']}"  />
             #{i18n['navigation.separtor']}
             <h:commandLink  immediate="true" action="/project/edit"  value="#{currentProject.name}" ></h:commandLink>
             #{i18n['navigation.separtor']}
-            <h:commandLink  immediate="true" action="/sprint/show" value="#{i18n['navigation.sprints']}" ></h:commandLink>
+            <scrum:link outcome="/sprint/show" value="#{i18n['navigation.sprints']}" />
             #{i18n['navigation.separtor']}
             <h:commandLink  immediate="true" action="/sprint/edit"  value="#{currentSprint.name}" ></h:commandLink>
             #{i18n['navigation.separtor']}
-            <h:commandLink  immediate="true" action="/story/show" value="#{i18n['navigation.stories']}" ></h:commandLink>
+            <scrum:link outcome="/story/show" value="#{i18n['navigation.stories']}" />
             #{i18n['navigation.separtor']}
             <h:commandLink  immediate="true" action="/story/edit" value="#{currentStory.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
@@ -74,9 +75,7 @@ Other names may be trademarks of their respective owners.
                     <h:panelGroup>
                         <h:commandButton id="btnEditUpdate" action="#{taskAction.save}" value="#{i18n['task.edit.button.update']}" styleClass="botaoPostIt" />
                         <h:commandButton id="btnEditCancel" action="#{taskAction.cancelEdit}" immediate="true" value="#{i18n['task.edit.button.cancel']}" styleClass="botaoPostIt" />
-                        <h:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" >
-                             <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
-                        </h:button>
+                        <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
                     </h:panelGroup>
                 </h:panelGrid>
             </h:form>

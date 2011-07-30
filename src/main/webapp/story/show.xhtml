@@ -44,22 +44,19 @@ Other names may be trademarks of their respective owners.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:scrum="http://java.sun.com/jsf/composite/components">
 
     <ui:composition template="/template.xhtml">
         <ui:define name="pageTitle">
             #{i18n['story.show.title']}
         </ui:define>
         <ui:define name="navigationBar">
-            <h:link outcome="/project/show" value="#{i18n['navigation.projects']}" >
-                <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
-            </h:link>
+            <scrum:link outcome="/project/show" value="#{i18n['navigation.projects']}" />
             #{i18n['navigation.separtor']}
             <h:commandLink action="/project/edit"  value="#{currentProject.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
-            <h:link outcome="/sprint/show" value="#{i18n['navigation.sprints']}">
-                <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
-            </h:link>            
+            <scrum:link outcome="/sprint/show" value="#{i18n['navigation.sprints']}" />
             #{i18n['navigation.separtor']}
             <h:commandLink action="/sprint/edit"  value="#{currentSprint.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
@@ -119,9 +116,7 @@ Other names may be trademarks of their respective owners.
                     <f:facet name="footer">
                         <h:commandButton styleClass="botaoPostIt" action="#{storyAction.create}" value="#{i18n['story.show.button.newStory']}"  />
                         <h:commandButton styleClass="botaoPostIt" action="showSprints" value="#{i18n['story.show.button.showSprints']}"  />
-                        <h:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" >
-                            <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
-                        </h:button>
+                        <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
                     </f:facet>
                 </h:panelGrid>
             </h:form>

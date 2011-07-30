@@ -44,7 +44,8 @@ Other names may be trademarks of their respective owners.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:scrum="http://java.sun.com/jsf/composite/components">
 
     <ui:composition template="/template.xhtml">
         <ui:define name="pageTitle">
@@ -52,9 +53,7 @@ Other names may be trademarks of their respective owners.
         </ui:define>
 
         <ui:define name="navigationBar">
-            <h:link outcome="/project/show" value="#{i18n['navigation.projects']}" >
-                <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
-            </h:link>
+            <scrum:link outcome="/project/show" value="#{i18n['navigation.projects']}" />
             #{i18n['navigation.separtor']}
             <h:commandLink action="/project/edit"  value="#{currentProject.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
