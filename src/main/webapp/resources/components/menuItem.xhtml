@@ -54,9 +54,14 @@ Other names may be trademarks of their respective owners.
     <composite:implementation>
 
         <td>
-            <h:outputLink styleClass="menuhandler" value="#{destination}" onmouseover="menuHighlight(#{menuid})" rendered="#{label!=''}">
+            <h:outputLink styleClass="menuhandler" value="#{destination}" onmouseover="menuHighlight(#{menuid})" rendered="#{empty javax.enterprise.context.conversation.id and label!=''}">
                 #{label}
             </h:outputLink>
+            <h:outputLink styleClass="menuhandler" value="#{destination}" onmouseover="menuHighlight(#{menuid})" rendered="#{not empty javax.enterprise.context.conversation.id and label!=''}">
+                #{label}
+                <f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+            </h:outputLink>
+            
             <composite:insertChildren rendered="#{label==''}"></composite:insertChildren>
 
         </td>

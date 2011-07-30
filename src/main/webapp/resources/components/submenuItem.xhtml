@@ -54,10 +54,10 @@ Other names may be trademarks of their respective owners.
 
         <li>
             <h:outputLink  value="#{destination}" rendered="#{empty javax.enterprise.context.conversation.id and label!=''}">
-                <h:outputText value="#{label}" />
+                #{label}
             </h:outputLink>
             <h:outputLink  value="#{destination}" rendered="#{not empty javax.enterprise.context.conversation.id and label!=''}">
-                <h:outputText value="#{label}" />
+                #{label}
                 <f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />             
             </h:outputLink>
         </li>
