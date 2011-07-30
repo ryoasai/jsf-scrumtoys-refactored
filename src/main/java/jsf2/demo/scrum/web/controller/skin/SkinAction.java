@@ -57,7 +57,7 @@ public class SkinAction extends AbstractAction implements Serializable {
     private String selectedSkin;
 
     @Inject
-    private SkinValuesAction skinValuesAction;
+    SkinValuesAction skinValuesAction;
 
     @PostConstruct
     public synchronized void construct() {

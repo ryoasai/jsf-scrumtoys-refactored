@@ -23,5 +23,6 @@ public interface Repository<K extends Serializable, E extends PersistentEntity<K
     void remove(E entity);
     
     void remove(K id);
-
+    
+    E toManaged(E entity);
 }

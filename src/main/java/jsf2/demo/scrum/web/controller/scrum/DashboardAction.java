@@ -55,12 +55,15 @@ import javax.inject.Named;
 public class DashboardAction extends AbstractAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Inject
-    private TaskAction taskAction;
+    TaskAction taskAction;
+
     @Inject
-    private SprintAction sprintAction;
+    SprintAction sprintAction;
+
     @Inject
-    private StoryAction storyAction;
+    StoryAction storyAction;
     
     public List<Task> getToDoTasks() {
         if (sprintAction.getCurrentSprint() == null) {

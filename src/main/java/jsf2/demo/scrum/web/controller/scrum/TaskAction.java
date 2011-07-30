@@ -66,7 +66,7 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private TaskRepository taskRepository;
+    TaskRepository taskRepository;
     
     @Inject
     ScrumManager scrumManager;

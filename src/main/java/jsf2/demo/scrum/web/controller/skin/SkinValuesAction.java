@@ -36,7 +36,6 @@ Other names may be trademarks of their respective owners.
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package jsf2.demo.scrum.web.controller.skin;
 
 import java.io.Serializable;
@@ -46,6 +45,7 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -59,29 +59,33 @@ import javax.inject.Named;
 public class SkinValuesAction implements Serializable {
 
     private Map<String, String> values;
-
-    private String defaultSkin = "blue";
     
+    private String defaultSkin = "blue";
+
     @PostConstruct
     public void construct() {
-        values = new LinkedHashMap<String, String>();
-        values.put("yellow", "appYellowSkin.css");
-        values.put("orange", "appOrangeSkin.css");
-        values.put("red", "appRedSkin.css");
-        values.put(defaultSkin, "appBlueSkin.css");
+        Map<String, String> tempValues = new LinkedHashMap<String, String>();
+        
+        tempValues.put("yellow", "appYellowSkin.css");
+        tempValues.put("orange", "appOrangeSkin.css");
+        tempValues.put("red", "appRedSkin.css");
+        tempValues.put(defaultSkin, "appBlueSkin.css");
+        
+        this.values = Collections.unmodifiableMap(tempValues);
     }
 
     @PreDestroy
     public void destroy() {
-      if (null != values) {
-          values.clear();
-          values = null;
-      }
+        if (null != values) {
+            values.clear();
+            values = null;
+        }
     }
-    
+
     public String getSkinCss(String skin) {
-        if (!values.containsKey(skin))
+        if (!values.containsKey(skin)) {
             return getDefaultSkinCss();
+        }
         return values.get(skin);
     }
 
@@ -96,5 +100,4 @@ public class SkinValuesAction implements Serializable {
     public int getSize() {
         return values.keySet().size();
     }
-
 }

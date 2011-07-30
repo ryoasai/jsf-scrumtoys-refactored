@@ -66,7 +66,7 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
     ScrumManager scrumManager;
    
     @Inject 
-    private StoryRepository storyRepository;
+    StoryRepository storyRepository;
 
     public Story getCurrentStory() {
         return scrumManager.getCurrentStory();

@@ -64,7 +64,7 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private ProjectRepository projectRepository;
+    ProjectRepository projectRepository;
 
     @Inject
     ScrumManager scrumManager;

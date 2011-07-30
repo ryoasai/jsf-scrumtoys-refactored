@@ -64,6 +64,8 @@ import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.domain.task.Task;
 import jsf2.demo.scrum.domain.task.TaskRepository;
 import jsf2.demo.scrum.infra.entity.Current;
+import jsf2.demo.scrum.infra.entity.PersistentEntity;
+import jsf2.demo.scrum.infra.repository.Repository;
 
 /**
  * Because of the limitation of extended persistence context progagation,
@@ -106,6 +108,10 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
         return Logger.getLogger(clazz.getName());
     }
     
+    //=========================================================================
+    // Bean lifecycle callbacks
+    //=========================================================================
+    
     @PostConstruct
     public void construct() {
         getLogger(getClass()).log(Level.INFO, "new intance of {0} in conversation", getClass().getName());
@@ -117,9 +123,9 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     }
    
     //=========================================================================
-    // Project Management
+    // Project management
     //=========================================================================
-    
+        
     @Produces @Current @Named    
     @Override
     public Project getCurrentProject() {
@@ -129,11 +135,7 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void setCurrentProject(Project currentProject) {
-        if (currentProject == null || currentProject.isNew()) {
-            this.currentProject = currentProject;
-        } else {
-            this.currentProject = projectRepository.findById(currentProject.getId());
-        }
+        this.currentProject = projectRepository.toManaged(currentProject);
         
         currentSprint = null;
         currentStory = null;
@@ -156,7 +158,7 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     }
 
     //=========================================================================
-    // Sprint Management
+    // Sprint management
     //=========================================================================
     
     @Produces @Current @Named    
@@ -168,11 +170,7 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void setCurrentSprint(Sprint currentSprint) {
-        if (currentSprint == null || currentSprint.isNew()) {
-            this.currentSprint = currentSprint;
-        } else {
-            this.currentSprint = sprintRepository.findById(currentSprint.getId());
-        }
+        this.currentSprint = sprintRepository.toManaged(currentSprint);
         
         currentStory = null;
         currentTask = null;
@@ -199,7 +197,7 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     }
 
     //=========================================================================
-    // Story Management
+    // Story management
     //=========================================================================
     
     @Produces @Current @Named    
@@ -211,12 +209,8 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void setCurrentStory(Story currentStory) {
-        if (currentStory == null || currentStory.isNew()) {
-            this.currentStory = currentStory;
-        } else {
-            this.currentStory = storyRepository.findById(currentStory.getId());
-        }
-        
+        this.currentStory = storyRepository.toManaged(currentStory);
+
         currentTask = null;
     }    
 
@@ -276,10 +270,6 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void setCurrentTask(Task currentTask) {
-        if (currentTask == null || currentTask.isNew()) {
-            this.currentTask = currentTask;
-        } else {
-            this.currentTask = taskRepository.findById(currentTask.getId());
-        }
+        this.currentTask = taskRepository.toManaged(currentTask);
     }    
 }

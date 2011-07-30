@@ -69,7 +69,7 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
     ScrumManager scrumManager;
     
     @Inject
-    private SprintRepository sprintRepository;
+    SprintRepository sprintRepository;
 
     public Sprint getCurrentSprint() {
         return scrumManager.getCurrentSprint();

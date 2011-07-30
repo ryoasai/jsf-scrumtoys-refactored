@@ -56,10 +56,10 @@ public class SkinUrlAction extends AbstractAction implements Serializable {
     private String skin;
 
     @Inject
-    private SkinAction skinAction;
+    SkinAction skinAction;
     
     @Inject
-    private SkinValuesAction skinValuesAction;
+    SkinValuesAction skinValuesAction;
     
     public String getSkin() {
         return skin;

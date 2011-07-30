@@ -57,4 +57,13 @@ public abstract class JpaRepository<K extends Serializable, E extends Persistent
     public void remove(E entity) {
         remove(entity.getId());
     }
+
+    @Override
+    public E toManaged(E entity) {
+        if (entity == null || entity.isNew()) {
+            return entity;
+        } else {
+            return findById(entity.getId());
+        }
+    }    
 }
