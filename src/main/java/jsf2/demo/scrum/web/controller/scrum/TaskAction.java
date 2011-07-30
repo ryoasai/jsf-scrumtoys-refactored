@@ -115,7 +115,7 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
         // Reset selected story and task to null.
         scrumManager.setCurrentSprint(scrumManager.getCurrentSprint());
         
-        return "/story/show?faces-redirect=true";
+        return redirectTo("/story/show");
     }
     
     //=========================================================================

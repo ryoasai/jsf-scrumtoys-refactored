@@ -120,6 +120,6 @@ public class DashboardAction extends AbstractAction implements Serializable {
         
         taskAction.selectCurrentEntity(currentTask);        
         
-        return "/task/edit?faces-redirect=true";
+        return redirectTo("/task/edit");
     }
 }

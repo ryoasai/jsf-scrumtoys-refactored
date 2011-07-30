@@ -120,7 +120,7 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
 
     public String showSprints(Project project) {
         selectCurrentEntity(project);
-        return "/sprint/show?faces-redirect=true";
+        return redirectTo("/sprint/show");
     }
 
     @Override

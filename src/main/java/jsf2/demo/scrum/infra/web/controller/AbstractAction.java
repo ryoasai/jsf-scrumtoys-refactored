@@ -113,4 +113,8 @@ public abstract class AbstractAction {
     protected void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass, SystemEventListener listener) {
         FacesContext.getCurrentInstance().getApplication().unsubscribeFromEvent(eventClass, listener);
     }
+    
+    protected String redirectTo(String viewName) {
+        return viewName + "?faces-redirect=true";
+    }
 }

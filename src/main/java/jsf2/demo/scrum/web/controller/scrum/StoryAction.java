@@ -110,7 +110,7 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
 
     public String showTasks(Story story) {
         selectCurrentEntity(story);
-        return "/task/show?faces-redirect=true";
+        return redirectTo("/task/show");
     }
     
     //=========================================================================
