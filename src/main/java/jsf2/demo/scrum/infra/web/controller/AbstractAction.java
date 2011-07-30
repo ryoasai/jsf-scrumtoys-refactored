@@ -38,7 +38,6 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.infra.web.controller;
 
-import java.io.Serializable;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,14 +49,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import jsf2.demo.scrum.infra.entity.AbstractEntity;
+import jsf2.demo.scrum.infra.logging.Traced;
 
 /**
  *
  * @author Dr. Spock (spock at dev.java.net)
  */
+@Traced
 public abstract class AbstractAction {
 
     @Inject

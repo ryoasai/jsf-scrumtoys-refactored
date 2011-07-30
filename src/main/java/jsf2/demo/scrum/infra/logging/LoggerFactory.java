@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jsf2.demo.scrum.infra.context;
+package jsf2.demo.scrum.infra.logging;
 
 import java.util.logging.Logger;
 import javax.enterprise.inject.Produces;
