@@ -53,8 +53,6 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
 
     private static final long serialVersionUID = 1L;
 
-    private E currentEntity;
-
     private boolean conversationNested;
     
     @Inject
@@ -77,26 +75,17 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
         if (!isConversationNested() && !conversation.isTransient()) {
             conversation.end();
         }
-        
-        this.currentEntity = null;
     }
     
-    public E getCurrentEntity() {
-        return currentEntity;
-    }
-
-    public void setCurrentEntity(E currentEntity) {
+    public void selectCurrentEntity(E currentEntity) {
         onSelectCurrentEntity(currentEntity);
         
         if (currentEntity == null) {
-            this.currentEntity = currentEntity;
             endConversation();
             return;
         }
         
         beginConversation();
-        
-        this.currentEntity = currentEntity;
     }
 
     protected abstract void onSelectCurrentEntity(E currentEntity);
@@ -104,7 +93,7 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
     public String create() {
         E entity = doCreate();
 
-        setCurrentEntity(entity);
+        selectCurrentEntity(entity);
         
         return "create?faces-redirect=true";
     }
@@ -112,15 +101,13 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
     protected abstract E doCreate();
     
     public String edit(E entity) {
-        setCurrentEntity(entity);
+        selectCurrentEntity(entity);
         
         return "edit?faces-redirect=true";
     }
     
-    public String save() {                
-        if (currentEntity != null) {
-            doSave();
-        }
+    public String save() {
+        doSave();
         
         endConversation();
                 

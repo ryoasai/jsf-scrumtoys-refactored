@@ -68,16 +68,6 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
     @Inject 
     StoryRepository storyRepository;
 
-    public Story getCurrentStory() {
-        return scrumManager.getCurrentStory();
-    }
-
-    @Override
-    protected void onSelectCurrentEntity(Story story) {
-        scrumManager.setCurrentStory(story);
-    }
-
-    
     @Produces @Named @ViewScoped
     public List<Story> getStories() {
         if (getSprint() != null) {
@@ -91,6 +81,11 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
         return scrumManager.getCurrentSprint();
     }
 
+    @Override
+    protected void onSelectCurrentEntity(Story story) {
+        scrumManager.setCurrentStory(story);
+    }
+    
     @Override
     protected Story doCreate() {
         return new Story();
@@ -109,14 +104,14 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
     public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = storyRepository.countOtherStoriesWithName(getSprint(), getCurrentEntity(), newName);
+        long count = storyRepository.countOtherStoriesWithName(getSprint(), scrumManager.getCurrentStory(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
         }
     }
 
     public String showTasks(Story story) {
-        setCurrentEntity(story);
+        selectCurrentEntity(story);
         return "showTasks";
     }
     

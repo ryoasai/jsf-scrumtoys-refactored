@@ -71,16 +71,6 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
     @Inject
     SprintRepository sprintRepository;
 
-    public Sprint getCurrentSprint() {
-        return scrumManager.getCurrentSprint();
-    }
-
-    @Override
-    protected void onSelectCurrentEntity(Sprint sprint) {
-        scrumManager.setCurrentSprint(sprint);
-    }
-
-        
     @Produces @Named @ViewScoped
     public List<Sprint> getSprints() {
         if (getProject() != null) {
@@ -95,7 +85,12 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
     }   
 
     @Override
-    public Sprint doCreate() {
+    protected void onSelectCurrentEntity(Sprint sprint) {
+        scrumManager.setCurrentSprint(sprint);
+    }
+        
+    @Override
+    protected Sprint doCreate() {
         return new Sprint();
     }
     
@@ -137,7 +132,7 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
 
         final String newName = (String) newValue;
 
-        long count = sprintRepository.countOtherSprintsWithName(getProject(), getCurrentEntity(), newName);
+        long count = sprintRepository.countOtherSprintsWithName(getProject(), scrumManager.getCurrentSprint(), newName);
 
         if (count > 0) {
             message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
@@ -147,12 +142,12 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
     }
 
     public String showStories(Sprint sprint) {
-        setCurrentEntity(sprint);
+        selectCurrentEntity(sprint);
         return "showStories";
     }
 
     public String showDashboard(Sprint sprint) {
-        setCurrentEntity(sprint);
+        selectCurrentEntity(sprint);
         return "showDashboard";
     }
     

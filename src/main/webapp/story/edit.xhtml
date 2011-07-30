@@ -56,13 +56,13 @@ Other names may be trademarks of their respective owners.
                 <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
             </h:link>
             #{i18n['navigation.separtor']}
-            <h:commandLink immediate="true" action="/project/edit" value="#{sprintAction.project.name}"></h:commandLink>
+            <h:commandLink immediate="true" action="/project/edit" value="#{currentProject.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
             <h:link outcome="/sprint/show"  value="#{i18n['navigation.sprints']}">
                 <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
             </h:link>
             #{i18n['navigation.separtor']}
-            <h:commandLink immediate="true" action="/sprint/edit"  value="#{sprintAction.currentSprint.name}"></h:commandLink>
+            <h:commandLink immediate="true" action="/sprint/edit"  value="#{currentSprint.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
             <h:link outcome="/story/show"   value="#{i18n['navigation.stories']}">
                 <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>

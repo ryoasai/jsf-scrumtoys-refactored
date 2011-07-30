@@ -49,6 +49,7 @@ import java.util.List;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import jsf2.demo.scrum.application.scrum_management.ScrumManager;
 
 @Named
 @ConversationScoped
@@ -58,18 +59,17 @@ public class DashboardAction extends AbstractAction implements Serializable {
 
     @Inject
     TaskAction taskAction;
-
-    @Inject
-    SprintAction sprintAction;
-
+//
+//    @Inject
+//    SprintAction sprintAction;
+//
     @Inject
     StoryAction storyAction;
     
+    @Inject
+    ScrumManager scrumManager;
+    
     public List<Task> getToDoTasks() {
-        if (sprintAction.getCurrentSprint() == null) {
-            return Collections.emptyList();
-        }
-
         List<Task> toDoTasksList = new ArrayList<Task>();
         for (Story story : storyAction.getStories()) {
             toDoTasksList.addAll(story.getTodoTasks());
@@ -79,10 +79,6 @@ public class DashboardAction extends AbstractAction implements Serializable {
     }
 
     public List<Task> getWorkingTasks() {
-        if (sprintAction.getCurrentSprint() == null) {
-            return Collections.emptyList();
-        }
-
         List<Task> workingTasksList = new ArrayList<Task>();
         for (Story story : storyAction.getStories()) {
             workingTasksList.addAll(story.getWorkingTasks());
@@ -92,10 +88,6 @@ public class DashboardAction extends AbstractAction implements Serializable {
     }
 
     public List<Task> getDoneTasks() {
-        if (sprintAction.getCurrentSprint() == null) {
-            return Collections.emptyList();
-        }
-
         List<Task> doneTasksList = new ArrayList<Task>();
         for (Story story : storyAction.getStories()) {
             doneTasksList.addAll(story.getDoneTasks());
@@ -121,13 +113,12 @@ public class DashboardAction extends AbstractAction implements Serializable {
             return "";
         }
 
-
-        Story currentStory = storyAction.getCurrentStory();
+        Story currentStory = scrumManager.getCurrentStory();
         if (currentStory != currentTask.getStory()) {
-            storyAction.setCurrentEntity(currentTask.getStory());
+            storyAction.selectCurrentEntity(currentTask.getStory());
         }
         
-        taskAction.setCurrentEntity(currentTask);        
+        taskAction.selectCurrentEntity(currentTask);        
         
         return "/task/edit";
     }

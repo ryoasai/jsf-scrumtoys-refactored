@@ -77,7 +77,11 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
     public Project getCurrentProject() {
         return scrumManager.getCurrentProject();
     }
-    
+
+    public void setCurrentProject(Project project) {
+        selectCurrentEntity(project);
+    }
+        
     @Override
     protected void onSelectCurrentEntity(Project project) {
         scrumManager.setCurrentProject(project);
@@ -90,10 +94,6 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
         super.endConversation();
     }
     
-    public void setCurrentProject(Project project) {
-        setCurrentEntity(project);
-    }
-        
     @Produces @Named @ViewScoped
     public List<Project> getProjects() {
         return projectRepository.findByNamedQuery("project.getAll");
@@ -125,7 +125,7 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
     }
 
     public String showSprints(Project project) {
-        setCurrentEntity(project);
+        selectCurrentEntity(project);
         return "showSprints";
     }
 

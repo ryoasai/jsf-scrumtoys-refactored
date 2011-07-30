@@ -49,14 +49,14 @@ Other names may be trademarks of their respective owners.
     <ui:composition>
         <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage">
             <h:outputLabel value="#{i18n['project.form.label.name']}:" for="itName"/>
-            <h:inputText id="itName" value="#{projectAction.currentProject.name}" required="true" 
+            <h:inputText id="itName" value="#{currentProject.name}" required="true" 
                 requiredMessage="#{i18n['project.form.label.name.required']}" size="40"
                 validator="#{projectAction.checkUniqueProjectName}" />
             <h:message for="itName" styleClass="errorMessage" />
 
             <h:outputLabel value="#{i18n['project.form.label.startDate']}:" for="itStartedDate"  />
             <h:panelGroup>
-                <h:inputText id="itStartedDate" value="#{projectAction.currentProject.startDate}" required="true" requiredMessage="#{i18n['project.form.label.startDate.required']}">
+                <h:inputText id="itStartedDate" value="#{currentProject.startDate}" required="true" requiredMessage="#{i18n['project.form.label.startDate.required']}">
                     <f:convertDateTime pattern="#{i18n['project.form.label.startDate.pattern']}" />
                 </h:inputText>
                 <h:outputText value="(#{i18n['project.form.label.startDate.pattern']})" styleClass="inputPattern" />
@@ -65,7 +65,7 @@ Other names may be trademarks of their respective owners.
 
             <h:outputLabel value="#{i18n['project.form.label.endDate']}:" for="itEndDate"  />
             <h:panelGroup>
-                <h:inputText id="itEndDate" value="#{projectAction.currentProject.endDate}" required="false" requiredMessage="#{i18n['project.form.label.endDate.required']}">
+                <h:inputText id="itEndDate" value="#{currentProject.endDate}" required="false" requiredMessage="#{i18n['project.form.label.endDate.required']}">
                     <f:convertDateTime pattern="#{i18n['project.form.label.endDate.pattern']}" />
                 </h:inputText>
                 <h:outputText value="(#{i18n['project.form.label.endDate.pattern']})"  styleClass="inputPattern"/>

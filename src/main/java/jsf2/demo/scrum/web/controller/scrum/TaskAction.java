@@ -79,20 +79,16 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
             return Collections.emptyList();
         }
     }
-    
-    public Task getCurrentTask() {
-        return scrumManager.getCurrentTask();
+
+    public Story getStory() {
+        return scrumManager.getCurrentStory();
     }
 
     @Override
     protected void onSelectCurrentEntity(Task task) {
         scrumManager.setCurrentTask(task);
     }
-
-    public Story getStory() {
-        return scrumManager.getCurrentStory();
-    }
-
+    
     @Override
     protected Task doCreate() {
         return new Task();
@@ -111,7 +107,7 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
     public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = taskRepository.countOtherTasksWithName(getStory(), getCurrentEntity(), newName);
+        long count = taskRepository.countOtherTasksWithName(getStory(), scrumManager.getCurrentTask(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
         }
