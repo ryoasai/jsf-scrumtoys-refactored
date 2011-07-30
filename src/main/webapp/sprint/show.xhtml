@@ -56,7 +56,7 @@ Other names may be trademarks of their respective owners.
                 <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
             </h:link>
             #{i18n['navigation.separtor']}
-            <h:commandLink action="/project/edit"  value="#{sprintAction.project.name}"></h:commandLink>
+            <h:commandLink action="/project/edit"  value="#{currentProject.name}"></h:commandLink>
             #{i18n['navigation.separtor']}
             <h:outputText value="#{i18n['sprints.table.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>

@@ -38,7 +38,6 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller.scrum;
 
-import jsf2.demo.scrum.domain.story.Story;
 import jsf2.demo.scrum.domain.task.Task;
 
 import javax.faces.component.UIComponent;
@@ -73,15 +72,11 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
 
     @Produces @Named @ViewScoped
     public List<Task> getTasks() {
-        if (getStory() != null) {
-            return getStory().getTasks();
+        if (scrumManager.getCurrentStory() != null) {
+            return scrumManager.getCurrentStory().getTasks();
         } else {
             return Collections.emptyList();
         }
-    }
-
-    public Story getStory() {
-        return scrumManager.getCurrentStory();
     }
 
     @Override
@@ -107,14 +102,17 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
     public void checkUniqueTaskName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = taskRepository.countOtherTasksWithName(getStory(), scrumManager.getCurrentTask(), newName);
+        long count = taskRepository.countOtherTasksWithName(scrumManager.getCurrentStory(), scrumManager.getCurrentTask(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("task.form.label.name.unique"));
         }
     }
 
     public String showStories() {
-        return "/story/show";
+        // Reset selected story and task to null.
+        scrumManager.setCurrentSprint(scrumManager.getCurrentSprint());
+        
+        return "showStories";
     }
  
 }

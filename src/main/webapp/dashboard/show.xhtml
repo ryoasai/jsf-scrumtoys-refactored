@@ -59,7 +59,7 @@ Other names may be trademarks of their respective owners.
         <ui:define name="navigationBar">
             <h:commandLink   immediate="true" action="/project/show" value="#{i18n['navigation.projects']}"></h:commandLink>
             <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
-            <h:commandLink   immediate="true" action="/project/edit"  value="#{sprintAction.project.name}"></h:commandLink>
+            <h:commandLink   immediate="true" action="/project/edit"  value="#{currentProject.name}"></h:commandLink>
             <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
             <h:commandLink   immediate="true" action="/sprint/show" value="#{i18n['navigation.sprints']}"></h:commandLink>
             <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>

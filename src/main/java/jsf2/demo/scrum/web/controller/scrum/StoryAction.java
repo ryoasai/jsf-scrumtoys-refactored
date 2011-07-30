@@ -38,7 +38,6 @@ Other names may be trademarks of their respective owners.
  */
 package jsf2.demo.scrum.web.controller.scrum;
 
-import jsf2.demo.scrum.domain.sprint.Sprint;
 import jsf2.demo.scrum.domain.story.Story;
 
 import javax.faces.component.UIComponent;
@@ -70,17 +69,13 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
 
     @Produces @Named @ViewScoped
     public List<Story> getStories() {
-        if (getSprint() != null) {
-            return getSprint().getStories();
+        if (scrumManager.getCurrentSprint() != null) {
+            return scrumManager.getCurrentSprint().getStories();
         } else {
             return Collections.emptyList();
         }
     }
         
-    public Sprint getSprint() {
-        return scrumManager.getCurrentSprint();
-    }
-
     @Override
     protected void onSelectCurrentEntity(Story story) {
         scrumManager.setCurrentStory(story);
@@ -104,7 +99,7 @@ public class StoryAction extends BaseCrudAction<Long, Story> implements Serializ
     public void checkUniqueStoryName(FacesContext context, UIComponent component, Object newValue) {
         final String newName = (String) newValue;
 
-        long count = storyRepository.countOtherStoriesWithName(getSprint(), scrumManager.getCurrentStory(), newName);
+        long count = storyRepository.countOtherStoriesWithName(scrumManager.getCurrentSprint(), scrumManager.getCurrentStory(), newName);
         if (count > 0) {
             throw new ValidatorException(getFacesMessageForKey("story.form.label.name.unique"));
         }

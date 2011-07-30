@@ -72,8 +72,8 @@ Other names may be trademarks of their respective owners.
 
                     <ui:include src="form.xhtml" />
                     <h:panelGroup>
-                        <h:commandButton rendered="#{storyAction.sprint.name != null}" id="btnEditUpdate" action="#{taskAction.save}" value="#{i18n['task.edit.button.update']}" styleClass="botaoPostIt" />
-                        <h:commandButton rendered="#{storyAction.sprint.name != null}" id="btnEditCancel" action="#{taskAction.cancelEdit}" immediate="true" value="#{i18n['task.edit.button.cancel']}" styleClass="botaoPostIt" />
+                        <h:commandButton id="btnEditUpdate" action="#{taskAction.save}" value="#{i18n['task.edit.button.update']}" styleClass="botaoPostIt" />
+                        <h:commandButton id="btnEditCancel" action="#{taskAction.cancelEdit}" immediate="true" value="#{i18n['task.edit.button.cancel']}" styleClass="botaoPostIt" />
                         <h:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" >
                              <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
                         </h:button>
