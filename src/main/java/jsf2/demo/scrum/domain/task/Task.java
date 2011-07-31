@@ -56,6 +56,16 @@ public class Task extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="TASK_ID")
+    @SequenceGenerator(name="TASK_ID")
+    private Long id;
+    
+    @Override
+    public Long getId() {
+        return this.id;
+    }
+    
     @Column(nullable = false)
     private String name;
 

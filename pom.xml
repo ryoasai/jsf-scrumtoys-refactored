@@ -44,6 +44,12 @@ Other names may be trademarks of their respective owners. The contents of
     <url>https://mojarra.dev.java.net/</url>
     <description>ScrumToys sample app</description>
     <version>0.1</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
+    </properties>
+    
     <build>
         <plugins>
             <plugin>
@@ -93,10 +99,27 @@ Other names may be trademarks of their respective owners. The contents of
         </dependency>
     </dependencies>
     
+    <profiles>
+        <profile>
+            <id>jbossas</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/resources-jbossas</directory>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+    </profiles>
 
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
-    </properties>
 </project>
