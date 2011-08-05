@@ -66,17 +66,19 @@ Other names may be trademarks of their respective owners.
             <h:outputText value="#{i18n['story.create.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
         <ui:define name="content">
-            <f:ajax render="@form">
-                <h:form styleClass="scrumForm" id="createStoryForm">
-                    <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">
-                        <ui:include src="form.xhtml" />
-                        <f:facet name="footer">
+
+            <h:form styleClass="scrumForm" id="createStoryForm">
+                <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">
+                    <ui:include src="form.xhtml" />
+                    <f:facet name="footer">
+                        <f:ajax>
                             <h:commandButton  id="btnCreate" action="#{storyAction.save}" value="#{i18n['story.create.button.create']}" styleClass="botaoPostIt" />
                             <h:commandButton  id="btnCancel" action="#{storyAction.cancelEdit}" value="#{i18n['story.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
-                        </f:facet>
-                    </h:panelGrid>
-                </h:form>
-            </f:ajax>
+                        </f:ajax>
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>
+
         </ui:define>
     </ui:composition>
 

@@ -110,10 +110,19 @@ public class Task extends AbstractEntity implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-        changeTaskStatus(this.startDate, endDate);
-
+//        changeTaskStatus(this.startDate, endDate);
     }
 
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+ //       changeTaskStatus(startDate, this.endDate);
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+   
+    /*
     protected void changeTaskStatus(Date startDate, Date endDate) {
         if (endDate != null) {
             this.setStatus(status.DONE);
@@ -125,7 +134,8 @@ public class Task extends AbstractEntity implements Serializable {
             this.setStatus(status.TODO);
         }
     }
-
+*/
+    
     public String getName() {
         return name;
     }
@@ -138,15 +148,6 @@ public class Task extends AbstractEntity implements Serializable {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-        changeTaskStatus(startDate, this.endDate);
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
@@ -157,10 +158,6 @@ public class Task extends AbstractEntity implements Serializable {
 
     public void setStory(Story story) {
         this.story = story;
-    }
-
-    public String getStatusKeyI18n() {
-        return "task.show.table.header.status."+status;
     }
 
     @Override

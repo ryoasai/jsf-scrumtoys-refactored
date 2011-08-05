@@ -67,19 +67,21 @@ Other names may be trademarks of their respective owners.
             <h:outputText value="#{i18n['task.edit.form.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
         <ui:define name="content">
-            <f:ajax render="@form">
-                <h:form styleClass="scrumForm" id="editTaskForm">
-                    <h:panelGrid headerClass="tituloForm" footerClass="footerForm">
 
-                        <ui:include src="form.xhtml" />
-                        <h:panelGroup>
+            <h:form styleClass="scrumForm" id="editTaskForm">
+                <h:panelGrid headerClass="tituloForm" footerClass="footerForm">
+
+                    <ui:include src="form.xhtml" />
+                    <h:panelGroup>
+                        <f:ajax>
                             <h:commandButton id="btnEditUpdate" action="#{taskAction.save}" value="#{i18n['task.edit.button.update']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnEditCancel" action="#{taskAction.cancelEdit}" immediate="true" value="#{i18n['task.edit.button.cancel']}" styleClass="botaoPostIt" />
                             <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
-                        </h:panelGroup>
-                    </h:panelGrid>
-                </h:form>
-            </f:ajax>
+                        </f:ajax>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:form>
+
         </ui:define>
     </ui:composition>
 

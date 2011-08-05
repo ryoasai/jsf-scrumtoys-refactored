@@ -58,17 +58,19 @@ Other names may be trademarks of their respective owners.
         </ui:define>
 
         <ui:define name="content">
-            <f:ajax render="@form">
-                <h:form styleClass="scrumForm" id="editProjectForm">
-                    <h:panelGrid columns="1" headerClass="tituloForm" footerClass="footerForm">
-                        <ui:include src="form.xhtml" />
-                        <f:facet name="footer">                        
+
+            <h:form styleClass="scrumForm" id="editProjectForm">
+                <h:panelGrid columns="1" headerClass="tituloForm" footerClass="footerForm">
+                    <ui:include src="form.xhtml" />
+                    <f:facet name="footer">
+                        <f:ajax>
                             <h:commandButton id="btnEditUpdate" action="#{projectAction.save}" value="#{i18n['project.edit.button.update']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnEditCancel" action="#{projectAction.cancelEdit}" immediate="true" value="#{i18n['project.edit.button.cancel']}" styleClass="botaoPostIt" />                        
-                        </f:facet>
-                    </h:panelGrid>
-                </h:form>
-            </f:ajax>
+                        </f:ajax>
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>
+
         </ui:define>
     </ui:composition>
 </html>

@@ -66,18 +66,20 @@ Other names may be trademarks of their respective owners.
             <h:outputText value="#{i18n['story.edit.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
         <ui:define name="content">
-            <f:ajax render="@form">
-                <h:form styleClass="scrumForm" id="editStoryForm">
-                    <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">
-                        <ui:include src="form.xhtml" />
-                        <f:facet name="footer">
+
+            <h:form styleClass="scrumForm" id="editStoryForm">
+                <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">
+                    <ui:include src="form.xhtml" />
+                    <f:facet name="footer">
+                        <f:ajax>
                             <h:commandButton id="btnEditUpdate" action="#{storyAction.save}" value="#{i18n['story.edit.button.update']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnEditCancel" action="#{storyAction.cancelEdit}" immediate="true" value="#{i18n['story.edit.button.cancel']}" styleClass="botaoPostIt" />
                             <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
-                        </f:facet>
-                    </h:panelGrid>
-                </h:form>
-            </f:ajax>
+                        </f:ajax>
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>
+
         </ui:define>
     </ui:composition>
 

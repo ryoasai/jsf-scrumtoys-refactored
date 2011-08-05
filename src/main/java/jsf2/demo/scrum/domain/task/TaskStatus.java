@@ -45,5 +45,10 @@ package jsf2.demo.scrum.domain.task;
  */
 public enum TaskStatus {
 
-    TODO, DONE, WORKING
+    TODO, DONE, WORKING;
+    
+
+    public String getStatusKeyI18n() {
+        return "task.show.table.header.status." + name();
+    }
 }

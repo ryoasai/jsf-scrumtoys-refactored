@@ -67,17 +67,19 @@ Other names may be trademarks of their respective owners.
             <h:outputText value="#{i18n['task.create.form.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
         <ui:define name="content">
-            <f:ajax render="@form">
-                <h:form  id="createTaskForm">
-                    <h:panelGrid columns="3" headerClass="tituloForm" footerClass="footerForm">
-                        <ui:include src="form.xhtml" />
-                        <f:facet name="footer">
+
+            <h:form  id="createTaskForm">
+                <h:panelGrid columns="3" headerClass="tituloForm" footerClass="footerForm">
+                    <ui:include src="form.xhtml" />
+                    <f:facet name="footer">
+                        <f:ajax>
                             <h:commandButton id="btnCreate" action="#{taskAction.save}" value="#{i18n['task.create.button.create']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnCancel" action="#{taskAction.cancelEdit}" value="#{i18n['task.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
-                        </f:facet>
-                    </h:panelGrid>
-                </h:form>
-            </f:ajax>
+                        </f:ajax>
+
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>
         </ui:define>
     </ui:composition>
 
