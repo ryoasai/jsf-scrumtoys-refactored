@@ -61,16 +61,18 @@ Other names may be trademarks of their respective owners.
             <h:outputText value="#{i18n['sprint.edit.form.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
         <ui:define name="content">
-            <h:form styleClass="scrumForm" id="editSprintForm">
-                <h:panelGrid columns="2" headerClass="tituloForm" footerClass="footerForm">
-                    <ui:include src="form.xhtml" />
-                    <f:facet name="footer">
-                        <h:commandButton id="btnEditUpdate" action="#{sprintAction.save}" value="#{i18n['sprint.edit.button.update']}" styleClass="botaoPostIt" />
-                        <h:commandButton id="btnEditCancel" action="#{sprintAction.cancelEdit}" immediate="true" value="#{i18n['sprint.edit.button.cancel']}" styleClass="botaoPostIt" />
-                        <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
-                    </f:facet>
-                </h:panelGrid>
-            </h:form>
+            <f:ajax>
+                <h:form styleClass="scrumForm" id="editSprintForm">
+                    <h:panelGrid columns="2" headerClass="tituloForm" footerClass="footerForm">
+                        <ui:include src="form.xhtml" />
+                        <f:facet name="footer">
+                            <h:commandButton id="btnEditUpdate" action="#{sprintAction.save}" value="#{i18n['sprint.edit.button.update']}" styleClass="botaoPostIt" />
+                            <h:commandButton id="btnEditCancel" action="#{sprintAction.cancelEdit}" immediate="true" value="#{i18n['sprint.edit.button.cancel']}" styleClass="botaoPostIt" />
+                            <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
+                        </f:facet>
+                    </h:panelGrid>
+                </h:form>
+            </f:ajax>
         </ui:define>
     </ui:composition>
 

@@ -68,14 +68,20 @@ Other names may be trademarks of their respective owners.
         <h:message id="startedDateError" for="startedDate" styleClass="errorMessage" />
 
         <h:outputLabel value="#{i18n['story.form.label.priority']}:" for="priority"  />
-        <h:inputText id="priority" value="#{currentStory.priority}" required="true" requiredMessage="#{i18n['story.form.label.priority.required']}" >
-            <f:ajax event="blur" render="priorityError" />
-        </h:inputText>    
+        <h:selectOneMenu id="priority" value="#{currentStory.priority}" required="true" requiredMessage="#{i18n['story.form.label.priority.required']}">
+            <f:selectItem itemValue="0" />
+            <f:selectItem itemValue="1" />            
+            <f:selectItem itemValue="2" />
+            <f:selectItem itemValue="3" />
+            <f:selectItem itemValue="4" />
+            <f:selectItem itemValue="5" />
+        </h:selectOneMenu >
+
         <h:message id="priorityError" for="priority" styleClass="errorMessage"/>
 
         <h:outputLabel value="#{i18n['story.form.label.estimation']}:" for="estimation"  />
         <h:inputText id="estimation" value="#{currentStory.estimation}" required="true" requiredMessage="#{i18n['story.form.label.estimation.required']}" >
-             <f:ajax event="blur" render="estimationError" />
+            <f:ajax event="blur" render="estimationError" />
         </h:inputText>    
         <h:message id="estimationError" for="estimation" styleClass="errorMessage"/>
 

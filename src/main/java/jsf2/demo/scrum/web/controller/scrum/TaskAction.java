@@ -44,8 +44,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
@@ -53,6 +55,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import jsf2.demo.scrum.application.scrum_management.ScrumManager;
 import jsf2.demo.scrum.domain.task.TaskRepository;
+import jsf2.demo.scrum.domain.task.TaskStatus;
 import jsf2.demo.scrum.infra.context.ViewScoped;
 import jsf2.demo.scrum.infra.web.controller.BaseCrudAction;
 
@@ -87,6 +90,11 @@ public class TaskAction extends BaseCrudAction<Long, Task> implements Serializab
         }
     }
 
+    @Produces @Named @ApplicationScoped
+    public List<TaskStatus> getStatuses() {
+        return Arrays.asList(TaskStatus.values());
+    }    
+    
     //=========================================================================
     // Actions.
     //=========================================================================

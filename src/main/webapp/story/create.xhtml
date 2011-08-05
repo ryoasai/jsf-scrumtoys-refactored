@@ -66,41 +66,17 @@ Other names may be trademarks of their respective owners.
             <h:outputText value="#{i18n['story.create.title']}" styleClass="tituloForm"></h:outputText>
         </ui:define>
         <ui:define name="content">
-            <h:form styleClass="scrumForm" id="createStoryForm">
-                <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">
-                    <h:outputLabel value="#{i18n['story.form.label.name']}:" for="itName"/>
-                    <h:inputText id="itName" value="#{currentStory.name}" required="true"
-                                 requiredMessage="#{i18n['story.form.label.name.required']}" size="40"
-                                 validator="#{storyAction.checkUniqueStoryName}" />
-                    <h:message for="itName" styleClass="errorMessage"/>
-
-                    <h:outputLabel value="#{i18n['story.form.label.startDate']}:" for="itStartedDate"  />
-                    <h:panelGroup>
-                        <h:inputText id="itStartedDate" value="#{currentStory.startDate}" required="true" requiredMessage="#{i18n['story.form.label.startDate.required']}" size="10" >
-                            <f:convertDateTime pattern="#{i18n['story.form.label.startDate.pattern']}" />
-                        </h:inputText>
-                        <h:outputText value="(#{i18n['story.form.label.startDate.pattern']})" styleClass="inputPattern" />
-                    </h:panelGroup>
-                    <h:message for="itStartedDate" styleClass="errorMessage" />
-
-                    <h:outputLabel value="#{i18n['story.form.label.priority']}:" for="itPriority"  />
-                    <h:inputText id="itPriority" value="#{currentStory.priority}" required="true" requiredMessage="#{i18n['story.form.label.priority.required']}" />
-                    <h:message for="itPriority" styleClass="errorMessage"/>
-
-                    <h:outputLabel value="#{i18n['story.form.label.estimation']}:" for="itEstimation"  />
-                    <h:inputText id="itEstimation" value="#{currentStory.estimation}" required="true" requiredMessage="#{i18n['story.form.label.estimation.required']}" />
-                    <h:message for="itEstimation" styleClass="errorMessage"/>
-
-                    <h:outputLabel value="#{i18n['story.form.label.acceptance']}:" for="itAcceptance"  />
-                    <h:inputText id="itAcceptance" value="#{currentStory.acceptance}" required="true" requiredMessage="#{i18n['story.form.label.acceptance.required']}" size="40" />
-                    <h:message for="itAcceptance" styleClass="errorMessage" />
-                    <f:facet name="footer">
-                        <h:commandButton  id="btnCreate" action="#{storyAction.save}" value="#{i18n['story.create.button.create']}" styleClass="botaoPostIt" />
-                        <h:commandButton  id="btnCancel" action="#{storyAction.cancelEdit}" value="#{i18n['story.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
-                    </f:facet>
-                </h:panelGrid>
-            </h:form>
-
+            <f:ajax render="@form">
+                <h:form styleClass="scrumForm" id="createStoryForm">
+                    <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">
+                        <ui:include src="form.xhtml" />
+                        <f:facet name="footer">
+                            <h:commandButton  id="btnCreate" action="#{storyAction.save}" value="#{i18n['story.create.button.create']}" styleClass="botaoPostIt" />
+                            <h:commandButton  id="btnCancel" action="#{storyAction.cancelEdit}" value="#{i18n['story.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
+                        </f:facet>
+                    </h:panelGrid>
+                </h:form>
+            </f:ajax>
         </ui:define>
     </ui:composition>
 
