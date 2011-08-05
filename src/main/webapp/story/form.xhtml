@@ -47,35 +47,44 @@ Other names may be trademarks of their respective owners.
       xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:composition>
-      
 
-            <h:outputLabel value="#{i18n['story.form.label.name']}:" for="itName"/>
-            <h:inputText id="itName" value="#{currentStory.name}" required="true"
-                         requiredMessage="#{i18n['story.form.label.name.required']}" size="40" 
-                         validator="#{storyAction.checkUniqueStoryName}" />
-            <h:message for="itName" styleClass="errorMessage"/>
 
-            <h:outputLabel value="#{i18n['story.form.label.startDate']}:" for="itStartedDate"  />
-            <h:panelGroup>
-                <h:inputText id="itStartedDate" value="#{currentStory.startDate}" required="true" requiredMessage="#{i18n['story.form.label.startDate.required']}" size="10" >
-                    <f:convertDateTime pattern="#{i18n['story.form.label.startDate.pattern']}" />
-                </h:inputText>
-                <h:outputText value="(#{i18n['story.form.label.startDate.pattern']})" styleClass="inputPattern" />
-            </h:panelGroup>
-            <h:message for="itStartedDate" styleClass="errorMessage" />
+        <h:outputLabel value="#{i18n['story.form.label.name']}:" for="name"/>
+        <h:inputText id="name" value="#{currentStory.name}" required="true"
+                     requiredMessage="#{i18n['story.form.label.name.required']}" size="40" 
+                     validator="#{storyAction.checkUniqueStoryName}" >
+            <f:ajax event="blur" render="nameError" />
+        </h:inputText>    
+        <h:message id="nameError" for="name" styleClass="errorMessage"/>
 
-            <h:outputLabel value="#{i18n['story.form.label.priority']}:" for="itPriority"  />
-            <h:inputText id="itPriority" value="#{currentStory.priority}" required="true" requiredMessage="#{i18n['story.form.label.priority.required']}" />
-            <h:message for="itPriority" styleClass="errorMessage"/>
+        <h:outputLabel value="#{i18n['story.form.label.startDate']}:" for="startedDate"  />
+        <h:panelGroup>
+            <h:inputText id="startedDate" value="#{currentStory.startDate}" required="true" requiredMessage="#{i18n['story.form.label.startDate.required']}" size="10" >
+                <f:convertDateTime pattern="#{i18n['story.form.label.startDate.pattern']}" />
+                <f:ajax event="blur" render="startedDateError" />
+            </h:inputText>
+            <h:outputText value="(#{i18n['story.form.label.startDate.pattern']})" styleClass="inputPattern" />
+        </h:panelGroup>
+        <h:message id="startedDateError" for="startedDate" styleClass="errorMessage" />
 
-            <h:outputLabel value="#{i18n['story.form.label.estimation']}:" for="itEstimation"  />
-            <h:inputText id="itEstimation" value="#{currentStory.estimation}" required="true" requiredMessage="#{i18n['story.form.label.estimation.required']}" />
-            <h:message for="itEstimation" styleClass="errorMessage"/>
+        <h:outputLabel value="#{i18n['story.form.label.priority']}:" for="priority"  />
+        <h:inputText id="priority" value="#{currentStory.priority}" required="true" requiredMessage="#{i18n['story.form.label.priority.required']}" >
+            <f:ajax event="blur" render="priorityError" />
+        </h:inputText>    
+        <h:message id="priorityError" for="priority" styleClass="errorMessage"/>
 
-            <h:outputLabel value="#{i18n['story.form.label.acceptance']}:" for="itAcceptance"  />
-            <h:inputText id="itAcceptance" value="#{currentStory.acceptance}" required="true" requiredMessage="#{i18n['story.form.label.acceptance.required']}" size="40" />
-            <h:message for="itAcceptance" styleClass="errorMessage" />
-        
+        <h:outputLabel value="#{i18n['story.form.label.estimation']}:" for="estimation"  />
+        <h:inputText id="estimation" value="#{currentStory.estimation}" required="true" requiredMessage="#{i18n['story.form.label.estimation.required']}" >
+             <f:ajax event="blur" render="estimationError" />
+        </h:inputText>    
+        <h:message id="estimationError" for="estimation" styleClass="errorMessage"/>
+
+        <h:outputLabel value="#{i18n['story.form.label.acceptance']}:" for="acceptance"  />
+        <h:inputText id="acceptance" value="#{currentStory.acceptance}" required="true" requiredMessage="#{i18n['story.form.label.acceptance.required']}" size="40" >
+            <f:ajax event="blur" render="acceptanceError" />
+        </h:inputText>    
+        <h:message id="acceptanceError" for="itAcceptance" styleClass="errorMessage" />
+
     </ui:composition>
 
 </html>

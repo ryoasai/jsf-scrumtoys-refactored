@@ -48,32 +48,37 @@ Other names may be trademarks of their respective owners.
 
     <ui:composition id="comp1">
         <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable" id="pgFormTask">
-            <h:outputLabel value="#{i18n['task.form.label.name']}:" for="itTaskName" id="olName"/>
-            <h:inputText id="itTaskName" value="#{currentTask.name}" required="true"
+            <h:outputLabel value="#{i18n['task.form.label.name']}:" for="taskName" id="olName"/>
+            <h:inputText id="taskName" value="#{currentTask.name}" required="true"
                          requiredMessage="#{i18n['task.form.label.name.required']}" size="30"
-                         validator="#{taskAction.checkUniqueTaskName}" />
-            <h:message for="itTaskName" styleClass="errorMessage" id="emName"/>
+                         validator="#{taskAction.checkUniqueTaskName}" >
 
-            <h:outputLabel value="#{i18n['task.form.label.startDate']}:" for="itTaskName"/>
+                <f:ajax event="blur" render="taskNameError" />
+            </h:inputText>    
+            <h:message id="taskNameError" for="taskName" styleClass="errorMessage" id="emName"/>
+
+            <h:outputLabel value="#{i18n['task.form.label.startDate']}:" for="taskName"/>
             <h:panelGroup>
-                <h:inputText id="itStartedDate" value="#{currentTask.startDate}" size="10" >
+                <h:inputText id="startedDate" value="#{currentTask.startDate}" size="10" >
                     <f:convertDateTime pattern="#{i18n['task.form.label.startDate.pattern']}" />
+                    <f:ajax event="blur" render="startedDateError" />
                 </h:inputText>
                 <h:outputText value="(#{i18n['task.form.label.startDate.pattern']})" styleClass="inputPattern" />
             </h:panelGroup>
-            <h:message for="itStartedDate" styleClass="errorMessage"/>
+            <h:message id="startedDateError" for="startedDate" styleClass="errorMessage"/>
 
-            <h:outputLabel value="#{i18n['task.form.label.endDate']}:" for="itTaskName"/>
+            <h:outputLabel value="#{i18n['task.form.label.endDate']}:" for="taskName"/>
             <h:panelGroup>
-                <h:inputText id="itEndDate" value="#{currentTask.endDate}" size="10" >
+                <h:inputText id="endDate" value="#{currentTask.endDate}" size="10" >
                     <f:convertDateTime pattern="#{i18n['task.form.label.endDate.pattern']}" />
+                    <f:ajax event="blur" render="endDateError" />
                 </h:inputText>
                 <h:outputText value="(#{i18n['task.form.label.endDate.pattern']})" styleClass="inputPattern" />
             </h:panelGroup>
-            <h:message for="itEndDate" styleClass="errorMessage"/>
-            
-            <h:outputLabel value="#{i18n['task.form.label.status']}:" for="itStatus"/>
-            <h:outputText id="itStatus" value="#{currentTask.status}"  />
+            <h:message id="endDateError" for="endDate" styleClass="errorMessage"/>
+
+            <h:outputLabel value="#{i18n['task.form.label.status']}:" for="status"/>
+            <h:outputText id="status" value="#{currentTask.status}"  />
         </h:panelGrid>
     </ui:composition>
 
