@@ -57,7 +57,7 @@ public abstract class AbstractEntity implements PersistentEntity<Long> {
     
     @Override
     public boolean isNew() {
-        return (getId() == null);
+        return getId() == null;
     }
 
     @Override

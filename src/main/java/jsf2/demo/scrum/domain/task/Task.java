@@ -43,6 +43,8 @@ import jsf2.demo.scrum.infra.entity.AbstractEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import jsf2.demo.scrum.domain.story.Story;
 
 /**
@@ -67,6 +69,8 @@ public class Task extends AbstractEntity implements Serializable {
     }
     
     @Column(nullable = false)
+    @NotNull
+    @Size(min=0, max=128)
     private String name;
 
     @Temporal(TemporalType.DATE)

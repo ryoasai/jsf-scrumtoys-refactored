@@ -59,6 +59,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import jsf2.demo.scrum.domain.sprint.Sprint;
 
 /**
@@ -85,6 +87,8 @@ public class Project extends AbstractEntity implements Serializable {
     }
     
     @Column(nullable = false, unique = true)
+    @NotNull
+    @Size(min=0, max=8)
     private String name;
 
     @Temporal(TemporalType.DATE)

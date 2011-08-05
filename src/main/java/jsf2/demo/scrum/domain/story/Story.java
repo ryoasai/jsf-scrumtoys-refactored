@@ -50,6 +50,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
@@ -73,15 +77,26 @@ public class Story extends AbstractEntity implements Serializable {
     }
     
     @Column(nullable = false)
+    @NotNull
+    @Size(min=0, max=128)
     private String name;
+    
+    @Min(0)
+    @Max(5)
     private int priority;
+    
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date", nullable = false)
     private Date startDate;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
     private Date endDate;
+    
     private String acceptance;
+    
+    @Min(0)
+    @Max(100)
     private int estimation;
     
     @ManyToOne
