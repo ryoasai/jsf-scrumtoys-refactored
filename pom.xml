@@ -82,15 +82,27 @@ Other names may be trademarks of their respective owners. The contents of
         <finalName>scrumtoys</finalName>
     </build>
 
-    <repositories>
-        <repository>
-            <id>java.net2</id>
-            <name>Repository hosting the jee6 artifacts</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-    </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>mockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>0.999.10</version>
+            <scope>test</scope>
+        </dependency>        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-web</artifactId>
+            <version>3.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -98,7 +110,46 @@ Other names may be trademarks of their respective owners. The contents of
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    
+
+    <repositories>
+        <repository>
+            <id>jmockit-svn</id>
+            <url>http://jmockit.googlecode.com/svn/maven-repo</url>
+            <releases>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>org.jboss.repository.release</id>
+            <name>JBoss Maven Release Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+        </repository>
+        <repository>
+            <id>glassfish-repo-archive</id>
+            <name>Nexus repository collection for Glassfish</name>
+            <url>http://maven.glassfish.org/content/groups/glassfish</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sonatype-oss-staging</id>
+            <name>Sonatype OSS Staging Repository</name>
+            <url>http://oss.sonatype.org/content/groups/staging</url>
+        </repository>        
+        <repository>
+            <id>ibiblio</id>
+            <name>The Maven2 Central Repository</name>
+            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>        
+    </repositories>
+ 
     <profiles>
         <profile>
             <id>jbossas</id>

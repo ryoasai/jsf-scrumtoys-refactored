@@ -172,7 +172,7 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void removeProject(Project project) {
-        projectRepository.remove(projectRepository.findById(project.getId()));
+        projectRepository.remove(project);
     }
 
     //=========================================================================

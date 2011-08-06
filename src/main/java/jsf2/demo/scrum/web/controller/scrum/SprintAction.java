@@ -133,10 +133,9 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
      *   validator="#{sprintAction.checkUniqueSprintName}" />
      */
     public void checkUniqueSprintNameFacesValidatorMethod(FacesContext context, UIComponent component, Object newValue) {
-
         final String newName = (String) newValue;
-        String message = checkUniqueSprintNameApplicationValidatorMethod(newName);
-        if (null != message) {
+        
+        if (isNonUniqueSprintName(newName)) {
             throw new ValidatorException(getFacesMessageForKey("sprint.form.label.name.unique"));
         }
     }
@@ -148,17 +147,17 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
      *
      */
     public String checkUniqueSprintNameApplicationValidatorMethod(String newValue) {
-        String message = null;
-
         final String newName = (String) newValue;
 
-        long count = sprintRepository.countOtherSprintsWithName(scrumManager.getCurrentProject(), scrumManager.getCurrentSprint(), newName);
-
-        if (count > 0) {
-            message = getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
-        }
-
-        return message;
+        if (isNonUniqueSprintName(newName)) {
+            return getFacesMessageForKey("sprint.form.label.name.unique").getSummary();
+        } else {
+            return null;
+        }    
     }
     
+    private boolean isNonUniqueSprintName(String newSprintName) {
+        long count = sprintRepository.countOtherSprintsWithName(scrumManager.getCurrentProject(), scrumManager.getCurrentSprint(), newSprintName);
+        return count > 0 ? true : false;
+    }
 }
