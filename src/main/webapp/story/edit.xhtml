@@ -71,7 +71,7 @@ Other names may be trademarks of their respective owners.
                 <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">
                     <ui:include src="form.xhtml" />
                     <f:facet name="footer">
-                        <f:ajax>
+                        <f:ajax execute="@form">
                             <h:commandButton id="btnEditUpdate" action="#{storyAction.save}" value="#{i18n['story.edit.button.update']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnEditCancel" action="#{storyAction.cancelEdit}" immediate="true" value="#{i18n['story.edit.button.cancel']}" styleClass="botaoPostIt" />
                             <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />

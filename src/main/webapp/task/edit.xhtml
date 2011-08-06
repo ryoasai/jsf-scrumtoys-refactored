@@ -73,7 +73,7 @@ Other names may be trademarks of their respective owners.
 
                     <ui:include src="form.xhtml" />
                     <h:panelGroup>
-                        <f:ajax>
+                        <f:ajax execute="@form">
                             <h:commandButton id="btnEditUpdate" action="#{taskAction.save}" value="#{i18n['task.edit.button.update']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnEditCancel" action="#{taskAction.cancelEdit}" immediate="true" value="#{i18n['task.edit.button.cancel']}" styleClass="botaoPostIt" />
                             <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />

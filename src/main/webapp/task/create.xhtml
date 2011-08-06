@@ -72,7 +72,7 @@ Other names may be trademarks of their respective owners.
                 <h:panelGrid columns="3" headerClass="tituloForm" footerClass="footerForm">
                     <ui:include src="form.xhtml" />
                     <f:facet name="footer">
-                        <f:ajax>
+                        <f:ajax execute="@form">
                             <h:commandButton id="btnCreate" action="#{taskAction.save}" value="#{i18n['task.create.button.create']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnCancel" action="#{taskAction.cancelEdit}" value="#{i18n['task.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
                         </f:ajax>

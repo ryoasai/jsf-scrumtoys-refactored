@@ -57,7 +57,7 @@ Other names may be trademarks of their respective owners.
     </context-param>
     <!-- do not render comments -->
     <context-param>
-        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
 

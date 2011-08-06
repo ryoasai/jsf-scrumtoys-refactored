@@ -62,8 +62,8 @@ Other names may be trademarks of their respective owners.
             <h:form styleClass="scrumForm" id="editProjectForm">
                 <h:panelGrid columns="1" headerClass="tituloForm" footerClass="footerForm">
                     <ui:include src="form.xhtml" />
-                    <f:facet name="footer">
-                        <f:ajax>
+                    <f:facet name="footer" >
+                        <f:ajax execute="@form">
                             <h:commandButton id="btnEditUpdate" action="#{projectAction.save}" value="#{i18n['project.edit.button.update']}" styleClass="botaoPostIt" />
                             <h:commandButton id="btnEditCancel" action="#{projectAction.cancelEdit}" immediate="true" value="#{i18n['project.edit.button.cancel']}" styleClass="botaoPostIt" />                        
                         </f:ajax>
