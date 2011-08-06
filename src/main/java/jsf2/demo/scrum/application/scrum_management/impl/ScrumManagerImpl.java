@@ -39,6 +39,7 @@ Other names may be trademarks of their respective owners.
 package jsf2.demo.scrum.application.scrum_management.impl;
 
 
+import javax.enterprise.context.Conversation;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -64,7 +65,6 @@ import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.domain.task.Task;
 import jsf2.demo.scrum.domain.task.TaskRepository;
 import jsf2.demo.scrum.infra.entity.Current;
-import static jsf2.demo.scrum.infra.entity.EntityStatusAssertions.*;
 
 /**
  * Because of the limitation of extended persistence context progagation,
@@ -105,8 +105,11 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     transient Logger logger;
     
     @PersistenceContext(type= PersistenceContextType.EXTENDED)
-    protected EntityManager em;
+    EntityManager em;
     
+    @Inject
+    Conversation conversation;
+        
     //=========================================================================
     // Bean lifecycle callbacks
     //=========================================================================
@@ -127,6 +130,10 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
         currentSprint = null;
         currentStory = null;
         currentTask = null;
+        
+        if (!conversation.isTransient()) {
+            conversation.end();
+        }
     }
     
     //=========================================================================
@@ -147,12 +154,16 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
         currentSprint = null;
         currentStory = null;
         currentTask = null;
+        
+        if (conversation.isTransient()) {
+            conversation.begin();
+        }
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void saveCurrentProject() {
-        assertThatEntityIsNotNull(currentProject);
+        assert (currentProject != null) : "currentProject is null.";        
         if (!currentProject.isNew()) return;
         
         projectRepository.persist(currentProject);
@@ -186,8 +197,9 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
     @Override
     public void saveCurrentSprint() {
-        assertThatEntityIsNotNull(currentProject);
-        assertThatEntityIsNotNull(currentSprint);
+        assert (currentProject != null) : "currentProject is null.";        
+        assert (currentSprint != null) : "currentSprint is null.";        
+
         if (!currentSprint.isNew()) return;
         
         currentProject.addSprint(currentSprint);
@@ -196,8 +208,8 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void removeSprint(Sprint sprint) {
-        assertThatEntityIsNotNull(currentProject);      
-
+        assert (currentProject != null) : "currentProject is null.";
+        
         currentProject.removeSprint(sprint);
     }
 
@@ -222,8 +234,9 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
     @Override
     public void saveCurrentStory() {
-        assertThatEntityIsNotNull(currentSprint);
-        assertThatEntityIsNotNull(currentStory);
+        assert (currentSprint != null) : "currentSprint is null.";
+        assert (currentStory != null) : "currentStory is null.";
+        
        if (!currentStory.isNew()) return;
        
         currentSprint.addStory(currentStory);
@@ -232,7 +245,7 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void removeStory(Story story) {
-        assertThatEntityIsNotNull(currentSprint);
+        assert (currentSprint != null) : "currentSprint is null.";
 
         currentSprint.removeStory(story);
     }
@@ -250,8 +263,9 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)    
     @Override
     public void saveCurrentTask() {
-        assertThatEntityIsNotNull(currentStory);
-        assertThatEntityIsNotNull(currentTask);
+        assert (currentStory != null) : "currentStory is null.";
+        assert (currentTask != null) : "currentTask is null.";
+                
        if (!currentTask.isNew()) return;
        
         currentStory.addTask(currentTask);
@@ -260,7 +274,7 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void removeTask(Task task) {
-        assertThatEntityIsNotNull(currentStory);
+        assert (currentStory != null) : "currentStory is null.";
 
         currentStory.removeTask(task);
     }

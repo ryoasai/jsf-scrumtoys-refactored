@@ -51,40 +51,9 @@ import jsf2.demo.scrum.infra.entity.PersistentEntity;
 public abstract class BaseCrudAction<K extends Serializable, E extends PersistentEntity<K>> extends AbstractAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private boolean conversationNested;
-    
-    @Inject
-    protected Conversation conversation;
-
-    public boolean isConversationNested() {
-        return conversationNested;
-    }
-
-    public void beginConversation() {
-        if (conversation.isTransient()) {
-            conversationNested = false;
-            conversation.begin();
-        } else {
-            conversationNested = true;
-        }
-    }
-    
-    public void endConversation() {
-        if (!isConversationNested() && !conversation.isTransient()) {
-            conversation.end();
-        }
-    }
     
     public void selectCurrentEntity(E currentEntity) {
         onSelectCurrentEntity(currentEntity);
-        
-        if (currentEntity == null) {
-            endConversation();
-            return;
-        }
-        
-        beginConversation();
     }
 
     protected abstract void onSelectCurrentEntity(E currentEntity);
@@ -107,8 +76,6 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
     
     public String save() {
         doSave();
-        
-        endConversation();
                 
         return redirectTo("show");
     }
@@ -126,8 +93,6 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
     protected abstract void doRemove(E entity);
     
     public String cancelEdit() {
-        endConversation();
-        
         return redirectTo("show");
     }
  

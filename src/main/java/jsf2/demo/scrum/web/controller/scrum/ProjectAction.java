@@ -76,11 +76,6 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
     // Properties.
     //=========================================================================
     
-    @Override
-    public boolean isConversationNested() {
-        return false;
-    }
-        
     public Project getCurrentProject() {
         return scrumManager.getCurrentProject();
     }
@@ -125,8 +120,6 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
 
     public void reset() {
         scrumManager.reset();
-        
-        endConversation();
     }
     
     //=========================================================================
