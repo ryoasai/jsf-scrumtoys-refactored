@@ -8,7 +8,6 @@ import org.junit.Before;
 import com.googlecode.jeeunit.Transactional;
 import com.googlecode.jeeunit.JeeunitRunner;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
