@@ -47,6 +47,7 @@ Other names may be trademarks of their respective owners. The contents of
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <glassfish.version>3.1</glassfish.version>
         <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
     </properties>
     
@@ -78,12 +79,64 @@ Other names may be trademarks of their respective owners. The contents of
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+            
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-surefire-plugin</artifactId> 
+                <version>2.9</version>
+            </plugin>       
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <finalName>scrumtoys</finalName>
     </build>
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.googlecode.jeeunit</groupId>
+            <artifactId>jeeunit-glassfish</artifactId>
+            <version>0.8.0</version>
+            <scope>test</scope>
+        </dependency>        
+        <dependency>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-web</artifactId>
+            <version>${glassfish.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.jeeunit</groupId>
+            <artifactId>jeeunit</artifactId>
+            <version>0.8.0</version>
+            <scope>test</scope>
+        </dependency>  
         <dependency>
             <groupId>mockit</groupId>
             <artifactId>jmockit</artifactId>
@@ -96,19 +149,7 @@ Other names may be trademarks of their respective owners. The contents of
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-web</artifactId>
-            <version>3.1.1</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>6.0</version>
-            <scope>provided</scope>
-        </dependency>
+      
     </dependencies>
 
     <repositories>
