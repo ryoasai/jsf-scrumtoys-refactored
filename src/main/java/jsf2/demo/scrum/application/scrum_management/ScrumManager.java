@@ -17,6 +17,8 @@ import jsf2.demo.scrum.domain.task.Task;
 @Local
 public interface ScrumManager {
 
+    void reset();
+    
     Project getCurrentProject();
 
     void setCurrentProject(Project currentProject);

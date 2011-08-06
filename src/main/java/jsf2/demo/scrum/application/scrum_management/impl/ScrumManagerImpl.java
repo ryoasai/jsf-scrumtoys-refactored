@@ -121,6 +121,14 @@ public class ScrumManagerImpl implements ScrumManager, Serializable {
         logger.log(Level.INFO, "destroy intance of {0} in conversation", getClass().getName());
     }
    
+    @Override
+    public void reset() {
+        currentProject = null;
+        currentSprint = null;
+        currentStory = null;
+        currentTask = null;
+    }
+    
     //=========================================================================
     // Project management
     //=========================================================================

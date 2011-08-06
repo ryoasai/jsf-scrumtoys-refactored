@@ -123,11 +123,10 @@ public class ProjectAction extends BaseCrudAction<Long, Project> implements Seri
         return redirectTo("/sprint/show");
     }
 
-    @Override
-    public void endConversation() {
-        scrumManager.setCurrentProject(null);
+    public void reset() {
+        scrumManager.reset();
         
-        super.endConversation();
+        endConversation();
     }
     
     //=========================================================================

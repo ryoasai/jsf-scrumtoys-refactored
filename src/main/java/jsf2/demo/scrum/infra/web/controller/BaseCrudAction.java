@@ -94,7 +94,7 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
 
         selectCurrentEntity(entity);
         
-        return "create?faces-redirect=true";
+        return redirectTo("create");
     }
 
     protected abstract E doCreate();
@@ -102,7 +102,7 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
     public String edit(E entity) {
         selectCurrentEntity(entity);
         
-        return "edit?faces-redirect=true";
+        return redirectTo("edit");
     }
     
     public String save() {
@@ -110,7 +110,7 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
         
         endConversation();
                 
-        return "show?faces-redirect=true";
+        return redirectTo("show");
     }
     
     protected abstract void doSave();
@@ -120,7 +120,7 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
             doRemove(entity);
         }
 
-        return "show?faces-redirect=true";
+        return redirectTo("show");
     }
 
     protected abstract void doRemove(E entity);
@@ -128,7 +128,7 @@ public abstract class BaseCrudAction<K extends Serializable, E extends Persisten
     public String cancelEdit() {
         endConversation();
         
-        return "show?faces-redirect=true";
+        return redirectTo("show");
     }
  
 }

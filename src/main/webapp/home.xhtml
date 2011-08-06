@@ -48,7 +48,7 @@ Other names may be trademarks of their respective owners.
         <f:metadata>
             <f:viewParam name="skin" value="#{skinUrlAction.skin}" />
             <f:event type="preRenderView" listener="#{skinUrlAction.update}" />
-            <f:event type="preRenderView" listener="#{projectAction.endConversation}" />
+            <f:event type="preRenderView" listener="#{projectAction.reset}" />
         </f:metadata>
         <ui:insert name="pageTitle">
             <h:outputText value="#{i18n['template.title']}"></h:outputText>
