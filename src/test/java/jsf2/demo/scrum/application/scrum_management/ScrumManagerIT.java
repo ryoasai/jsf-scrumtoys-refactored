@@ -45,16 +45,17 @@ public class ScrumManagerIT {
     @Before
     public void setUp() {
         conversationContext.activate();
- 
-        // clean up all data before test.
-        List<Project> projects = projectRepository.findByNamedQuery("project.getAll");
-        for (Project project : projects) {
-            projectRepository.remove(project);
-        }
     }
 
     @After
     public void tearDown() {
+        List<Project> projects = projectRepository.findByNamedQuery("project.getAll");
+        for (Project project : projects) {
+            if (!project.isNew()) {
+                projectRepository.remove(project);
+            }
+        }
+        
         conversationContext.deactivate();
     }
         
@@ -72,7 +73,7 @@ public class ScrumManagerIT {
         scrumManager.saveCurrentProject();
         
         // delete
-        scrumManager.removeProject(project);
+ //       scrumManager.removeProject(project);
     }
 
     @Test

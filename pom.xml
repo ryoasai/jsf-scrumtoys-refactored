@@ -90,6 +90,9 @@ Other names may be trademarks of their respective owners. The contents of
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.9</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
                 <executions>
                     <execution>
                         <id>integration-test</id>
