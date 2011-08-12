@@ -117,6 +117,7 @@ Other names may be trademarks of their respective owners. The contents of
             <version>0.8.0</version>
             <scope>test</scope>
         </dependency>        
+        
         <dependency>
             <groupId>org.glassfish.extras</groupId>
             <artifactId>glassfish-embedded-web</artifactId>

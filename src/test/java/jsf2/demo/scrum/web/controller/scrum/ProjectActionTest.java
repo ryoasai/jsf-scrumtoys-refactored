@@ -6,7 +6,6 @@ package jsf2.demo.scrum.web.controller.scrum;
 
 import javax.faces.validator.ValidatorException;
 import mockit.Deencapsulation;
-import javax.faces.context.FacesContext;
 import java.util.List;
 import java.util.Arrays;
 import jsf2.demo.scrum.domain.project.ProjectRepository;
@@ -14,7 +13,6 @@ import mockit.Expectations;
 import jsf2.demo.scrum.application.scrum_management.ScrumManager;
 import mockit.Mocked;
 import jsf2.demo.scrum.domain.project.Project;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
