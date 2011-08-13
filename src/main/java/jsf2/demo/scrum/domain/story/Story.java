@@ -48,7 +48,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -180,7 +179,7 @@ public class Story extends AbstractEntity implements Serializable {
     }
 
     public List<Task> getTasks() {
-        return (tasks != null) ? Collections.unmodifiableList(tasks) : Collections.EMPTY_LIST;
+        return tasks;
     }
 
     public List<Task> getDoneTasks() {

@@ -110,31 +110,15 @@ public class Task extends AbstractEntity implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-//        changeTaskStatus(this.startDate, endDate);
     }
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
- //       changeTaskStatus(startDate, this.endDate);
     }
 
     public TaskStatus getStatus() {
         return status;
     }
-   
-    /*
-    protected void changeTaskStatus(Date startDate, Date endDate) {
-        if (endDate != null) {
-            this.setStatus(status.DONE);
-        }
-        if (endDate == null && this.startDate != null) {
-            this.setStatus(status.WORKING);
-        }
-        if (endDate == null && this.startDate == null) {
-            this.setStatus(status.TODO);
-        }
-    }
-*/
     
     public String getName() {
         return name;

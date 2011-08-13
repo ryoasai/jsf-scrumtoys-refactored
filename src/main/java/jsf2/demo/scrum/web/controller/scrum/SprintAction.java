@@ -147,7 +147,7 @@ public class SprintAction extends BaseCrudAction<Long, Sprint> implements Serial
      *
      */
     public String checkUniqueSprintNameApplicationValidatorMethod(String newValue) {
-        final String newName = (String) newValue;
+        final String newName = newValue;
 
         if (isNonUniqueSprintName(newName)) {
             return getFacesMessageForKey("sprint.form.label.name.unique").getSummary();

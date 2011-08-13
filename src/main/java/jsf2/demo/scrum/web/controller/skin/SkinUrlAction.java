@@ -40,11 +40,8 @@ Other names may be trademarks of their respective owners.
 package jsf2.demo.scrum.web.controller.skin;
 
 import jsf2.demo.scrum.infra.web.controller.AbstractAction;
-import java.io.Serializable;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  *

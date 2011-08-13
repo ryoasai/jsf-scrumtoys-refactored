@@ -46,10 +46,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Model;
-import javax.inject.Named;
 import jsf2.demo.scrum.infra.web.controller.AbstractAction;
 
 /**
@@ -59,11 +57,13 @@ import jsf2.demo.scrum.infra.web.controller.AbstractAction;
 @ApplicationScoped @Model
 public class SkinValuesAction extends AbstractAction implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
     //=========================================================================
     // Fields.
     //=========================================================================
     
-    private Map<String, String> values;
+	private Map<String, String> values;
     
     private String defaultSkin = "blue";
 

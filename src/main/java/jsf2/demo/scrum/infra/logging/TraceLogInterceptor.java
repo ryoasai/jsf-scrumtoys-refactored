@@ -21,7 +21,9 @@ import javax.interceptor.InvocationContext;
 @Traced @Interceptor
 public class TraceLogInterceptor implements Serializable {
     
-    @Inject
+	private static final long serialVersionUID = 1L;
+
+	@Inject
     transient Logger logger;
 
     @AroundInvoke

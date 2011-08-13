@@ -51,9 +51,8 @@ public class SprintNameUniquenessConstraintValidator implements ConstraintValida
     public boolean isValid(String value, ConstraintValidatorContext ctx) {
         
         FacesContext context = FacesContext.getCurrentInstance();
-        SprintAction sprintAction = (SprintAction)
-                context.getApplication().evaluateExpressionGet(context, 
-                "#{sprintAction}", SprintAction.class);
+        SprintAction sprintAction = context.getApplication().evaluateExpressionGet(context, 
+		"#{sprintAction}", SprintAction.class);
         boolean result = true;
         String message = sprintAction.
                 checkUniqueSprintNameApplicationValidatorMethod(value);
