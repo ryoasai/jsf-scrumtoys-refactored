@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-2011-08-12 15:41:07.005 GMT:
- Derby バージョン The Apache Software Foundation - Apache Derby - 10.6.2.1 - (999685): インスタンス a816c00e-0131-bea7-65d1-000001853928 を
-クラスローダー sun.misc.Launcher$AppClassLoader@1f3e8d89 によってデータベースディレクトリ C:\Users\Ryo\AppData\Local\Temp\gfembed6884617198510055796tmp\lib\databases\jeeunit  上でブート中 
+2011-08-12 15:50:45.313 GMT:
+ Derby バージョン The Apache Software Foundation - Apache Derby - 10.6.2.1 - (999685): インスタンス a816c00e-0131-beb0-38d9-0000026fe5c0 を
+クラスローダー sun.misc.Launcher$AppClassLoader@1f3e8d89 によってデータベースディレクトリ C:\Users\Ryo\AppData\Local\Temp\gfembed422403491662097657tmp\lib\databases\jeeunit  上でブート中 
 
 
 java.vendor=Sun Microsystems Inc.
