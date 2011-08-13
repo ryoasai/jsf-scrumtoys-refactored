@@ -39,11 +39,7 @@ Other names may be trademarks of their respective owners.
 
 package jsf2.demo.scrum.infra.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -52,7 +48,9 @@ import javax.persistence.SequenceGenerator;
 @MappedSuperclass
 public abstract class AbstractEntity implements PersistentEntity<Long> {
 
-    @Override
+	private static final long serialVersionUID = 1L;
+
+	@Override
     public abstract Long getId();
     
     @Override

@@ -39,13 +39,11 @@ Other names may be trademarks of their respective owners.
 
 package jsf2.demo.scrum.domain.project;
 
-import jsf2.demo.scrum.infra.entity.AbstractEntity;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -61,7 +59,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import jsf2.demo.scrum.domain.sprint.Sprint;
+import jsf2.demo.scrum.infra.entity.AbstractEntity;
 
 /**
  * @author Dr. Spock (spock at dev.java.net)
@@ -141,7 +141,7 @@ public class Project extends AbstractEntity implements Serializable {
     }
 
     public List<Sprint> getSprints() {
-        return (sprints != null) ? Collections.unmodifiableList(sprints) : Collections.EMPTY_LIST;
+        return sprints;
     }
 
     public boolean addSprint(Sprint sprint) {

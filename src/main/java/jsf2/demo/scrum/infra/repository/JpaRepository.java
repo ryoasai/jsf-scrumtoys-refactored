@@ -5,7 +5,6 @@
 package jsf2.demo.scrum.infra.repository;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,7 +33,7 @@ public abstract class JpaRepository<K extends Serializable, E extends Persistent
     @Override
     @SuppressWarnings("unchecked")
     public List<E> findByNamedQuery(String queryName) {
-        return (List<E>) em.createNamedQuery(queryName).getResultList();
+        return em.createNamedQuery(queryName).getResultList();
     }
 
     @Override

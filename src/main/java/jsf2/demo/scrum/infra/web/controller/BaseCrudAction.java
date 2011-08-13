@@ -40,9 +40,6 @@ package jsf2.demo.scrum.infra.web.controller;
 
 
 import java.io.Serializable;
-import javax.enterprise.context.Conversation;
-import javax.inject.Inject;
-import javax.inject.Named;
 import jsf2.demo.scrum.infra.entity.PersistentEntity;
 
 /**

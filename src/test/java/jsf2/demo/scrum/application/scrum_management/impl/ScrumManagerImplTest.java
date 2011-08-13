@@ -5,7 +5,6 @@
 package jsf2.demo.scrum.application.scrum_management.impl;
 
 import javax.enterprise.context.Conversation;
-import javax.persistence.EntityManager;
 import java.util.logging.Logger;
 import jsf2.demo.scrum.domain.task.Task;
 import jsf2.demo.scrum.domain.story.Story;
@@ -13,10 +12,6 @@ import jsf2.demo.scrum.domain.sprint.Sprint;
 import jsf2.demo.scrum.domain.task.TaskRepository;
 import jsf2.demo.scrum.domain.story.StoryRepository;
 import jsf2.demo.scrum.domain.sprint.SprintRepository;
-import javax.faces.validator.ValidatorException;
-import mockit.Deencapsulation;
-import java.util.List;
-import java.util.Arrays;
 import jsf2.demo.scrum.domain.project.ProjectRepository;
 import mockit.Expectations;
 import mockit.Mocked;
