@@ -115,7 +115,7 @@ Other names may be trademarks of their respective owners.
 
                     <f:facet name="footer">
                         <h:commandButton styleClass="botaoPostIt" action="#{storyAction.create}" value="#{i18n['story.show.button.newStory']}"  />
-                        <h:commandButton styleClass="botaoPostIt" action="showSprints" value="#{i18n['story.show.button.showSprints']}"  />
+                        <h:commandButton styleClass="botaoPostIt" action="/sprint/show" value="#{i18n['story.show.button.showSprints']}"  />
                         <scrum:button styleClass="botaoPostIt" outcome="/dashboard/show" value="#{i18n['sprint.show.button.showDashboard']}" />
                     </f:facet>
                 </h:panelGrid>
