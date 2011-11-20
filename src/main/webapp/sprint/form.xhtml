@@ -50,26 +50,29 @@ Other names may be trademarks of their respective owners.
         <h:panelGrid columns="3" columnClasses="formLabel, formInput, formErrorMessage" styleClass="postItFormTable">           
             <h:outputLabel value="#{i18n['sprint.form.label.name']}:" for="name"/>
             <h:inputText id="name" value="#{currentSprint.name}" required="true"
-                         requiredMessage="#{i18n['sprint.form.label.name.required']}" size="30" >
+                         requiredMessage="#{i18n['sprint.form.label.name.required']}" size="30" label="#{i18n['sprint.form.label.name']}">
                 <f:ajax event="blur" render="nameError" />
             </h:inputText>   
             <h:message id="nameError" for="name" styleClass="errorMessage" />
 
-            <h:outputLabel value="#{i18n['sprint.form.label.goals']}:" for="goals"  />
-            <h:inputTextarea id="goals" value="#{currentSprint.goals}" required="true" cols="31" rows="3" requiredMessage="#{i18n['sprint.form.label.goals.required']}" >
+            <h:outputLabel value="#{i18n['sprint.form.label.goals']}:" for="goals" />
+            <h:inputTextarea id="goals" value="#{currentSprint.goals}" required="true" cols="31" rows="3" 
+                             requiredMessage="#{i18n['sprint.form.label.goals.required']}" label="#{i18n['sprint.form.label.goals']}">
                 <f:ajax event="blur" render="goalsError" />
             </h:inputTextarea>    
             <h:message id="goalsError" for="goals" styleClass="errorMessage"/>
 
             <h:outputLabel value="#{i18n['sprint.form.label.iterationScope']}:" for="itIterationScope"  />
-            <h:inputText id="itIterationScope" value="#{currentSprint.iterationScope}" required="true" requiredMessage="#{i18n['sprint.form.label.iterationScope.required']}" >
+            <h:inputText id="itIterationScope" value="#{currentSprint.iterationScope}" required="true" 
+                         requiredMessage="#{i18n['sprint.form.label.iterationScope.required']}" label="#{i18n['sprint.form.label.iterationScope']}">
                 <f:ajax event="blur" render="itIterationScopeError" />
             </h:inputText>    
             <h:message id="itIterationScopeError" for="itIterationScope" styleClass="errorMessage"/>
 
             <h:outputLabel value="#{i18n['sprint.form.label.startDate']}:" for="startedDate"  />
             <h:panelGroup>
-                <h:inputText id="startedDate" value="#{currentSprint.startDate}" required="true" requiredMessage="#{i18n['sprint.form.label.startDate.required']}">
+                <h:inputText id="startedDate" value="#{currentSprint.startDate}" required="true" 
+                             requiredMessage="#{i18n['sprint.form.label.startDate.required']}" label="#{i18n['sprint.form.label.startDate']}">
                     <f:convertDateTime pattern="#{i18n['sprint.form.label.startDate.pattern']}" />
                     <f:ajax event="blur" render="startedDateError" />
                 </h:inputText>
@@ -79,7 +82,8 @@ Other names may be trademarks of their respective owners.
 
             <h:outputLabel value="#{i18n['sprint.form.label.dailyMeetingTime']}:" for="dailyMeetingTime"  />
             <h:panelGroup>
-                <h:inputText id="dailyMeetingTime" value="#{currentSprint.dailyMeetingTime}" required="true" requiredMessage="#{i18n['sprint.form.label.dailyMeetingTime.required']}">
+                <h:inputText id="dailyMeetingTime" value="#{currentSprint.dailyMeetingTime}" required="true" 
+                             requiredMessage="#{i18n['sprint.form.label.dailyMeetingTime.required']}" label="#{i18n['sprint.form.label.dailyMeetingTime']}">
                     <f:convertDateTime pattern="#{i18n['sprint.form.label.dailyMeetingTime.pattern']}" />
                     <f:ajax event="blur" render="dailyMeetingTimeError" />                    
                 </h:inputText>

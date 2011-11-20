@@ -52,14 +52,15 @@ Other names may be trademarks of their respective owners.
         <h:outputLabel value="#{i18n['story.form.label.name']}:" for="name"/>
         <h:inputText id="name" value="#{currentStory.name}" required="true"
                      requiredMessage="#{i18n['story.form.label.name.required']}" size="40" 
-                     validator="#{storyAction.checkUniqueStoryName}" >
+                     validator="#{storyAction.checkUniqueStoryName}" label="#{i18n['story.form.label.name']}" >
             <f:ajax event="blur" render="nameError" />
         </h:inputText>    
         <h:message id="nameError" for="name" styleClass="errorMessage"/>
 
         <h:outputLabel value="#{i18n['story.form.label.startDate']}:" for="startedDate"  />
         <h:panelGroup>
-            <h:inputText id="startedDate" value="#{currentStory.startDate}" required="true" requiredMessage="#{i18n['story.form.label.startDate.required']}" size="10" >
+            <h:inputText id="startedDate" value="#{currentStory.startDate}" required="true"
+                         requiredMessage="#{i18n['story.form.label.startDate.required']}" size="10" label="#{i18n['story.form.label.startDate']}" >
                 <f:convertDateTime pattern="#{i18n['story.form.label.startDate.pattern']}" />
                 <f:ajax event="blur" render="startedDateError" />
             </h:inputText>
@@ -68,7 +69,8 @@ Other names may be trademarks of their respective owners.
         <h:message id="startedDateError" for="startedDate" styleClass="errorMessage" />
 
         <h:outputLabel value="#{i18n['story.form.label.priority']}:" for="priority"  />
-        <h:selectOneMenu id="priority" value="#{currentStory.priority}" required="true" requiredMessage="#{i18n['story.form.label.priority.required']}">
+        <h:selectOneMenu id="priority" value="#{currentStory.priority}" required="true"
+                         requiredMessage="#{i18n['story.form.label.priority.required']}" label="#{i18n['story.form.label.priority']}">
             <f:selectItem itemValue="0" />
             <f:selectItem itemValue="1" />            
             <f:selectItem itemValue="2" />
@@ -79,17 +81,19 @@ Other names may be trademarks of their respective owners.
 
         <h:message id="priorityError" for="priority" styleClass="errorMessage"/>
 
-        <h:outputLabel value="#{i18n['story.form.label.estimation']}:" for="estimation"  />
-        <h:inputText id="estimation" value="#{currentStory.estimation}" required="true" requiredMessage="#{i18n['story.form.label.estimation.required']}" >
+        <h:outputLabel value="#{i18n['story.form.label.estimation']}:" for="estimation" />
+        <h:inputText id="estimation" value="#{currentStory.estimation}" required="true" 
+                     requiredMessage="#{i18n['story.form.label.estimation.required']}" label="#{i18n['story.form.label.estimation']}">
             <f:ajax event="blur" render="estimationError" />
         </h:inputText>    
         <h:message id="estimationError" for="estimation" styleClass="errorMessage"/>
 
         <h:outputLabel value="#{i18n['story.form.label.acceptance']}:" for="acceptance"  />
-        <h:inputText id="acceptance" value="#{currentStory.acceptance}" required="true" requiredMessage="#{i18n['story.form.label.acceptance.required']}" size="40" >
+        <h:inputText id="acceptance" value="#{currentStory.acceptance}" required="true" 
+                     requiredMessage="#{i18n['story.form.label.acceptance.required']}" size="40" label="#{i18n['story.form.label.acceptance']}">
             <f:ajax event="blur" render="acceptanceError" />
         </h:inputText>    
-        <h:message id="acceptanceError" for="itAcceptance" styleClass="errorMessage" />
+        <h:message id="acceptanceError" for="acceptance" styleClass="errorMessage" />
 
     </ui:composition>
 

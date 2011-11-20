@@ -51,14 +51,15 @@ Other names may be trademarks of their respective owners.
             <h:outputLabel value="#{i18n['project.form.label.name']}:" for="name"/>
             <h:inputText id="name" value="#{currentProject.name}" required="true" 
                          requiredMessage="#{i18n['project.form.label.name.required']}" size="40"
-                         validator="#{projectAction.checkUniqueProjectName}" >
+                         validator="#{projectAction.checkUniqueProjectName}" label="#{i18n['project.form.label.name']}">
                 <f:ajax event="blur" render="nameError" />
             </h:inputText>
             <h:message id="nameError" for="name" styleClass="errorMessage" />
 
             <h:outputLabel value="#{i18n['project.form.label.startDate']}:" for="startedDate"  />
             <h:panelGroup>
-                <h:inputText id="startedDate" value="#{currentProject.startDate}" required="true" requiredMessage="#{i18n['project.form.label.startDate.required']}">
+                <h:inputText id="startedDate" value="#{currentProject.startDate}" required="true" 
+                             requiredMessage="#{i18n['project.form.label.startDate.required']}" label="#{i18n['project.form.label.startDate']}">
                     <f:convertDateTime pattern="#{i18n['project.form.label.startDate.pattern']}" />
                     <f:ajax event="blur" render="startedDateError" />
                 </h:inputText>
@@ -68,7 +69,8 @@ Other names may be trademarks of their respective owners.
 
             <h:outputLabel value="#{i18n['project.form.label.endDate']}:" for="endDate"  />
             <h:panelGroup>
-                <h:inputText id="endDate" value="#{currentProject.endDate}" required="false" requiredMessage="#{i18n['project.form.label.endDate.required']}">
+                <h:inputText id="endDate" value="#{currentProject.endDate}" required="false" 
+                             requiredMessage="#{i18n['project.form.label.endDate.required']}" label="#{i18n['project.form.label.endDate']}">
                     <f:convertDateTime pattern="#{i18n['project.form.label.endDate.pattern']}" />
                     <f:ajax event="blur" render="endDateError" />                    
                 </h:inputText>
