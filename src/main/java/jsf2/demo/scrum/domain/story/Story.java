@@ -114,14 +114,6 @@ public class Story extends AbstractEntity implements Serializable {
         this.name = name;
     }
 
-    public Story(String name, Sprint sprint) {
-        this(name);
-        this.name = name;
-        if (sprint != null) {
-            sprint.addStory(this);
-        }
-    }
-
     public String getAcceptance() {
         return acceptance;
     }
